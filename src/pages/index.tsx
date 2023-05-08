@@ -18,7 +18,7 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <SignedIn>
-          You are signed in <SignOutButton />{" "}
+          You are signed in : <SignOutButton />{" "}
         </SignedIn>
         <SignedOut>
           You are signed out <SignInButton />
