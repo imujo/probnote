@@ -1,0 +1,7 @@
+{
+  "name": "probnote",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
