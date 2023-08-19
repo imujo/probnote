@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Folder {
+  id             Int      @id @default(autoincrement())
+  label          String   @db.VarChar(30)
+  parentFolderId Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  ParentFolder Folder?  @relation("folderStructure", fields: [parentFolderId], references: [id])
+  ChildFolders Folder[] @relation("folderStructure")
+  Note         Note[]
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  label     String   @db.VarChar(30)
+  noteType  NoteType
+  folderId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Folder       Folder         @relation(fields: [folderId], references: [id])
+  ExerciseNote ExerciseNote[]
+}
+
+model ExerciseNote {
+  id        Int      @id @default(autoincrement())
+  noteId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Note    Note      @relation(fields: [noteId], references: [id])
+  Problem Problem[]
+}
+
+enum NoteType {
+  REGULAR
+  EXERCISE
+}
+
+model Problem {
+  id             Int      @id @default(autoincrement())
+  exerciseNoteId Int
+  problemImage   String
+  solutionImage  String?
+  canvas         Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  ExerciseNote ExerciseNote @relation(fields: [exerciseNoteId], references: [id])
+}
