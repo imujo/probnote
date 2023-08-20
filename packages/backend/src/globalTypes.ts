@@ -6,7 +6,7 @@ export type ResponseType<T> = Response<
   } & (
     | {
         data: T;
-        error: boolean;
+        error: false;
       }
     | {
         data: null;

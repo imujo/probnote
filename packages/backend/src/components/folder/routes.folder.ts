@@ -3,7 +3,8 @@ const router = Router();
 import folderController from "./controller.folder";
 
 router.get("/:id", folderController.get);
-router.post("/", (req, res, next) => {});
+router.get("/parents/:id", folderController.getParents);
+router.post("/", folderController.post);
 router.put("/:id", (req, res, next) => {});
 router.delete("/:id", (req, res, next) => {});
 

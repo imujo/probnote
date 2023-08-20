@@ -32,7 +32,7 @@ export const getParentFolders = async (folderId: number) => {
     id: number;
     label: string;
   }[] = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 3; i++) {
     const currentFolder = await prisma.folder.findFirst({
       where: {
         id: currentFolderId,
@@ -64,4 +64,18 @@ export const getParentFolders = async (folderId: number) => {
   }
 
   return parentFolders;
+};
+
+export const postFolder = async (
+  label: string,
+  parentFolderId: number | null
+) => {
+  const folder = await prisma.folder.create({
+    data: {
+      label: label,
+      parentFolderId: parentFolderId,
+    },
+  });
+
+  return folder;
 };

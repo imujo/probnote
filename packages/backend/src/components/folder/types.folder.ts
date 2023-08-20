@@ -1,6 +1,7 @@
 import { RequestBuilder } from "../../utils/requestResponseBuilders";
 import { z } from "zod";
 import { ResponseType } from "../../globalTypes";
+import messages from "../../messages";
 
 // GET FOLDER
 
@@ -8,9 +9,9 @@ export const folderGetSchema = {
   params: z.object({
     id: z
       .string({
-        required_error: "Required Field: Id is a required field",
+        required_error: messages.required("Id"),
       })
-      .regex(/^\d+$/, "Invalid Type: Id is not a valid number"),
+      .regex(/^\d+$/, messages.invalidType("Id", "number")),
   }),
 };
 
@@ -30,4 +31,50 @@ export type FolderGetResposne = ResponseType<{
   }[];
 }>;
 
+// GET FOLDER PARENTS
+
+export const folderGetParentsSchema = {
+  params: z.object({
+    id: z
+      .string({
+        required_error: messages.required("Id"),
+      })
+      .regex(/^\d+$/, messages.invalidType("Id", "number")),
+  }),
+};
+
+const folderGetParentsBuilder = new RequestBuilder(folderGetParentsSchema);
+export type FolderGetParentsRequest = ReturnType<
+  typeof folderGetParentsBuilder.getRequestType
+>;
+export type FolderGetParentsResposne = ResponseType<
+  {
+    id: number;
+    label: string;
+  }[]
+>;
+
 // POST FOLDER
+
+export const folderPostSchema = {
+  body: z.object({
+    label: z.string({
+      invalid_type_error: messages.invalidType("Label", "string"),
+      required_error: messages.required("Label"),
+    }),
+    parentFolderId: z.union([z.number(), z.null()], {
+      invalid_type_error: messages.invalidType(
+        "ParentFolderId",
+        "number or null"
+      ),
+    }),
+  }),
+};
+
+const folderPostBuilder = new RequestBuilder(folderPostSchema);
+export type FolderPostRequest = ReturnType<
+  typeof folderPostBuilder.getRequestType
+>;
+export type FolderPostResposne = ResponseType<{
+  id: number;
+}>;
