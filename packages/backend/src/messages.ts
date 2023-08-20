@@ -2,6 +2,7 @@ const getSuccess = (entityName: string) =>
   `${entityName} retrieved successfully`;
 const notFoundWithId = (entityName: string, id: number) =>
   `Not Found: ${entityName} with id ${id} not found`;
+const notFound = (entityName: string) => `Not Found: ${entityName} not found`;
 const required = (entityName: string) =>
   `Field Required: ${entityName} is a required field`;
 const invalidType = (entityName: string, typeName: string) =>
@@ -15,6 +16,7 @@ const deleteSuccess = (entityName: string) =>
 export default {
   getSuccess,
   notFoundWithId,
+  notFound,
   required,
   invalidType,
   postSuccess,

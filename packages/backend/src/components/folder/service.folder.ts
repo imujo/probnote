@@ -26,6 +26,32 @@ export const getFolder = async (folderId: number) => {
   return currentFolder;
 };
 
+export const getBaseFolder = async () => {
+  const baseFolders = await prisma.folder.findMany({
+    where: {
+      parentFolderId: null,
+    },
+    select: {
+      id: true,
+      label: true,
+    },
+  });
+  const baseNotes = await prisma.note.findMany({
+    where: {
+      folderId: null,
+    },
+    select: {
+      id: true,
+      label: true,
+    },
+  });
+
+  return {
+    ChildFolders: baseFolders,
+    Note: baseNotes,
+  };
+};
+
 export const getParentFolders = async (folderId: number) => {
   let currentFolderId = folderId;
   let parentFolders: {

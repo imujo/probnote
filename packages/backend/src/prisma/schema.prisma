@@ -23,11 +23,11 @@ model Note {
   id        Int      @id @default(autoincrement())
   label     String   @db.VarChar(30)
   noteType  NoteType
-  folderId  Int
+  folderId  Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Folder       Folder         @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  Folder       Folder?        @relation(fields: [folderId], references: [id], onDelete: Cascade)
   ExerciseNote ExerciseNote[]
 }
 

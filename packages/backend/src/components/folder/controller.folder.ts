@@ -1,6 +1,7 @@
 import { NextFunction } from "express";
 import {
   deleteFolder,
+  getBaseFolder,
   getFolder,
   getParentFolders,
   postFolder,
@@ -9,6 +10,8 @@ import {
 import {
   FolderDeleteRequest,
   FolderDeleteResposne,
+  FolderGetBaseRequest,
+  FolderGetBaseResposne,
   FolderGetParentsRequest,
   FolderGetParentsResposne,
   FolderGetRequest,
@@ -37,6 +40,25 @@ const get = async (
     res.status(200).json({
       message: messages.getSuccess("Folder"),
       data: folder,
+      error: false,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+const getBase = async (
+  req: FolderGetBaseRequest,
+  res: FolderGetBaseResposne,
+  next: NextFunction
+) => {
+  try {
+    const children = await getBaseFolder();
+
+    res.status(200).json({
+      message: messages.getSuccess("Base folder"),
+      data: children,
       error: false,
     });
   } catch (error) {
@@ -138,6 +160,7 @@ const del = async (
 
 export default {
   get,
+  getBase,
   getParents,
   post,
   put,

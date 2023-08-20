@@ -2,6 +2,7 @@ import { RequestBuilder } from "../../utils/requestResponseBuilders";
 import { z } from "zod";
 import { ResponseType } from "../../globalTypes";
 import messages from "../../messages";
+import { $Enums } from "@prisma/client";
 
 // GET FOLDER
 
@@ -19,12 +20,42 @@ const folderGetBuilder = new RequestBuilder(folderGetSchema);
 export type FolderGetRequest = ReturnType<
   typeof folderGetBuilder.getRequestType
 >;
-export type FolderGetResposne = ResponseType<{
-  id: number;
-  label: string;
-  parentFolderId: number | null;
-  createdAt: Date;
-  updatedAt: Date;
+export type FolderGetResposne = ResponseType<
+  {
+    ChildFolders: {
+      id: number;
+      label: string;
+    }[];
+    Note: {
+      id: number;
+      label: string;
+    }[];
+  } & {
+    id: number;
+    label: string;
+    parentFolderId: number | null;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+>;
+
+// GET BASE FOLDER
+
+export const folderGetBaseSchema = {};
+
+const folderGetBaseBuilder = new RequestBuilder(folderGetBaseSchema);
+export type FolderGetBaseRequest = ReturnType<
+  typeof folderGetBaseBuilder.getRequestType
+>;
+export type FolderGetBaseResposne = ResponseType<{
+  ChildFolders: {
+    id: number;
+    label: string;
+  }[];
+  Note: {
+    id: number;
+    label: string;
+  }[];
 }>;
 
 // GET FOLDER PARENTS
