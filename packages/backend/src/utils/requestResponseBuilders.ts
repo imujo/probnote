@@ -21,3 +21,10 @@ export class RequestBuilder<Schema extends ZodSchemaShape> {
     return {} as Req;
   }
 }
+
+// export function getRequestType<Schema extends ZodSchemaShape>(schema: Schema) {
+//   const zodObject = z.object(schema);
+//   type Type = TypeOf<typeof zodObject>;
+//   type Req = Request<Type["params"], {}, Type["body"], Type["query"]>;
+//   return {} as Req;
+// }
