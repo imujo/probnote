@@ -1,11 +1,14 @@
 import { NextFunction } from "express";
 import {
+  deleteFolder,
   getFolder,
   getParentFolders,
   postFolder,
   putFolder,
 } from "./service.folder";
 import {
+  FolderDeleteRequest,
+  FolderDeleteResposne,
   FolderGetParentsRequest,
   FolderGetParentsResposne,
   FolderGetRequest,
@@ -31,14 +34,9 @@ const get = async (
       throw new Error(messages.notFoundWithId("Folder", id));
     }
 
-    const parentFolders = await getParentFolders(id);
-
     res.status(200).json({
       message: messages.getSuccess("Folder"),
-      data: {
-        ...folder,
-        parentFolders: parentFolders,
-      },
+      data: folder,
       error: false,
     });
   } catch (error) {
@@ -115,9 +113,33 @@ const put = async (
   }
 };
 
+const del = async (
+  req: FolderDeleteRequest,
+  res: FolderDeleteResposne,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const folder = await deleteFolder(id);
+
+    res.status(200).json({
+      message: messages.deleteSuccess("Folder"),
+      data: {
+        id: folder.id,
+      },
+      error: false,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 export default {
   get,
   getParents,
   post,
   put,
+  del,
 };

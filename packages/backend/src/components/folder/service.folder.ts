@@ -97,3 +97,13 @@ export const putFolder = async (
 
   return folder;
 };
+
+export const deleteFolder = async (id: number) => {
+  const folder = await prisma.folder.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return folder;
+};

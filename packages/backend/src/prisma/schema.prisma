@@ -14,7 +14,7 @@ model Folder {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  ParentFolder Folder?  @relation("folderStructure", fields: [parentFolderId], references: [id])
+  ParentFolder Folder?  @relation("folderStructure", fields: [parentFolderId], references: [id], onDelete: Cascade)
   ChildFolders Folder[] @relation("folderStructure")
   Note         Note[]
 }
@@ -27,7 +27,7 @@ model Note {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Folder       Folder         @relation(fields: [folderId], references: [id])
+  Folder       Folder         @relation(fields: [folderId], references: [id], onDelete: Cascade)
   ExerciseNote ExerciseNote[]
 }
 

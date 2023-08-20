@@ -9,6 +9,8 @@ const invalidType = (entityName: string, typeName: string) =>
 const postSuccess = (entityName: string) =>
   `${entityName} created successfully`;
 const putSuccess = (entityName: string) => `${entityName} updated successfully`;
+const deleteSuccess = (entityName: string) =>
+  `${entityName} deleted successfully`;
 
 export default {
   getSuccess,
@@ -17,4 +19,5 @@ export default {
   invalidType,
   postSuccess,
   putSuccess,
+  deleteSuccess,
 };

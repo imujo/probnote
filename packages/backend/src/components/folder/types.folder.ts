@@ -25,10 +25,6 @@ export type FolderGetResposne = ResponseType<{
   parentFolderId: number | null;
   createdAt: Date;
   updatedAt: Date;
-  parentFolders: {
-    id: number;
-    label: string;
-  }[];
 }>;
 
 // GET FOLDER PARENTS
@@ -112,5 +108,27 @@ export type FolderPutRequest = ReturnType<
   typeof folderPutBuilder.getRequestType
 >;
 export type FolderPutResposne = ResponseType<{
+  id: number;
+}>;
+
+// DELETE FOLDER
+
+// GET FOLDER
+
+export const folderDeleteSchema = {
+  params: z.object({
+    id: z
+      .string({
+        required_error: messages.required("Id"),
+      })
+      .regex(/^\d+$/, messages.invalidType("Id", "number")),
+  }),
+};
+
+const folderDeleteBuilder = new RequestBuilder(folderDeleteSchema);
+export type FolderDeleteRequest = ReturnType<
+  typeof folderDeleteBuilder.getRequestType
+>;
+export type FolderDeleteResposne = ResponseType<{
   id: number;
 }>;

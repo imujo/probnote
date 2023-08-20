@@ -6,6 +6,6 @@ router.get("/:id", folderController.get);
 router.get("/parents/:id", folderController.getParents);
 router.post("/", folderController.post);
 router.put("/:id", folderController.put);
-router.delete("/:id", (req, res, next) => {});
+router.delete("/:id", folderController.del);
 
 export default router;
