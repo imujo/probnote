@@ -67,6 +67,7 @@ export const folderPostSchema = {
         "ParentFolderId",
         "number or null"
       ),
+      required_error: messages.required("ParentFolderId"),
     }),
   }),
 };
@@ -76,5 +77,40 @@ export type FolderPostRequest = ReturnType<
   typeof folderPostBuilder.getRequestType
 >;
 export type FolderPostResposne = ResponseType<{
+  id: number;
+}>;
+
+// PUT FOLDER
+
+export const folderPutSchema = {
+  params: z.object({
+    id: z
+      .string({
+        required_error: messages.required("Id"),
+      })
+      .regex(/^\d+$/, messages.invalidType("Id", "number")),
+  }),
+  body: z.object({
+    label: z
+      .string({
+        invalid_type_error: messages.invalidType("Label", "string"),
+      })
+      .optional(),
+    parentFolderId: z
+      .union([z.number(), z.null()], {
+        invalid_type_error: messages.invalidType(
+          "ParentFolderId",
+          "number or null"
+        ),
+      })
+      .optional(),
+  }),
+};
+
+const folderPutBuilder = new RequestBuilder(folderPutSchema);
+export type FolderPutRequest = ReturnType<
+  typeof folderPutBuilder.getRequestType
+>;
+export type FolderPutResposne = ResponseType<{
   id: number;
 }>;

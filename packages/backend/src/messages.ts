@@ -8,6 +8,7 @@ const invalidType = (entityName: string, typeName: string) =>
   `Invalid Type: ${entityName} is not a valid ${typeName}`;
 const postSuccess = (entityName: string) =>
   `${entityName} created successfully`;
+const putSuccess = (entityName: string) => `${entityName} updated successfully`;
 
 export default {
   getSuccess,
@@ -15,4 +16,5 @@ export default {
   required,
   invalidType,
   postSuccess,
+  putSuccess,
 };

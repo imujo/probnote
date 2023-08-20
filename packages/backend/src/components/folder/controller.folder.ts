@@ -1,5 +1,10 @@
 import { NextFunction } from "express";
-import { getFolder, getParentFolders, postFolder } from "./service.folder";
+import {
+  getFolder,
+  getParentFolders,
+  postFolder,
+  putFolder,
+} from "./service.folder";
 import {
   FolderGetParentsRequest,
   FolderGetParentsResposne,
@@ -7,6 +12,8 @@ import {
   FolderGetResposne,
   FolderPostRequest,
   FolderPostResposne,
+  FolderPutRequest,
+  FolderPutResposne,
 } from "./types.folder";
 import messages from "../../messages";
 
@@ -84,8 +91,33 @@ const post = async (
   }
 };
 
+const put = async (
+  req: FolderPutRequest,
+  res: FolderPutResposne,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { label, parentFolderId } = req.body;
+
+    const folder = await putFolder(id, label, parentFolderId);
+
+    res.status(200).json({
+      message: messages.putSuccess("Folder"),
+      error: false,
+      data: {
+        id: folder.id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 export default {
   get,
   getParents,
   post,
+  put,
 };

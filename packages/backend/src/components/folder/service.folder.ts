@@ -79,3 +79,21 @@ export const postFolder = async (
 
   return folder;
 };
+
+export const putFolder = async (
+  id: number,
+  label?: string,
+  parentFolderId?: number | null
+) => {
+  const folder = await prisma.folder.update({
+    where: {
+      id: id,
+    },
+    data: {
+      label: label,
+      parentFolderId: parentFolderId,
+    },
+  });
+
+  return folder;
+};
