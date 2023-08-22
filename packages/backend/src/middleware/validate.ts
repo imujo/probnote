@@ -15,7 +15,7 @@ const validate =
 
       await Promise.all([bodyPromise, paramsPromise, queryPromise]);
 
-      next();
+      return next();
     } catch (e: any) {
       return res.status(400).send(e.errors);
     }

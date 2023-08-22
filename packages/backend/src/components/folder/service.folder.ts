@@ -15,7 +15,7 @@ export const getFolder = async (folderId: number, sort: Sort) => {
           label: true,
         },
         orderBy: {
-          [sort.sort_by]: sort.sort_order,
+          [sort.sortBy]: sort.sortOrder,
         },
       },
       Note: {
@@ -24,7 +24,7 @@ export const getFolder = async (folderId: number, sort: Sort) => {
           label: true,
         },
         orderBy: {
-          [sort.sort_by]: sort.sort_order,
+          [sort.sortBy]: sort.sortOrder,
         },
       },
     },
@@ -43,7 +43,7 @@ export const getBaseFolder = async (sort: Sort) => {
       label: true,
     },
     orderBy: {
-      [sort.sort_by]: sort.sort_order,
+      [sort.sortBy]: sort.sortOrder,
     },
   });
   const baseNotes = await prisma.note.findMany({
@@ -55,7 +55,7 @@ export const getBaseFolder = async (sort: Sort) => {
       label: true,
     },
     orderBy: {
-      [sort.sort_by]: sort.sort_order,
+      [sort.sortBy]: sort.sortOrder,
     },
   });
 
@@ -67,7 +67,7 @@ export const getBaseFolder = async (sort: Sort) => {
 
 export const getParentFolders = async (folderId: number) => {
   let currentFolderId = folderId;
-  let parentFolders: {
+  const parentFolders: {
     id: number;
     label: string;
   }[] = [];
@@ -112,8 +112,8 @@ export const postFolder = async (
   const folder = await prisma.folder.create({
     data: {
       id: 8,
-      label: label,
-      parentFolderId: parentFolderId,
+      label,
+      parentFolderId,
     },
   });
 
@@ -127,11 +127,11 @@ export const putFolder = async (
 ) => {
   const folder = await prisma.folder.update({
     where: {
-      id: id,
+      id,
     },
     data: {
-      label: label,
-      parentFolderId: parentFolderId,
+      label,
+      parentFolderId,
     },
   });
 
@@ -141,7 +141,7 @@ export const putFolder = async (
 export const deleteFolder = async (id: number) => {
   const folder = await prisma.folder.delete({
     where: {
-      id: id,
+      id,
     },
   });
 

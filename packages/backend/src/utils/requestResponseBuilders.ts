@@ -7,7 +7,7 @@ type ZodSchemaShape = {
   query?: ZodTypeAny;
 };
 
-export class RequestBuilder<Schema extends ZodSchemaShape> {
+export default class RequestBuilder<Schema extends ZodSchemaShape> {
   schema: Schema;
 
   constructor(schema: Schema) {

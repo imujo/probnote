@@ -17,8 +17,8 @@ export type ResponseType<T> = Response<
 >;
 
 export const SortSchema = z.object({
-  sort_order: z.union([z.literal("asc"), z.literal("desc")]),
-  sort_by: z.string(),
+  sortOrder: z.union([z.literal("asc"), z.literal("desc")]),
+  sortBy: z.string(),
 });
 
 export type Sort = z.infer<typeof SortSchema>;

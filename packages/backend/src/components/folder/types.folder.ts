@@ -1,8 +1,7 @@
-import { RequestBuilder } from "../../utils/requestResponseBuilders";
 import { z } from "zod";
+import RequestBuilder from "../../utils/requestResponseBuilders";
 import { ResponseType, SortSchema } from "../../globalTypes";
 import messages from "../../messages";
-import { $Enums } from "@prisma/client";
 
 // GET FOLDER
 
@@ -13,7 +12,6 @@ export const folderGetSchema = {
         required_error: messages.required("Id"),
       })
       .regex(/^\d+$/, messages.invalidType("Id", "number")),
-    // .or(z.literal("base")),
   }),
   query: SortSchema,
 };

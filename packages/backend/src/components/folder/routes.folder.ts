@@ -1,5 +1,4 @@
 import { Router } from "express";
-const router = Router();
 import folderController from "./controller.folder";
 import validate from "../../middleware/validate";
 import {
@@ -10,6 +9,8 @@ import {
   folderPostSchema,
   folderPutSchema,
 } from "./types.folder";
+
+const router = Router();
 
 router.get("/base", validate(folderGetBaseSchema), folderController.getBase);
 router.get("/:id", validate(folderGetSchema), folderController.get);

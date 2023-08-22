@@ -23,7 +23,7 @@ import {
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
-import { CustomError } from "../../utils/CustomError";
+import CustomError from "../../utils/CustomError";
 
 const get = async (
   req: FolderGetRequest,
@@ -31,11 +31,11 @@ const get = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
-    const { sort_by, sort_order } = req.query;
+    const id = parseInt(req.params.id, 10);
+    const { sortBy, sortOrder } = req.query;
     const sort: Sort = {
-      sort_by: sort_by,
-      sort_order: sort_order,
+      sortBy,
+      sortOrder,
     };
 
     const folder = await getFolder(id, sort);
@@ -50,7 +50,7 @@ const get = async (
       error: false,
     });
   } catch (error) {
-    // console.log(error);
+    //
     next(error);
   }
 };
@@ -61,10 +61,10 @@ const getBase = async (
   next: NextFunction
 ) => {
   try {
-    const { sort_by, sort_order } = req.query;
+    const { sortBy, sortOrder } = req.query;
     const sort: Sort = {
-      sort_by: sort_by,
-      sort_order: sort_order,
+      sortBy,
+      sortOrder,
     };
 
     const children = await getBaseFolder(sort);
@@ -75,7 +75,6 @@ const getBase = async (
       error: false,
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -86,7 +85,7 @@ const getParents = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
 
     const parentFolders = await getParentFolders(id);
 
@@ -96,7 +95,6 @@ const getParents = async (
       error: false,
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -119,7 +117,6 @@ const post = async (
       },
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -130,7 +127,7 @@ const put = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const { label, parentFolderId } = req.body;
 
     const folder = await putFolder(id, label, parentFolderId);
@@ -143,7 +140,6 @@ const put = async (
       },
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -154,7 +150,7 @@ const del = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
 
     const folder = await deleteFolder(id);
 
@@ -166,7 +162,6 @@ const del = async (
       error: false,
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

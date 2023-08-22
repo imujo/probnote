@@ -8,6 +8,7 @@ const envVariables = z.object({
   }),
 });
 
+// eslint-disable-next-line import/no-mutable-exports
 let parsed: z.infer<typeof envVariables>;
 
 try {
