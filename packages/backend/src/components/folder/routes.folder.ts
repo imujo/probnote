@@ -12,12 +12,12 @@ import {
 } from "./types.folder";
 
 router.get("/base", validate(folderGetBaseSchema), folderController.getBase);
+router.get("/:id", validate(folderGetSchema), folderController.get);
 router.get(
   "/parents/:id",
   validate(folderGetParentsSchema),
   folderController.getParents
 );
-router.get("/:id", validate(folderGetSchema), folderController.get);
 router.post("/", validate(folderPostSchema), folderController.post);
 router.put("/:id", validate(folderPutSchema), folderController.put);
 router.delete("/:id", validate(folderDeleteSchema), folderController.del);

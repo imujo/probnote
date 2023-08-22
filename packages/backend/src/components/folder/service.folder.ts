@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { Sort } from "../../globalTypes";
 
 const prisma = new PrismaClient();
 
-export const getFolder = async (folderId: number) => {
+export const getFolder = async (folderId: number, sort: Sort) => {
   const currentFolder = await prisma.folder.findFirst({
     where: {
       id: folderId,
@@ -13,11 +14,17 @@ export const getFolder = async (folderId: number) => {
           id: true,
           label: true,
         },
+        orderBy: {
+          [sort.sort_by]: sort.sort_order,
+        },
       },
       Note: {
         select: {
           id: true,
           label: true,
+        },
+        orderBy: {
+          [sort.sort_by]: sort.sort_order,
         },
       },
     },
@@ -26,7 +33,7 @@ export const getFolder = async (folderId: number) => {
   return currentFolder;
 };
 
-export const getBaseFolder = async () => {
+export const getBaseFolder = async (sort: Sort) => {
   const baseFolders = await prisma.folder.findMany({
     where: {
       parentFolderId: null,
@@ -34,6 +41,9 @@ export const getBaseFolder = async () => {
     select: {
       id: true,
       label: true,
+    },
+    orderBy: {
+      [sort.sort_by]: sort.sort_order,
     },
   });
   const baseNotes = await prisma.note.findMany({
@@ -43,6 +53,9 @@ export const getBaseFolder = async () => {
     select: {
       id: true,
       label: true,
+    },
+    orderBy: {
+      [sort.sort_by]: sort.sort_order,
     },
   });
 

@@ -22,6 +22,7 @@ import {
   FolderPutResposne,
 } from "./types.folder";
 import messages from "../../messages";
+import { Sort } from "../../globalTypes";
 
 const get = async (
   req: FolderGetRequest,
@@ -30,8 +31,13 @@ const get = async (
 ) => {
   try {
     const id = parseInt(req.params.id);
+    const { sort_by, sort_order } = req.query;
+    const sort: Sort = {
+      sort_by: sort_by,
+      sort_order: sort_order,
+    };
 
-    const folder = await getFolder(id);
+    const folder = await getFolder(id, sort);
 
     if (!folder) {
       throw new Error(messages.notFoundWithId("Folder", id));
@@ -54,7 +60,13 @@ const getBase = async (
   next: NextFunction
 ) => {
   try {
-    const children = await getBaseFolder();
+    const { sort_by, sort_order } = req.query;
+    const sort: Sort = {
+      sort_by: sort_by,
+      sort_order: sort_order,
+    };
+
+    const children = await getBaseFolder(sort);
 
     res.status(200).json({
       message: messages.getSuccess("Base folder"),

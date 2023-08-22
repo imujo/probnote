@@ -1,4 +1,6 @@
 import { Response } from "express";
+import { z } from "zod";
+import messages from "./messages";
 
 export type ResponseType<T> = Response<
   {
@@ -14,3 +16,10 @@ export type ResponseType<T> = Response<
       }
   )
 >;
+
+export const SortSchema = z.object({
+  sort_order: z.union([z.literal("asc"), z.literal("desc")]),
+  sort_by: z.string(),
+});
+
+export type Sort = z.infer<typeof SortSchema>;
