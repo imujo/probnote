@@ -23,6 +23,7 @@ import {
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
+import { CustomError } from "../../utils/CustomError";
 
 const get = async (
   req: FolderGetRequest,
@@ -40,7 +41,7 @@ const get = async (
     const folder = await getFolder(id, sort);
 
     if (!folder) {
-      throw new Error(messages.notFoundWithId("Folder", id));
+      throw new CustomError(messages.notFoundWithId("Folder", id), 404);
     }
 
     res.status(200).json({
@@ -49,7 +50,7 @@ const get = async (
       error: false,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     next(error);
   }
 };

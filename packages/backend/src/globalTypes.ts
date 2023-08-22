@@ -1,6 +1,5 @@
 import { Response } from "express";
 import { z } from "zod";
-import messages from "./messages";
 
 export type ResponseType<T> = Response<
   {

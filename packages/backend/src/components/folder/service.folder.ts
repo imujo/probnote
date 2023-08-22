@@ -111,6 +111,7 @@ export const postFolder = async (
 ) => {
   const folder = await prisma.folder.create({
     data: {
+      id: 8,
       label: label,
       parentFolderId: parentFolderId,
     },
