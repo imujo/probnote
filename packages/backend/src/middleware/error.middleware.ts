@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request } from "express";
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
 import { ResponseType } from "../globalTypes";
@@ -7,7 +7,8 @@ import CustomError from "../utils/CustomError";
 export default function errorMiddleware(
   err: Error,
   req: Request,
-  res: ResponseType<string>
+  res: ResponseType<string>,
+  next: NextFunction
 ) {
   let message = "Ooops, something went wrong with the server";
   let status = 500;
@@ -26,5 +27,6 @@ export default function errorMiddleware(
     status = err.status;
     message = err.message;
   }
+
   res.status(status).json({ data: null, message, error: true });
 }
