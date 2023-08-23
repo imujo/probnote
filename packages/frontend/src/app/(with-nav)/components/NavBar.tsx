@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FC } from "react";
-import { Input } from "./ui/input";
-import { ButtonIcon } from "./ButtonIcon";
+import { Input } from "../../../components/ui/input";
+import { ButtonIcon } from "../../../components/ButtonIcon";
 import { LucideSearch } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 

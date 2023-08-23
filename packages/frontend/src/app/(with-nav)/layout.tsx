@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import NavBar from "../../components/NavBar";
+import NavBar from "./components/NavBar";
 import SideNav from "@/app/(with-nav)/components/SideNav";
 
 export const metadata: Metadata = {
