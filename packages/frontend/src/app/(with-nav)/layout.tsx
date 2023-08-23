@@ -14,7 +14,7 @@ export default function NavLayout({ children }: { children: React.ReactNode }) {
       <NavBar />
       <section className="flex h-[calc(100svh-64px)]">
         <SideNav />
-        <main className="h-full w-full p-8">{children}</main>
+        <main className="h-full w-full p-8 ">{children}</main>
       </section>
     </body>
   );
