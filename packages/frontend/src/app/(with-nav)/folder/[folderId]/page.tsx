@@ -8,6 +8,7 @@ interface FolderPageProps {
 
 function FolderPage({ params }: FolderPageProps) {
   const { folderId } = params;
+
   return <div>{folderId}</div>;
 }
 

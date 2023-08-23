@@ -1,8 +1,7 @@
 import React from "react";
-import "./globals.css";
+import "./global.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { UserButton } from "@clerk/nextjs";
 import Providers from "../utils/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang="en">
-        <UserButton />
         <body className={inter.className}>{children}</body>
       </html>
     </Providers>

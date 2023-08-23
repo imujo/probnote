@@ -1,6 +1,5 @@
 import { NextFunction, Request } from "express";
 import { ZodError } from "zod";
-import { Prisma } from "@prisma/client";
 import { ResponseType } from "../globalTypes";
 import CustomError from "../utils/CustomError";
 
