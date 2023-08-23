@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import NavBar from "../../components/NavBar";
+import SideNav from "@/app/(with-nav)/components/SideNav";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -11,6 +12,7 @@ export default function NavLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <NavBar />
+      <SideNav />
       <main>{children}</main>
     </>
   );

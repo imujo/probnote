@@ -9,7 +9,7 @@ interface NavBarProps {}
 
 const NavBar: FC<NavBarProps> = ({}) => {
   return (
-    <header className="fixed left-0 top-0 flex h-16  w-screen items-center justify-between border-b-[1px] bg-white px-8">
+    <header className="fixed left-0 top-0 z-20 flex h-16  w-screen items-center justify-between border-b-[1px] bg-white px-8">
       <Link href="/" className=" font-medium">
         Probnote
       </Link>
