@@ -1,11 +1,14 @@
 import { FC } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
+import { cn } from "@/lib/utils";
 
-interface BreadcrumbsProps {}
+interface BreadcrumbsProps {
+  className?: string;
+}
 
-const Breadcrumbs: FC<BreadcrumbsProps> = ({}) => {
+const Breadcrumbs: FC<BreadcrumbsProps> = ({ className }) => {
   return (
-    <ul className="flex text-xs font-light">
+    <ul className={cn("flex text-xs font-light", className)}>
       <BreadcrumbItem>Home</BreadcrumbItem>
       <BreadcrumbItem>Semestar 2</BreadcrumbItem>
       <BreadcrumbItem>Matan 2</BreadcrumbItem>
