@@ -7,7 +7,7 @@ interface SideNavProps {}
 
 const SideNav: FC<SideNavProps> = ({}) => {
   return (
-    <div className="fixed left-0 top-0 z-10 box-border flex h-screen w-48 flex-col gap-8 border-r-[1px] pt-24 [&_li]:px-6">
+    <div className="z-10 box-border flex h-[calc(100vh-64px)]  w-48 flex-col gap-8 border-r-[1px] pt-6 [&_li]:px-6">
       <ul>
         <SideNavLabel>Recent Notes</SideNavLabel>
         <SideNavItem>Nuclear Energy 1</SideNavItem>
