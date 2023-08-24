@@ -1,7 +1,8 @@
 import { z } from "zod";
 import RequestBuilder from "../../utils/requestResponseBuilders";
-import { ResponseType, SortSchema } from "../../globalTypes";
+import { SuccessResponse, SortSchema } from "../../globalTypes";
 import messages from "../../messages";
+import { Response } from "express";
 
 // GET FOLDER
 
@@ -20,7 +21,7 @@ const folderGetBuilder = new RequestBuilder(folderGetSchema);
 export type FolderGetRequest = ReturnType<
   typeof folderGetBuilder.getRequestType
 >;
-export type FolderGetResposne = ResponseType<
+export type FolderGet = SuccessResponse<
   {
     ChildFolders: {
       id: number;
@@ -38,6 +39,7 @@ export type FolderGetResposne = ResponseType<
     updatedAt: Date;
   }
 >;
+export type FolderGetResponse = Response<FolderGet>;
 
 // GET BASE FOLDER
 
@@ -49,7 +51,7 @@ const folderGetBaseBuilder = new RequestBuilder(folderGetBaseSchema);
 export type FolderGetBaseRequest = ReturnType<
   typeof folderGetBaseBuilder.getRequestType
 >;
-export type FolderGetBaseResposne = ResponseType<{
+export type FolderGetBase = SuccessResponse<{
   ChildFolders: {
     id: number;
     label: string;
@@ -59,6 +61,7 @@ export type FolderGetBaseResposne = ResponseType<{
     label: string;
   }[];
 }>;
+export type FolderGetBaseResponse = Response<FolderGetBase>;
 
 // GET FOLDER PARENTS
 
@@ -76,12 +79,13 @@ const folderGetParentsBuilder = new RequestBuilder(folderGetParentsSchema);
 export type FolderGetParentsRequest = ReturnType<
   typeof folderGetParentsBuilder.getRequestType
 >;
-export type FolderGetParentsResposne = ResponseType<
+export type FolderGetParents = SuccessResponse<
   {
     id: number;
     label: string;
   }[]
 >;
+export type FolderGetParentsResposne = Response<FolderGetParents>;
 
 // POST FOLDER
 
@@ -105,9 +109,10 @@ const folderPostBuilder = new RequestBuilder(folderPostSchema);
 export type FolderPostRequest = ReturnType<
   typeof folderPostBuilder.getRequestType
 >;
-export type FolderPostResposne = ResponseType<{
+export type FolderPost = SuccessResponse<{
   id: number;
 }>;
+export type FolderPostResposne = Response<FolderPost>;
 
 // PUT FOLDER
 
@@ -140,13 +145,13 @@ const folderPutBuilder = new RequestBuilder(folderPutSchema);
 export type FolderPutRequest = ReturnType<
   typeof folderPutBuilder.getRequestType
 >;
-export type FolderPutResposne = ResponseType<{
+export type FolderPut = SuccessResponse<{
   id: number;
 }>;
 
-// DELETE FOLDER
+export type FolderPutResposne = Response<FolderPut>;
 
-// GET FOLDER
+// DELETE FOLDER
 
 export const folderDeleteSchema = {
   params: z.object({
@@ -162,6 +167,8 @@ const folderDeleteBuilder = new RequestBuilder(folderDeleteSchema);
 export type FolderDeleteRequest = ReturnType<
   typeof folderDeleteBuilder.getRequestType
 >;
-export type FolderDeleteResposne = ResponseType<{
+export type FolderDelete = SuccessResponse<{
   id: number;
 }>;
+
+export type FolderDeleteResposne = Response<FolderDelete>;

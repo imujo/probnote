@@ -94,9 +94,7 @@ export const getParentFolders = async (folderId: number) => {
       label: currentFolder.label,
     };
 
-    if (i !== 0) {
-      parentFolders.push(currentFolderData);
-    }
+    parentFolders.push(currentFolderData);
 
     if (!currentFolder.ParentFolder) break;
     currentFolderId = currentFolder.ParentFolder.id;

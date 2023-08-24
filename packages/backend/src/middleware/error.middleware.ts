@@ -1,12 +1,12 @@
-import { NextFunction, Request } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { ResponseType } from "../globalTypes";
+import { ErrorResponse } from "../globalTypes";
 import CustomError from "../utils/CustomError";
 
 export default function errorMiddleware(
   err: Error,
   req: Request,
-  res: ResponseType<string>,
+  res: Response<ErrorResponse>,
   next: NextFunction
 ) {
   let message = "Ooops, something went wrong with the server";
@@ -27,5 +27,5 @@ export default function errorMiddleware(
     message = err.message;
   }
 
-  res.status(status).json({ data: null, message, error: true });
+  res.status(status).json({ message });
 }

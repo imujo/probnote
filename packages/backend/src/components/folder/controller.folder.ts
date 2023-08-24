@@ -11,15 +11,15 @@ import {
   FolderDeleteRequest,
   FolderDeleteResposne,
   FolderGetBaseRequest,
-  FolderGetBaseResposne,
   FolderGetParentsRequest,
   FolderGetParentsResposne,
   FolderGetRequest,
-  FolderGetResposne,
   FolderPostRequest,
   FolderPostResposne,
   FolderPutRequest,
   FolderPutResposne,
+  FolderGetResponse,
+  FolderGetBaseResponse,
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
@@ -27,7 +27,7 @@ import CustomError from "../../utils/CustomError";
 
 const get = async (
   req: FolderGetRequest,
-  res: FolderGetResposne,
+  res: FolderGetResponse,
   next: NextFunction
 ) => {
   try {
@@ -47,7 +47,6 @@ const get = async (
     res.status(200).json({
       message: messages.getSuccess("Folder"),
       data: folder,
-      error: false,
     });
   } catch (error) {
     //
@@ -57,7 +56,7 @@ const get = async (
 
 const getBase = async (
   req: FolderGetBaseRequest,
-  res: FolderGetBaseResposne,
+  res: FolderGetBaseResponse,
   next: NextFunction
 ) => {
   try {
@@ -72,7 +71,6 @@ const getBase = async (
     res.status(200).json({
       message: messages.getSuccess("Base folder"),
       data: children,
-      error: false,
     });
   } catch (error) {
     next(error);
@@ -93,7 +91,6 @@ const getParents = async (
     res.status(200).json({
       message: messages.getSuccess("Folder parents"),
       data: parentFolders,
-      error: false,
     });
   } catch (error) {
     next(error);
@@ -112,7 +109,6 @@ const post = async (
 
     res.status(200).json({
       message: messages.postSuccess("Folder"),
-      error: false,
       data: {
         id: folder.id,
       },
@@ -135,7 +131,6 @@ const put = async (
 
     res.status(200).json({
       message: messages.putSuccess("Folder"),
-      error: false,
       data: {
         id: folder.id,
       },
@@ -160,7 +155,6 @@ const del = async (
       data: {
         id: folder.id,
       },
-      error: false,
     });
   } catch (error) {
     next(error);
