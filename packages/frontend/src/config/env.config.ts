@@ -1,28 +1,27 @@
 import { z } from "zod";
+import { createEnv } from "@t3-oss/env-nextjs";
 
-const envVariables = z.object({
-  SERVER: z.string({ required_error: "Env variable SERVER is required" }),
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string({
-    required_error:
-      "Env variable NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is required",
-  }),
-  CLERK_SECRET_KEY: z.string({
-    required_error: "Env variable CLERK_SECRET_KEY is required",
-  }),
+export default createEnv({
+  server: {
+    CLERK_SECRET_KEY: z.string({
+      required_error: "Env variable CLERK_SECRET_KEY is required",
+    }),
+  },
+  client: {
+    NEXT_PUBLIC_SERVER: z
+      .string({
+        required_error: "Env variable NEXT_PUBLIC_SERVER is required",
+      })
+      .url(),
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string({
+      required_error:
+        "Env variable NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is required",
+    }),
+  },
+  runtimeEnv: {
+    NEXT_PUBLIC_SERVER: process.env.NEXT_PUBLIC_SERVER,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+  },
 });
-
-// eslint-disable-next-line import/no-mutable-exports
-let parsed: z.infer<typeof envVariables>;
-
-try {
-  parsed = envVariables.parse(process.env);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    const errorMessage = JSON.parse(error.message)[0].message;
-    throw new Error(errorMessage);
-  } else {
-    throw Error("Something went wrong parsing env variables");
-  }
-}
-
-export default parsed;

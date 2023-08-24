@@ -3,7 +3,8 @@ import { FC } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { cn } from "@/lib/utils";
 import useBreadcrumbs from "../../hooks/useBreadcrumbs";
-import BreadcrumbSkeleton from "./Breadcrumb.skeleton";
+import BreadcrumbSkeleton from "./BreadcrumbSkeleton";
+import BreadcumbError from "./BreadcumbError";
 
 interface BreadcrumbsProps {
   className?: string;
@@ -11,18 +12,23 @@ interface BreadcrumbsProps {
 }
 
 const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
-  const { isLoading, isError, data } = useBreadcrumbs(parseInt(folderId, 10));
+  const { isSuccess, isLoading, data, error, isError } = useBreadcrumbs(
+    parseInt(folderId, 10),
+  );
+  if (isLoading) {
+    return <BreadcrumbSkeleton />;
+  } else if (isError) {
+    return <BreadcumbError message={error.message} />;
+  } else if (!isSuccess) return;
 
-  if (isLoading) return <BreadcrumbSkeleton />;
-  if (!data) return <div>No breadcrumbs</div>;
-  if (isError) return <div>Error</div>;
+  const breadcrumbs = data.data;
 
   return (
     <ul className={cn("flex text-xs font-light", className)}>
       <BreadcrumbItem key="base" href={`/folder/base`}>
         Home
       </BreadcrumbItem>
-      {data.data.map((item, i) => {
+      {breadcrumbs.map((item, i) => {
         return (
           <BreadcrumbItem
             href={`/folder/${item.id}`}
