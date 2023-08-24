@@ -1,9 +1,9 @@
 import React from "react";
-import Breadcrumbs from "./components/Breadcrumbs";
 import { ButtonWithIcon } from "@/components/ButtonWithIcon";
 import { LucidePlus } from "lucide-react";
-import { DataTable } from "./components/DataTable";
-import { Folder, columns } from "./components/Columns";
+import { Folder, columns } from "./components/Folders/Columns";
+import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
+import { DataTable } from "./components/Folders/DataTable";
 
 interface FolderPageProps {
   params: {

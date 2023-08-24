@@ -2,28 +2,13 @@
 import { FC } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { cn } from "@/lib/utils";
-import { Response } from "express";
-import { FolderGetParentsResposne } from "@probnote/backend/src/components/folder/types.folder";
 import { useQuery } from "react-query";
+import { getBreadcrumbs } from "apiFunctions/breadcrumbs";
 
 interface BreadcrumbsProps {
   className?: string;
   folderId: string;
 }
-
-type BodyType<T> = T extends Response<infer U, any> ? U : never;
-type Data = BodyType<FolderGetParentsResposne>;
-
-const getBreadcrumbs = async (folderId: string) => {
-  const response = await fetch(
-    `http://localhost:3001/folder/parents/${folderId}`,
-    {
-      cache: "no-store",
-    },
-  );
-
-  return response.json() as Promise<Data>;
-};
 
 const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
   const { data, isLoading, isError } = useQuery({
