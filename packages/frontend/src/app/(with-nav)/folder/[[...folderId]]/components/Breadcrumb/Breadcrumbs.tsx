@@ -8,13 +8,12 @@ import BreadcumbError from "./BreadcumbError";
 
 interface BreadcrumbsProps {
   className?: string;
-  folderId: string;
+  folderId: number | "base";
 }
 
 const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
-  const { isSuccess, isLoading, data, error, isError } = useBreadcrumbs(
-    parseInt(folderId, 10),
-  );
+  const { isSuccess, isLoading, data, error, isError } =
+    useBreadcrumbs(folderId);
   if (isLoading) {
     return <BreadcrumbSkeleton />;
   } else if (isError) {

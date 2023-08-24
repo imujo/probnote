@@ -51,7 +51,10 @@ const Folders: Folder[] = [
 ];
 
 async function FolderPage({ params }: FolderPageProps) {
-  const { folderId } = params;
+  let tempFolderId = params.folderId[0];
+  if (isNaN(parseInt(tempFolderId, 10)) && tempFolderId !== "base") return;
+
+  const folderId = tempFolderId as number | "base";
 
   return (
     <div className="flex h-full flex-col">
