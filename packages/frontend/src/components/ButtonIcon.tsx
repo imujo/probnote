@@ -1,14 +1,14 @@
 import { LucideIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 
-type ButtonIconProps = {
+interface ButtonIconProps extends ButtonProps {
   Icon: LucideIcon;
-};
+}
 
-export function ButtonIcon({ Icon }: ButtonIconProps) {
+export function ButtonIcon({ Icon, ...rest }: ButtonIconProps) {
   return (
-    <Button variant="outline" size="icon">
+    <Button variant="outline" size="icon" {...rest}>
       <Icon className="h-4 w-4 text-zinc-500" />
     </Button>
   );
