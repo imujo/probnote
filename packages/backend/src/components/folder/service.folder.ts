@@ -71,7 +71,7 @@ export const getParentFolders = async (folderId: number) => {
     id: number;
     label: string;
   }[] = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 10; i++) {
     const currentFolder = await prisma.folder.findFirst({
       where: {
         id: currentFolderId,

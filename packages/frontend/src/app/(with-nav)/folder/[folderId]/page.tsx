@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Breadcrumbs from "./components/Breadcrumbs";
 import { ButtonWithIcon } from "@/components/ButtonWithIcon";
@@ -51,16 +50,16 @@ const Folders: Folder[] = [
   },
 ];
 
-function FolderPage({ params }: FolderPageProps) {
+async function FolderPage({ params }: FolderPageProps) {
   const { folderId } = params;
 
   return (
     <div className="flex h-full flex-col">
       <div className="mb-12 flex w-full items-start justify-between">
-        <Breadcrumbs className="pt-1" />
+        <Breadcrumbs className="pt-1" folderId={folderId} />
         <ButtonWithIcon Icon={LucidePlus}>New</ButtonWithIcon>
       </div>
-      <DataTable columns={columns} data={Folders} className="" />
+      <DataTable columns={columns} data={Folders} />
     </div>
   );
 }

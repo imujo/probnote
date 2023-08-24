@@ -85,6 +85,7 @@ const getParents = async (
   next: NextFunction
 ) => {
   try {
+    // throw new CustomError("Oh nooooo", 500);
     const id = parseInt(req.params.id, 10);
 
     const parentFolders = await getParentFolders(id);

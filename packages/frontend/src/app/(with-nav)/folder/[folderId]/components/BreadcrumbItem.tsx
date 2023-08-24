@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import Link from "next/link";
@@ -18,13 +19,14 @@ const breadcrumbItemVariants = cva("hover:text-zinc-800 hover:underline", {
 interface BreadcrumbItemProps {
   children: string;
   last?: boolean;
+  href: string;
 }
 
-const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ children, last }) => {
+const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ children, last, href }) => {
   return (
     <li>
       <Link
-        href={"/folder/1"}
+        href={href}
         className={cn(
           breadcrumbItemVariants({ selected: last ? "selected" : "default" }),
         )}

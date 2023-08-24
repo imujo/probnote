@@ -3,10 +3,12 @@ import express from "express";
 import env from "./config/envConfig";
 import folderRoutes from "./components/folder/routes.folder";
 import errorMiddleware from "./middleware/error.middleware";
+import cors from "cors";
 
 const app = express();
 const port = env.PORT;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {

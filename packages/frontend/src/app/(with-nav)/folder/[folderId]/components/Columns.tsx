@@ -27,7 +27,7 @@ export const columns: ColumnDef<Folder>[] = [
       const label = row.original.label;
 
       return (
-        <div className="flex items-center gap-2 text-zinc-900  ">
+        <div className="flex items-center gap-2 text-zinc-900">
           <Folder className="h-4 w-4" />
           <span>{label}</span>
         </div>
