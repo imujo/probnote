@@ -9,47 +9,52 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { Folder, MoreVertical } from "lucide-react";
+import { File, Folder, MoreVertical } from "lucide-react";
+import { FolderChild } from "./Folders.types";
 
-export type Folder = {
-  id: number;
-  label: string;
-  lastUpdated: string;
-  created: string;
-};
-
-export const columns: ColumnDef<Folder>[] = [
+export const columns: ColumnDef<FolderChild>[] = [
   {
     accessorKey: "label",
     header: "Label",
     size: 10000,
     cell: ({ row }) => {
       const label = row.original.label;
+      const type = row.original.type;
 
       return (
         <div className="flex items-center gap-2 text-zinc-900">
-          <Folder className="h-4 w-4" />
+          {type === "folder" ? (
+            <Folder className="h-4 w-4" />
+          ) : (
+            <File className="h-4 w-4" />
+          )}
           <span>{label}</span>
         </div>
       );
     },
   },
   {
-    accessorKey: "lastUpdated",
+    accessorKey: "updatedAt",
     header: "Last Updated",
     size: 1300,
     cell: ({ row }) => {
-      const value = row.original.lastUpdated;
-      return <span className=" font-light text-zinc-500">{value}</span>;
+      const value = row.original.updatedAt;
+      const date = new Date(value);
+      return (
+        <span className=" font-light text-zinc-500">{date.toISOString()}</span>
+      );
     },
   },
   {
-    accessorKey: "created",
+    accessorKey: "createdAt",
     header: "Created",
     size: 1300,
     cell: ({ row }) => {
-      const value = row.original.created;
-      return <span className=" font-light text-zinc-500">{value}</span>;
+      const value = row.original.createdAt;
+      const date = new Date(value);
+      return (
+        <span className=" font-light text-zinc-500">{date.toISOString()}</span>
+      );
     },
   },
   {
@@ -67,13 +72,7 @@ export const columns: ColumnDef<Folder>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(row.original.id + "")
-              }
-            >
-              Copy payment ID
-            </DropdownMenuItem>
+            <DropdownMenuItem>Copy payment ID</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>

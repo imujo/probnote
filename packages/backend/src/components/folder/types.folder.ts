@@ -26,10 +26,14 @@ export type FolderGet = SuccessResponse<
     ChildFolders: {
       id: number;
       label: string;
+      createdAt: Date;
+      updatedAt: Date;
     }[];
     Note: {
       id: number;
       label: string;
+      createdAt: Date;
+      updatedAt: Date;
     }[];
   } & {
     id: number;

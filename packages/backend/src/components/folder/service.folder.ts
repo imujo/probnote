@@ -13,6 +13,8 @@ export const getFolder = async (folderId: number, sort: Sort) => {
         select: {
           id: true,
           label: true,
+          createdAt: true,
+          updatedAt: true,
         },
         orderBy: {
           [sort.sortBy]: sort.sortOrder,
@@ -22,6 +24,8 @@ export const getFolder = async (folderId: number, sort: Sort) => {
         select: {
           id: true,
           label: true,
+          createdAt: true,
+          updatedAt: true,
         },
         orderBy: {
           [sort.sortBy]: sort.sortOrder,
@@ -95,7 +99,6 @@ export const getParentFolders = async (folderId: number) => {
     };
 
     parentFolders.push(currentFolderData);
-
     if (!currentFolder.ParentFolder) break;
     currentFolderId = currentFolder.ParentFolder.id;
   }
