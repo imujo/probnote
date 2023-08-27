@@ -44,7 +44,6 @@ export const getFolderChildren = async (folderId: number, sort: Sort) => {
       id: folderId,
     },
     select: {
-      parentFolderId: true,
       ChildFolders: {
         select: {
           id: true,
@@ -152,7 +151,6 @@ export const postFolder = async (
 ) => {
   const folder = await prisma.folder.create({
     data: {
-      id: 8,
       label,
       parentFolderId,
     },

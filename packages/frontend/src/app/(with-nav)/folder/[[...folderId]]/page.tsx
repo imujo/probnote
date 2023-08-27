@@ -1,11 +1,21 @@
 "use client";
 import React from "react";
 import { ButtonWithIcon } from "@/components/ButtonWithIcon";
-import { LucidePlus } from "lucide-react";
+import { LucidePlus, MoreVertical } from "lucide-react";
 import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
 import { DataTable } from "./components/Folders/DataTable";
 import { columns } from "./components/Folders/Columns";
 import useFolders from "./hooks/useFolders";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import NewButton from "./components/NewButton/NewButton";
+import { Button } from "@/components/ui/button";
 
 interface FolderPageProps {
   params: {
@@ -25,7 +35,7 @@ function FolderPage({ params }: FolderPageProps) {
     <div className="flex h-full flex-col">
       <div className="mb-12 flex w-full items-start justify-between">
         <Breadcrumbs className="pt-1" folderId={folderId} />
-        <ButtonWithIcon Icon={LucidePlus}>New</ButtonWithIcon>
+        <NewButton folderId={folderId} />
       </div>
       <DataTable
         data={data}
