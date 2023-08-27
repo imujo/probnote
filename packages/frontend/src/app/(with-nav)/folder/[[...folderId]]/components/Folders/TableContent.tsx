@@ -2,6 +2,8 @@
 import { TableCell, TableRow, TableRowCenter } from "@/components/ui/table";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { ColumnDef, Table, flexRender } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import { FolderChild } from "./Folders.types";
 
 interface TableContentProps<TData> {
   error: ErrorResponse | null;
@@ -16,6 +18,8 @@ function TableContent<TData>({
   table,
   columns,
 }: TableContentProps<TData>) {
+  const router = useRouter();
+
   if (isLoading) {
     return (
       <TableRowCenter colLength={columns.length}>Loading...</TableRowCenter>
@@ -28,7 +32,15 @@ function TableContent<TData>({
     );
   else if (table.getRowModel().rows?.length) {
     return table.getRowModel().rows.map((row) => (
-      <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+      <TableRow
+        onClick={() => {
+          const original = row.original as FolderChild;
+          router.push(`/folder/${original.id}`);
+        }}
+        className="cursor-pointer"
+        key={row.id}
+        data-state={row.getIsSelected() && "selected"}
+      >
         {row.getVisibleCells().map((cell, i) => (
           <TableCell
             key={cell.id}
