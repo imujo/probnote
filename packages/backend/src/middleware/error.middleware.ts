@@ -12,6 +12,8 @@ export default function errorMiddleware(
   let message = "Ooops, something went wrong with the server";
   let status = 500;
 
+  console.log(err);
+
   // if (err instanceof Prisma.PrismaClientKnownRequestError) {
   //   if (err.code[0] === "2") status = 400;
   //   message = err.message.split("\n").at(-1) || err.message;

@@ -3,7 +3,7 @@ import folderController from "./controller.folder";
 import validate from "../../middleware/validate";
 import {
   folderDeleteSchema,
-  folderGetBaseSchema,
+  folderGetBaseChildrenSchema,
   folderGetParentsSchema,
   folderGetSchema,
   folderPostSchema,
@@ -12,8 +12,16 @@ import {
 
 const router = Router();
 
-router.get("/base", validate(folderGetBaseSchema), folderController.getBase);
-router.get("/:id", validate(folderGetSchema), folderController.get);
+router.get(
+  "/base/children",
+  validate(folderGetBaseChildrenSchema),
+  folderController.getBaseChildren
+);
+router.get(
+  "/:id/children",
+  validate(folderGetSchema),
+  folderController.getChildren
+);
 router.get(
   "/parents/:id",
   validate(folderGetParentsSchema),

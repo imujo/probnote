@@ -4,6 +4,7 @@ import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { ColumnDef, Table, flexRender } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { FolderChild } from "./Folders.types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TableContentProps<TData> {
   error: ErrorResponse | null;

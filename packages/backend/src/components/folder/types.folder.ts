@@ -45,27 +45,52 @@ export type FolderGet = SuccessResponse<
 >;
 export type FolderGetResponse = Response<FolderGet>;
 
-// GET BASE FOLDER
+// GET FOLDER CHILDREN
 
-export const folderGetBaseSchema = {
+export const folderGetChildrenSchema = {
+  params: z.object({
+    id: z
+      .string({
+        required_error: messages.required("Id"),
+      })
+      .regex(/^\d+$/, messages.invalidType("Id", "number")),
+  }),
   query: SortSchema,
 };
 
-const folderGetBaseBuilder = new RequestBuilder(folderGetBaseSchema);
-export type FolderGetBaseRequest = ReturnType<
-  typeof folderGetBaseBuilder.getRequestType
+const folderGetChildrenBuilder = new RequestBuilder(folderGetChildrenSchema);
+export type FolderGetChildrenRequest = ReturnType<
+  typeof folderGetChildrenBuilder.getRequestType
 >;
-export type FolderGetBase = SuccessResponse<{
+
+// base
+
+export const folderGetBaseChildrenSchema = {
+  query: SortSchema,
+};
+
+const folderGetBaseChildrenBuilder = new RequestBuilder(
+  folderGetBaseChildrenSchema
+);
+export type FolderGetBaseChildrenRequest = ReturnType<
+  typeof folderGetBaseChildrenBuilder.getRequestType
+>;
+
+export type FolderGetChildren = SuccessResponse<{
   ChildFolders: {
     id: number;
     label: string;
+    createdAt: Date;
+    updatedAt: Date;
   }[];
   Note: {
     id: number;
     label: string;
+    createdAt: Date;
+    updatedAt: Date;
   }[];
 }>;
-export type FolderGetBaseResponse = Response<FolderGetBase>;
+export type FolderGetChildrenResponse = Response<FolderGetChildren>;
 
 // GET FOLDER PARENTS
 

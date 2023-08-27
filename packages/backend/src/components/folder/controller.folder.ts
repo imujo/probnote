@@ -1,16 +1,16 @@
 import { NextFunction } from "express";
 import {
   deleteFolder,
-  getBaseFolder,
+  getFolderChildren,
   getFolder,
   getParentFolders,
   postFolder,
   putFolder,
+  getBaseFolderChildren,
 } from "./service.folder";
 import {
   FolderDeleteRequest,
   FolderDeleteResposne,
-  FolderGetBaseRequest,
   FolderGetParentsRequest,
   FolderGetParentsResposne,
   FolderGetRequest,
@@ -19,7 +19,9 @@ import {
   FolderPutRequest,
   FolderPutResposne,
   FolderGetResponse,
-  FolderGetBaseResponse,
+  FolderGetBaseChildrenRequest,
+  FolderGetChildrenResponse,
+  FolderGetChildrenRequest,
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
@@ -54,9 +56,37 @@ const get = async (
   }
 };
 
-const getBase = async (
-  req: FolderGetBaseRequest,
-  res: FolderGetBaseResponse,
+const getChildren = async (
+  req: FolderGetChildrenRequest,
+  res: FolderGetChildrenResponse,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { sortBy, sortOrder } = req.query;
+    const sort: Sort = {
+      sortBy,
+      sortOrder,
+    };
+
+    const children = await getFolderChildren(id, sort);
+
+    if (!children) {
+      throw new CustomError(messages.notFoundWithId("Folder", id), 404);
+    }
+
+    res.status(200).json({
+      message: messages.getSuccess("Folder"),
+      data: children,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getBaseChildren = async (
+  req: FolderGetBaseChildrenRequest,
+  res: FolderGetChildrenResponse,
   next: NextFunction
 ) => {
   try {
@@ -66,10 +96,10 @@ const getBase = async (
       sortOrder,
     };
 
-    const children = await getBaseFolder(sort);
+    const children = await getBaseFolderChildren(sort);
 
     res.status(200).json({
-      message: messages.getSuccess("Base folder"),
+      message: messages.getSuccess("Base folder children"),
       data: children,
     });
   } catch (error) {
@@ -162,7 +192,8 @@ const del = async (
 
 export default {
   get,
-  getBase,
+  getChildren,
+  getBaseChildren,
   getParents,
   post,
   put,

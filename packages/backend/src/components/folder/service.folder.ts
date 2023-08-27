@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { Sort } from "../../globalTypes";
+import { string } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -37,7 +38,42 @@ export const getFolder = async (folderId: number, sort: Sort) => {
   return currentFolder;
 };
 
-export const getBaseFolder = async (sort: Sort) => {
+export const getFolderChildren = async (folderId: number, sort: Sort) => {
+  const children = await prisma.folder.findFirst({
+    where: {
+      id: folderId,
+    },
+    select: {
+      parentFolderId: true,
+      ChildFolders: {
+        select: {
+          id: true,
+          label: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: {
+          [sort.sortBy]: sort.sortOrder,
+        },
+      },
+      Note: {
+        select: {
+          id: true,
+          label: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: {
+          [sort.sortBy]: sort.sortOrder,
+        },
+      },
+    },
+  });
+
+  return children;
+};
+
+export const getBaseFolderChildren = async (sort: Sort) => {
   const baseFolders = await prisma.folder.findMany({
     where: {
       parentFolderId: null,
@@ -45,6 +81,8 @@ export const getBaseFolder = async (sort: Sort) => {
     select: {
       id: true,
       label: true,
+      createdAt: true,
+      updatedAt: true,
     },
     orderBy: {
       [sort.sortBy]: sort.sortOrder,
@@ -57,6 +95,8 @@ export const getBaseFolder = async (sort: Sort) => {
     select: {
       id: true,
       label: true,
+      createdAt: true,
+      updatedAt: true,
     },
     orderBy: {
       [sort.sortBy]: sort.sortOrder,

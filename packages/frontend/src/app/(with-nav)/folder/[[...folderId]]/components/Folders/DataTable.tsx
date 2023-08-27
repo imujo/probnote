@@ -21,7 +21,6 @@ import TableContent from "./TableContent";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
-  folderId: number | "base";
   isLoading: boolean;
   error: ErrorResponse | null;
   className?: string;
@@ -31,12 +30,9 @@ export function DataTable<TData, TValue>({
   data,
   columns,
   className,
-  folderId,
   isLoading,
   error,
 }: DataTableProps<TData, TValue>) {
-  if (folderId == "base") return;
-
   const table = useReactTable({
     data: data || [],
     columns,
