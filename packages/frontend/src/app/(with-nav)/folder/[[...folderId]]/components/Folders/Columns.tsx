@@ -11,6 +11,7 @@ import { File, Folder, MoreVertical, Trash } from "lucide-react";
 import { FolderChild } from "./Folders.types";
 import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
 import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
+import moment from "moment";
 
 export const columns: ColumnDef<FolderChild>[] = [
   {
@@ -36,24 +37,28 @@ export const columns: ColumnDef<FolderChild>[] = [
   {
     accessorKey: "updatedAt",
     header: "Last Updated",
-    size: 1300,
+    size: 1500,
     cell: ({ row }) => {
       const value = row.original.updatedAt;
       const date = new Date(value);
       return (
-        <span className=" font-light text-zinc-500">{date.toISOString()}</span>
+        <span className=" font-light text-zinc-500">
+          {moment(date).fromNow()}
+        </span>
       );
     },
   },
   {
     accessorKey: "createdAt",
     header: "Created",
-    size: 1300,
+    size: 1500,
     cell: ({ row }) => {
       const value = row.original.createdAt;
       const date = new Date(value);
       return (
-        <span className=" font-light text-zinc-500">{date.toISOString()}</span>
+        <span className=" font-light text-zinc-500">
+          {moment(date).fromNow()}
+        </span>
       );
     },
   },
