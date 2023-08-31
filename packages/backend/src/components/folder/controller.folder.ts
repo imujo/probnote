@@ -137,8 +137,6 @@ const post = async (
   try {
     const { label, parentFolderId } = req.body;
 
-    console.log(label, parentFolderId);
-
     const folder = await postFolder(label, parentFolderId);
 
     res.status(200).json({

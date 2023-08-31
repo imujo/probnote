@@ -1,19 +1,22 @@
 "use client";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { cn } from "@/lib/utils";
 import useBreadcrumbs from "../../hooks/useBreadcrumbs";
 import BreadcrumbSkeleton from "./BreadcrumbSkeleton";
 import BreadcumbError from "./BreadcumbError";
+import { FolderId } from "../../../../../../../types.global";
+import { useFolderContext } from "../../context/FolderContext";
 
 interface BreadcrumbsProps {
   className?: string;
-  folderId: number | "base";
+  folderId: FolderId;
 }
 
 const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
   const { isSuccess, isLoading, data, error, isError } =
     useBreadcrumbs(folderId);
+
   if (isLoading) {
     return <BreadcrumbSkeleton />;
   } else if (isError) {

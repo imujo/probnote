@@ -34,7 +34,7 @@ function TableContent<TData>({
   else if (table.getRowModel().rows?.length) {
     return table.getRowModel().rows.map((row) => (
       <TableRow
-        onClick={() => {
+        onClick={(e) => {
           const original = row.original as FolderChild;
           router.push(`/folder/${original.id}`);
         }}

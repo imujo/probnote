@@ -2,8 +2,9 @@ import { FolderGetParents } from "@probnote/backend/src/components/folder/types.
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { getBreadcrumbs } from "apiFunctions/breadcrumbs.api";
 import { useQuery } from "react-query";
+import { FolderId } from "../../../../../../types.global";
 
-export default function useBreadcrumbs(folderId: number | "base") {
+export default function useBreadcrumbs(folderId: FolderId) {
   return useQuery<FolderGetParents, ErrorResponse>({
     queryKey: ["breadcrumbs", folderId],
     queryFn: () => {

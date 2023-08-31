@@ -9,9 +9,10 @@ import { Folder, LucidePlus } from "lucide-react";
 import { FC } from "react";
 import NewButtonItem from "./NewButtonItem";
 import useNewFolder from "../../hooks/useNewFolder";
+import { FolderId } from "../../../../../../../types.global";
 
 interface NewButtonProps {
-  folderId: number | "base";
+  folderId: FolderId;
 }
 
 const NewButton: FC<NewButtonProps> = ({ folderId }) => {

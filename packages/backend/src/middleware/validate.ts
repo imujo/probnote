@@ -9,7 +9,6 @@ const validate =
   }) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.body);
       const bodyPromise = schema.body?.parseAsync(req.body);
       const paramsPromise = schema.params?.parseAsync(req.params);
       const queryPromise = schema.query?.parseAsync(req.query);

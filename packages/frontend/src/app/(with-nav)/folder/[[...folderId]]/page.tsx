@@ -1,21 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { ButtonWithIcon } from "@/components/ButtonWithIcon";
 import { LucidePlus, MoreVertical } from "lucide-react";
 import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
 import { DataTable } from "./components/Folders/DataTable";
 import { columns } from "./components/Folders/Columns";
 import useFolders from "./hooks/useFolders";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import NewButton from "./components/NewButton/NewButton";
-import { Button } from "@/components/ui/button";
+import { FolderId } from "../../../../../types.global";
 
 interface FolderPageProps {
   params: {
@@ -27,7 +19,7 @@ function FolderPage({ params }: FolderPageProps) {
   let tempFolderId = params.folderId[0];
   if (isNaN(parseInt(tempFolderId, 10)) && tempFolderId !== "base") return;
 
-  const folderId = tempFolderId as number | "base";
+  const folderId = tempFolderId as FolderId;
 
   const { data, error, isLoading } = useFolders(folderId);
 

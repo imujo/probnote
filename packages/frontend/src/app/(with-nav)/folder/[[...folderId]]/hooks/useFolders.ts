@@ -6,10 +6,14 @@ import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { useQuery } from "react-query";
 import { FolderChild } from "../components/Folders/Folders.types";
 import { getFolder } from "apiFunctions/folders.api";
+import { FolderId } from "../../../../../../types.global";
+import queryKeys from "utils/queryKeys";
 
-export default function useFolders(folderId: number | "base") {
+export default function useFolders(folderId: FolderId) {
+  const queryKey = queryKeys.getFolders(folderId);
+
   return useQuery<FolderGetChildren, ErrorResponse, FolderChild[]>({
-    queryKey: ["folder", folderId],
+    queryKey: queryKey,
     queryFn: () => getFolder(folderId),
     select: (data) => {
       const notes: FolderChild[] = data

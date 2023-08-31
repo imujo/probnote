@@ -1,5 +1,4 @@
 import { ButtonLoading } from "@/components/ButtonLoading";
-import { ButtonWithIcon } from "@/components/ButtonWithIcon";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,15 +21,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { Loader2, LucideIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import {
-  Field,
   FieldValues,
   Path,
   SubmitHandler,
   UseFormReturn,
 } from "react-hook-form";
-import { AnyZodObject } from "zod";
 
 interface NewButtonItemProps<T extends FieldValues> {
   form: UseFormReturn<T, any, undefined>;
@@ -70,9 +67,7 @@ function NewButtonItem<T extends FieldValues>({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{dialogTitle} </DialogTitle>
-          <DialogDescription className="flex flex-col gap-4">
-            {dialogDescription}
-          </DialogDescription>
+          <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form className="my-3" onSubmit={(e) => e.preventDefault()}>

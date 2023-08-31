@@ -1,11 +1,13 @@
 import env from "@/config/env.config";
 import {
+  FolderDelete,
   FolderGetChildren,
   FolderPost,
 } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
+import { FolderId } from "../../types.global";
 
-export const getFolder = async (folderId: number | "base") => {
+export const getFolder = async (folderId: FolderId) => {
   const response = await fetch(
     `${env.NEXT_PUBLIC_SERVER}/folder/${folderId}/children?sortBy=label&sortOrder=asc`,
     {
@@ -42,6 +44,26 @@ export const postFolder = async (
   });
 
   const data = (await response.json()) as FolderPost;
+
+  if (!response.ok) {
+    const error = data as ErrorResponse;
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const deleteFolder = async (folderId: number) => {
+  const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/folder/${folderId}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+  });
+
+  const data = (await response.json()) as FolderDelete;
 
   if (!response.ok) {
     const error = data as ErrorResponse;

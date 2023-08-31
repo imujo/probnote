@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { z } from "zod";
+import { FolderId } from "../../../../../../types.global";
 
 const validaiton = z.object({
   label: z.string().min(4).max(40),
@@ -14,7 +15,7 @@ const validaiton = z.object({
 
 type Validation = z.infer<typeof validaiton>;
 
-export default function useNewFolder(folderId: number | "base") {
+export default function useNewFolder(folderId: FolderId) {
   const router = useRouter();
   const form = useForm<Validation>({
     resolver: zodResolver(validaiton),
