@@ -118,11 +118,11 @@ const getParents = async (
   try {
     const id = parseInt(req.params.id, 10);
 
-    const parentFolders = await getParentFolders(id);
+    const data = await getParentFolders(id);
 
     res.status(200).json({
       message: messages.getSuccess("Folder parents"),
-      data: parentFolders,
+      data: data,
     });
   } catch (error) {
     next(error);

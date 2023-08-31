@@ -109,12 +109,14 @@ export const getBaseFolderChildren = async (sort: Sort) => {
 };
 
 export const getParentFolders = async (folderId: number) => {
+  const MAX = 3;
   let currentFolderId = folderId;
   const parentFolders: {
     id: number;
     label: string;
   }[] = [];
-  for (let i = 0; i < 10; i++) {
+  let moreParentsExist = false;
+  for (let i = 0; i < MAX; i++) {
     const currentFolder = await prisma.folder.findFirst({
       where: {
         id: currentFolderId,
@@ -140,9 +142,14 @@ export const getParentFolders = async (folderId: number) => {
     parentFolders.push(currentFolderData);
     if (!currentFolder.ParentFolder) break;
     currentFolderId = currentFolder.ParentFolder.id;
+
+    if (i === MAX - 1) moreParentsExist = true;
   }
 
-  return parentFolders;
+  return {
+    parentFolders: parentFolders,
+    more: moreParentsExist,
+  };
 };
 
 export const postFolder = async (

@@ -108,12 +108,13 @@ const folderGetParentsBuilder = new RequestBuilder(folderGetParentsSchema);
 export type FolderGetParentsRequest = ReturnType<
   typeof folderGetParentsBuilder.getRequestType
 >;
-export type FolderGetParents = SuccessResponse<
-  {
+export type FolderGetParents = SuccessResponse<{
+  parentFolders: {
     id: number;
     label: string;
-  }[]
->;
+  }[];
+  more: boolean;
+}>;
 export type FolderGetParentsResposne = Response<FolderGetParents>;
 
 // POST FOLDER

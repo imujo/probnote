@@ -23,19 +23,30 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
     return <BreadcumbError message={error.message} />;
   } else if (!isSuccess) return;
 
-  const breadcrumbs = data.data;
+  const breadcrumbs = data.data.parentFolders;
+  const more = data.data.more;
+  console.log(more);
 
   return (
     <ul className={cn("flex text-xs font-light", className)}>
-      <BreadcrumbItem key="base" href={`/folder/base`}>
+      <BreadcrumbItem
+        key="base"
+        href={`/folder/base`}
+        last={breadcrumbs.length === 0}
+      >
         Home
       </BreadcrumbItem>
+      {!!more && (
+        <BreadcrumbItem key="more" last={false}>
+          ...
+        </BreadcrumbItem>
+      )}
       {breadcrumbs.map((item, i) => {
         return (
           <BreadcrumbItem
             href={`/folder/${item.id}`}
             key={item.id}
-            last={i === data.data.length - 1}
+            last={i === breadcrumbs.length - 1}
           >
             {item.label}
           </BreadcrumbItem>
