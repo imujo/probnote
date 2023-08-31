@@ -55,11 +55,11 @@ export default function usePinFolder(
         );
       } else {
         newPinnedFolders = [
-          ...prevPinnedFolders.data,
           {
             id: folderId,
             label,
           },
+          ...prevPinnedFolders.data,
         ];
       }
 

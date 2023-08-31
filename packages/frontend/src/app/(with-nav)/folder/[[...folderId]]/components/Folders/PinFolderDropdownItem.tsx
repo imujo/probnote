@@ -47,11 +47,9 @@ const PinFolderDropdownItem: FC<PinFolderDropdownItemProps> = ({
   }
 
   const { mutate: pinFolder } = usePinFolder(folderId, currentFolderId);
-  console.log(label, pinned);
 
   return (
     <DropdownMenuItem
-      onSelect={(e) => e.preventDefault()}
       onClick={(e) => {
         e.stopPropagation();
         pinFolder({

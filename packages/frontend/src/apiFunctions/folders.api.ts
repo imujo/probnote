@@ -30,7 +30,7 @@ export const getFolder = async (folderId: FolderId) => {
 
 export const getPinnedFolders = async () => {
   const response = await fetch(
-    `${env.NEXT_PUBLIC_SERVER}/folder/pinned?sortBy=label&sortOrder=asc`,
+    `${env.NEXT_PUBLIC_SERVER}/folder/pinned?sortBy=datePinned&sortOrder=desc`,
     {
       cache: "no-store",
     },

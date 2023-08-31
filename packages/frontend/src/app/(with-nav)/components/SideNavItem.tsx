@@ -34,9 +34,19 @@ const SideNavItem: FC<SideNavItemProps> = ({
   children,
   folderId,
 }) => {
+  const currentFolderId = useFolderIdFromParams();
   if (folderId === "base") throw new Error("Cannot pin base folder");
 
-  const { mutate: pinFolder, isLoading, error } = usePinFolder(folderId);
+  if (!currentFolderId) {
+    // TODO 404
+    return;
+  }
+
+  const {
+    mutate: pinFolder,
+    isLoading,
+    error,
+  } = usePinFolder(folderId, currentFolderId);
 
   return (
     <li className="group relative flex">

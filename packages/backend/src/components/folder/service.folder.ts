@@ -188,12 +188,15 @@ export const postFolder = async (
 };
 
 export const putFolder = async (id: number, body: FolderPutBody) => {
-  console.log(body);
+  const pinStatusChanged = body.pinned !== undefined;
   const folder = await prisma.folder.update({
     where: {
       id,
     },
-    data: body,
+    data: {
+      ...body,
+      datePinned: pinStatusChanged ? new Date() : undefined,
+    },
   });
 
   return folder;
