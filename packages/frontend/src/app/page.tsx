@@ -1,5 +1,8 @@
-import React from "react";
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return <main>Home</main>;
+  const router = useRouter();
+
+  router.replace("/folder/base");
 }

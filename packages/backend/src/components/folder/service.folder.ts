@@ -38,6 +38,23 @@ export const getFolder = async (folderId: number, sort: Sort) => {
   return currentFolder;
 };
 
+export const getPinnedFolders = async (sort: Sort) => {
+  const currentFolder = await prisma.folder.findMany({
+    where: {
+      pinned: true,
+    },
+    select: {
+      id: true,
+      label: true,
+    },
+    orderBy: {
+      [sort.sortBy]: sort.sortOrder,
+    },
+  });
+
+  return currentFolder;
+};
+
 export const getFolderChildren = async (folderId: number, sort: Sort) => {
   const children = await prisma.folder.findFirst({
     where: {
@@ -188,6 +205,19 @@ export const deleteFolder = async (id: number) => {
   const folder = await prisma.folder.delete({
     where: {
       id,
+    },
+  });
+
+  return folder;
+};
+
+export const putPinnedFolder = async (folderId: number, pinned: boolean) => {
+  const folder = await prisma.folder.update({
+    where: {
+      id: folderId,
+    },
+    data: {
+      pinned,
     },
   });
 

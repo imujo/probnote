@@ -202,3 +202,47 @@ export type FolderDelete = SuccessResponse<{
 }>;
 
 export type FolderDeleteResposne = Response<FolderDelete>;
+
+// GET PINNED FOLDER
+
+export const folderGetPinnedSchema = {
+  query: SortSchema,
+};
+
+const folderGetPinnedBuilder = new RequestBuilder(folderGetPinnedSchema);
+export type FolderGetPinnedRequest = ReturnType<
+  typeof folderGetPinnedBuilder.getRequestType
+>;
+export type FolderGetPinned = SuccessResponse<
+  {
+    id: number;
+    label: string;
+  }[]
+>;
+export type FolderGetPinnedResponse = Response<FolderGetPinned>;
+
+// PUT PINNED FOLDER
+
+export const folderPutPinnedSchema = {
+  params: z.object({
+    id: z
+      .string({
+        required_error: messages.required("Id"),
+      })
+      .regex(/^\d+$/, messages.invalidType("Id", "number")),
+  }),
+  body: z.object({
+    pinned: z
+      .string({ required_error: messages.required("Pinned") })
+      .regex(/^(true|false)$/, messages.invalidType("Pinned", "boolean")),
+  }),
+};
+
+const folderPutPinnedBuilder = new RequestBuilder(folderPutPinnedSchema);
+export type FolderPutPinnedRequest = ReturnType<
+  typeof folderPutPinnedBuilder.getRequestType
+>;
+export type FolderPutPinned = SuccessResponse<{
+  id: number;
+}>;
+export type FolderPutPinnedResponse = Response<FolderPutPinned>;

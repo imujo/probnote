@@ -13,6 +13,7 @@ model Folder {
   parentFolderId Int?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  pinned         Boolean  @default(false)
 
   ParentFolder Folder?  @relation("folderStructure", fields: [parentFolderId], references: [id], onDelete: Cascade)
   ChildFolders Folder[] @relation("folderStructure")

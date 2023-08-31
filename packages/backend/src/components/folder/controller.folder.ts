@@ -7,6 +7,8 @@ import {
   postFolder,
   putFolder,
   getBaseFolderChildren,
+  getPinnedFolders,
+  putPinnedFolder,
 } from "./service.folder";
 import {
   FolderDeleteRequest,
@@ -22,6 +24,9 @@ import {
   FolderGetBaseChildrenRequest,
   FolderGetChildrenResponse,
   FolderGetChildrenRequest,
+  FolderGetPinnedRequest,
+  FolderGetPinnedResponse,
+  FolderPutPinnedRequest,
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
@@ -51,7 +56,33 @@ const get = async (
       data: folder,
     });
   } catch (error) {
-    //
+    next(error);
+  }
+};
+
+const getPinned = async (
+  req: FolderGetPinnedRequest,
+  res: FolderGetPinnedResponse,
+  next: NextFunction
+) => {
+  try {
+    const { sortBy, sortOrder } = req.query;
+    const sort: Sort = {
+      sortBy,
+      sortOrder,
+    };
+
+    const folder = await getPinnedFolders(sort);
+
+    if (!folder) {
+      throw new CustomError(messages.notFound("Pinned folders"), 404);
+    }
+
+    res.status(200).json({
+      message: messages.getSuccess("Pinned folders"),
+      data: folder,
+    });
+  } catch (error) {
     next(error);
   }
 };
@@ -172,6 +203,28 @@ const put = async (
   }
 };
 
+const putPinned = async (
+  req: FolderPutPinnedRequest,
+  res: FolderPutResposne,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const pinned = req.body.pinned === "true" ? true : false; // zod validated it already
+
+    const folder = await putPinnedFolder(id, pinned);
+
+    res.status(200).json({
+      message: messages.putSuccess("Folder"),
+      data: {
+        id: folder.id,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const del = async (
   req: FolderDeleteRequest,
   res: FolderDeleteResposne,
@@ -201,4 +254,6 @@ export default {
   post,
   put,
   del,
+  getPinned,
+  putPinned,
 };
