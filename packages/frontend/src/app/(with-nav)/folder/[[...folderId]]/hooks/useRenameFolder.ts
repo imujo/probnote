@@ -1,4 +1,3 @@
-import { renameFolder } from "apiFunctions/folders.api";
 import { useMutation, useQueryClient } from "react-query";
 import queryKeys from "utils/queryKeys";
 import { FolderId } from "../../../../../../types.global";
@@ -10,6 +9,7 @@ import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { putFolder } from "apiFunctions/folders.api";
 
 const validaiton = z.object({
   newLabel: z.string().min(4).max(40),
@@ -40,7 +40,8 @@ export default function useRenameFolder(
     string,
     { previousFolders: FolderGetChildren | undefined }
   >({
-    mutationFn: async (newLabel: string) => renameFolder(newLabel, folderId),
+    mutationFn: async (newLabel: string) =>
+      putFolder(folderId, { label: newLabel, pinned: true }),
     onMutate: async (newLabel) => {
       await queryClient.cancelQueries({ queryKey: getFoldersKey });
 

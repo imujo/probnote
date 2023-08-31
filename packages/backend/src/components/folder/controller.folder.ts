@@ -8,7 +8,6 @@ import {
   putFolder,
   getBaseFolderChildren,
   getPinnedFolders,
-  putPinnedFolder,
 } from "./service.folder";
 import {
   FolderDeleteRequest,
@@ -26,7 +25,6 @@ import {
   FolderGetChildrenRequest,
   FolderGetPinnedRequest,
   FolderGetPinnedResponse,
-  FolderPutPinnedRequest,
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
@@ -104,6 +102,8 @@ const getChildren = async (
     };
 
     const children = await getFolderChildren(id, sort);
+
+    console.log(children?.ChildFolders);
 
     if (!children) {
       throw new CustomError(messages.notFoundWithId("Folder", id), 404);
@@ -188,31 +188,9 @@ const put = async (
 ) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { label, parentFolderId } = req.body;
+    const body = req.body;
 
-    const folder = await putFolder(id, label, parentFolderId);
-
-    res.status(200).json({
-      message: messages.putSuccess("Folder"),
-      data: {
-        id: folder.id,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const putPinned = async (
-  req: FolderPutPinnedRequest,
-  res: FolderPutResposne,
-  next: NextFunction
-) => {
-  try {
-    const id = parseInt(req.params.id, 10);
-    const pinned = req.body.pinned === "true" ? true : false; // zod validated it already
-
-    const folder = await putPinnedFolder(id, pinned);
+    const folder = await putFolder(id, body);
 
     res.status(200).json({
       message: messages.putSuccess("Folder"),
@@ -255,5 +233,4 @@ export default {
   put,
   del,
   getPinned,
-  putPinned,
 };

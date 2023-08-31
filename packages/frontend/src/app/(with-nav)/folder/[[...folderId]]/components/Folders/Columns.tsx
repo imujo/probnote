@@ -12,6 +12,7 @@ import { FolderChild } from "./Folders.types";
 import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
 import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
 import moment from "moment";
+import PinFolderDropdownItem from "./PinFolderDropdownItem";
 
 export const columns: ColumnDef<FolderChild>[] = [
   {
@@ -67,8 +68,7 @@ export const columns: ColumnDef<FolderChild>[] = [
     header: "",
     size: 100,
     cell: ({ row }) => {
-      const folderId = row.original.id;
-      const label = row.original.label;
+      const { id, label, type } = row.original;
 
       return (
         <DropdownMenu>
@@ -79,11 +79,15 @@ export const columns: ColumnDef<FolderChild>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent onClick={(e) => e.stopPropagation()} align="end">
-            <RenameFolderDropdownItem
-              folderId={folderId}
-              currentLabel={label}
-            />
-            <DeleteFolderDropdownItem folderId={folderId} />
+            {type === "folder" ? (
+              <PinFolderDropdownItem
+                folderId={id}
+                pinned={row.original.pinned}
+                label={label}
+              />
+            ) : null}
+            <RenameFolderDropdownItem folderId={id} currentLabel={label} />
+            <DeleteFolderDropdownItem folderId={id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

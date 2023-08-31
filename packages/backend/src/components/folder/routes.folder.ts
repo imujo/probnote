@@ -8,7 +8,6 @@ import {
   folderGetPinnedSchema,
   folderGetSchema,
   folderPostSchema,
-  folderPutPinnedSchema,
   folderPutSchema,
 } from "./types.folder";
 
@@ -19,11 +18,10 @@ router.get(
   validate(folderGetBaseChildrenSchema),
   folderController.getBaseChildren
 );
-router.get("/pin", validate(folderGetPinnedSchema), folderController.getPinned);
-router.put(
-  "/pin/:id",
-  validate(folderPutPinnedSchema),
-  folderController.putPinned
+router.get(
+  "/pinned",
+  validate(folderGetPinnedSchema),
+  folderController.getPinned
 );
 router.get(
   "/:id/children",

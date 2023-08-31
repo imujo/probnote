@@ -26,6 +26,7 @@ export type FolderGet = SuccessResponse<
     ChildFolders: {
       id: number;
       label: string;
+      pinned: boolean;
       createdAt: Date;
       updatedAt: Date;
     }[];
@@ -80,6 +81,7 @@ export type FolderGetChildren = SuccessResponse<{
   ChildFolders: {
     id: number;
     label: string;
+    pinned: boolean;
     createdAt: Date;
     updatedAt: Date;
   }[];
@@ -168,9 +170,17 @@ export const folderPutSchema = {
         ),
       })
       .optional(),
+    pinned: z
+      .boolean({
+        required_error: messages.required("Pinned"),
+        invalid_type_error: messages.invalidType("Pinned", "boolean"),
+      })
+      // .regex(/^(true|false)$/, messages.invalidType("Pinned", "boolean"))
+      .optional(),
   }),
 };
 
+export type FolderPutBody = z.infer<(typeof folderPutSchema)["body"]>;
 const folderPutBuilder = new RequestBuilder(folderPutSchema);
 export type FolderPutRequest = ReturnType<
   typeof folderPutBuilder.getRequestType
@@ -220,29 +230,3 @@ export type FolderGetPinned = SuccessResponse<
   }[]
 >;
 export type FolderGetPinnedResponse = Response<FolderGetPinned>;
-
-// PUT PINNED FOLDER
-
-export const folderPutPinnedSchema = {
-  params: z.object({
-    id: z
-      .string({
-        required_error: messages.required("Id"),
-      })
-      .regex(/^\d+$/, messages.invalidType("Id", "number")),
-  }),
-  body: z.object({
-    pinned: z
-      .string({ required_error: messages.required("Pinned") })
-      .regex(/^(true|false)$/, messages.invalidType("Pinned", "boolean")),
-  }),
-};
-
-const folderPutPinnedBuilder = new RequestBuilder(folderPutPinnedSchema);
-export type FolderPutPinnedRequest = ReturnType<
-  typeof folderPutPinnedBuilder.getRequestType
->;
-export type FolderPutPinned = SuccessResponse<{
-  id: number;
-}>;
-export type FolderPutPinnedResponse = Response<FolderPutPinned>;
