@@ -10,6 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { File, Folder, MoreVertical, Trash } from "lucide-react";
 import { FolderChild } from "./Folders.types";
 import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
+import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
 
 export const columns: ColumnDef<FolderChild>[] = [
   {
@@ -61,6 +62,9 @@ export const columns: ColumnDef<FolderChild>[] = [
     header: "",
     size: 100,
     cell: ({ row }) => {
+      const folderId = row.original.id;
+      const label = row.original.label;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -70,8 +74,11 @@ export const columns: ColumnDef<FolderChild>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent onClick={(e) => e.stopPropagation()} align="end">
-            <DropdownMenuItem>Rename</DropdownMenuItem>
-            <DeleteFolderDropdownItem folderId={row.original.id} />
+            <RenameFolderDropdownItem
+              folderId={folderId}
+              currentLabel={label}
+            />
+            <DeleteFolderDropdownItem folderId={folderId} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

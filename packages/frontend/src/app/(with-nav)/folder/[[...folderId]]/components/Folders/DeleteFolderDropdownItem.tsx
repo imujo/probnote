@@ -1,7 +1,7 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Trash } from "lucide-react";
-import { FC, useCallback, useContext, useMemo, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import useDeleteFolder from "../../hooks/useDeleteFolder";
 import { FolderId } from "../../../../../../../types.global";
 import {
@@ -15,8 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ButtonLoading } from "@/components/ButtonLoading";
-import { useFolderContext } from "../../context/FolderContext";
 import { useParams } from "next/navigation";
+import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 
 interface DeleteFolderDropdownItemProps {
   folderId: FolderId;
@@ -25,11 +25,12 @@ interface DeleteFolderDropdownItemProps {
 const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
   folderId,
 }) => {
-  const params = useParams();
-  let tempFolderId = params.folderId[0];
-  if (isNaN(parseInt(tempFolderId, 10)) && tempFolderId !== "base") return;
+  const currentFolderId = useFolderIdFromParams();
 
-  const currentFolderId = tempFolderId as FolderId;
+  if (!currentFolderId) {
+    // TODO navigate to 404
+    return;
+  }
 
   const [open, setOpen] = useState(false);
   if (folderId === "base") return <div>Cannot delete base folder</div>;
@@ -71,7 +72,9 @@ const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
           )}
 
           <DialogClose asChild>
-            <Button disabled={isLoading}>Cancel</Button>
+            <Button variant={"secondary"} disabled={isLoading}>
+              Cancel
+            </Button>
           </DialogClose>
           {isLoading ? (
             <ButtonLoading />

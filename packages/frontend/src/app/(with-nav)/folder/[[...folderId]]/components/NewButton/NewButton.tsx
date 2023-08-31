@@ -16,15 +16,8 @@ interface NewButtonProps {
 }
 
 const NewButton: FC<NewButtonProps> = ({ folderId }) => {
-  const {
-    form,
-    onSubmit,
-    isLoading,
-    dialogOpen,
-    error,
-    setDialogOpen,
-    closeDialog,
-  } = useNewFolder(folderId);
+  const { form, onSubmit, isLoading, dialogOpen, error, setDialogOpen } =
+    useNewFolder(folderId);
 
   return (
     <DropdownMenu>
@@ -39,7 +32,7 @@ const NewButton: FC<NewButtonProps> = ({ folderId }) => {
           MenuItemIcon={Folder}
           dialogTitle="Create a Folder"
           dialogDescription="Add a label and create a new folder"
-          onSubmit={(data) => onSubmit(data, closeDialog)}
+          onSubmit={(data) => onSubmit(data)}
           isLoading={isLoading}
           open={dialogOpen}
           onOpenChange={setDialogOpen}

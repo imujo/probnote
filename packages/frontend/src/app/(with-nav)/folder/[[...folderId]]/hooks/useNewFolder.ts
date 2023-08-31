@@ -35,7 +35,7 @@ export default function useNewFolder(folderId: FolderId) {
     },
   });
 
-  const onSubmit = async (data: Validation, closeDialog: () => void) => {
+  const onSubmit = async (data: Validation) => {
     await mutate(data.label);
   };
 

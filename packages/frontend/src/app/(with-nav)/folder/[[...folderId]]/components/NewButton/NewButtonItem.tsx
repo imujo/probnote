@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
+import { Close, DialogClose } from "@radix-ui/react-dialog";
 import { LucideIcon } from "lucide-react";
 import {
   FieldValues,
@@ -91,6 +92,11 @@ function NewButtonItem<T extends FieldValues>({
         </Form>
         <DialogFooter className="items-center">
           {error ? <p className=" mr-8 text-red-600">{error.message}</p> : null}
+          <DialogClose asChild>
+            <Button disabled={isLoading} variant={"secondary"}>
+              Close
+            </Button>
+          </DialogClose>
 
           {isLoading ? (
             <ButtonLoading />

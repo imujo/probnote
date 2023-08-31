@@ -3,6 +3,7 @@ import {
   FolderDelete,
   FolderGetChildren,
   FolderPost,
+  FolderPut,
 } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { FolderId } from "../../types.global";
@@ -64,6 +65,29 @@ export const deleteFolder = async (folderId: number) => {
   });
 
   const data = (await response.json()) as FolderDelete;
+
+  if (!response.ok) {
+    const error = data as ErrorResponse;
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const renameFolder = async (newLabel: string, folderId: number) => {
+  const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/folder/${folderId}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      label: newLabel,
+    }),
+    cache: "no-store",
+  });
+
+  const data = (await response.json()) as FolderPut;
 
   if (!response.ok) {
     const error = data as ErrorResponse;
