@@ -115,7 +115,7 @@ export default function usePinFolder(
     },
     onSuccess: (data) => {
       toast({
-        title: "Successfully pinned folder",
+        title: "Successfully pinned/unpinned folder",
         description: data.message,
       });
     },

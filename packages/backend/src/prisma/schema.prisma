@@ -7,45 +7,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Folder {
-  id             Int      @id @default(autoincrement())
-  label          String   @db.VarChar(30)
-  parentFolderId Int?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  pinned         Boolean  @default(false)
-  datePinned     DateTime @default(now())
+model FolderItem {
+  id        Int      @id @default(autoincrement())
+  label     String   @db.VarChar(30)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Folder    Folder?  @relation("item")
+  Note      Note?
 
-  ParentFolder Folder?  @relation("folderStructure", fields: [parentFolderId], references: [id], onDelete: Cascade)
-  ChildFolders Folder[] @relation("folderStructure")
-  Note         Note[]
+  parentFolderId Int?
+  ParentFolder   Folder? @relation(name: "parent", fields: [parentFolderId], references: [id])
+}
+
+model Folder {
+  id           Int        @id @default(autoincrement())
+  pinned       Boolean    @default(false)
+  datePinned   DateTime   @default(now())
+  folderItemId Int        @unique
+  FolderItem   FolderItem @relation(name: "item", fields: [folderItemId], references: [id])
+
+  Children FolderItem[] @relation("parent")
 }
 
 model Note {
-  id        Int      @id @default(autoincrement())
-  label     String   @db.VarChar(30)
-  noteType  NoteType
-  folderId  Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Folder       Folder?        @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  ExerciseNote ExerciseNote[]
+  id           Int           @id @default(autoincrement())
+  folderItemId Int           @unique
+  FolderItem   FolderItem    @relation(fields: [folderItemId], references: [id])
+  ExerciseNote ExerciseNote?
+  RegularNote  RegularNote?
 }
 
 model ExerciseNote {
-  id        Int      @id @default(autoincrement())
-  noteId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id      Int       @id @default(autoincrement())
+  noteId  Int       @unique
   Note    Note      @relation(fields: [noteId], references: [id])
   Problem Problem[]
 }
 
-enum NoteType {
-  REGULAR
-  EXERCISE
+model RegularNote {
+  id     Int   @id @default(autoincrement())
+  noteId Int   @unique
+  Note   Note  @relation(fields: [noteId], references: [id])
+  canvas Json?
 }
 
 model Problem {
