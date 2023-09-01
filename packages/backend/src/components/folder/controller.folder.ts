@@ -91,9 +91,6 @@ const getChildren = async (
   next: NextFunction
 ) => {
   try {
-    if (req.params.id === "base") {
-    }
-
     const id = parseInt(req.params.id, 10);
     const { sortBy, sortOrder } = req.query;
     const sort: Sort = {

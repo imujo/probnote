@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { putFolder } from "apiFunctions/folders.api";
+import { useToast } from "@/components/ui/use-toast";
 
 const validaiton = z.object({
   newLabel: z.string().min(4).max(40),
@@ -31,8 +32,8 @@ export default function useRenameFolder(
   };
 
   const queryClient = useQueryClient();
-
   const getFoldersKey = queryKeys.getFolders(currentFolderId);
+  const { toast } = useToast();
 
   const { mutate, error, isLoading } = useMutation<
     FolderPut,
@@ -71,10 +72,15 @@ export default function useRenameFolder(
       return { previousFolders };
     },
     onError: (err, _, context) => {
-      // TODO toast error
       if (context?.previousFolders) {
         queryClient.setQueryData(getFoldersKey, context.previousFolders);
       }
+
+      toast({
+        title: "An error occured tying to rename folders",
+        description: err.message,
+        variant: "destructive",
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(getFoldersKey);

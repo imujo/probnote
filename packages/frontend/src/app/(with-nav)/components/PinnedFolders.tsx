@@ -3,6 +3,7 @@ import useGetPinned from "../hooks/useGetPinned";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import SideNavItem from "./SideNavItem";
 import SideNavItemSkeleton from "./SideNavItemSkeleton";
+import ErrorPill from "@/components/ErrorPill";
 
 interface PinnedFoldersProps {}
 
@@ -24,8 +25,7 @@ const PinnedFolders: FC<PinnedFoldersProps> = ({}) => {
         <SideNavItemSkeleton />
       </>
     );
-  else if (isError)
-    return <span className="text-sm text-red-500">{error.message}</span>;
+  else if (isError) return <ErrorPill></ErrorPill>;
   else if (!isSuccess) return;
 
   return data.data.map((folder) => {

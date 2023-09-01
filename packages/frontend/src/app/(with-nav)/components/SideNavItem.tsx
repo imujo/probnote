@@ -67,7 +67,6 @@ const SideNavItem: FC<SideNavItemProps> = ({
         disabled={isLoading}
         className="absolute right-2 top-1/2 h-4 w-4 translate-y-[-50%] p-[2px] opacity-0 transition-opacity   duration-200 group-hover:opacity-100 "
       />
-      {error ? <span className="text-red-500">{error.message}</span> : null}
     </li>
   );
 };

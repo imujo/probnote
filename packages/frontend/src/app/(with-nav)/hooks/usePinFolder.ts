@@ -9,6 +9,7 @@ import { putFolder } from "apiFunctions/folders.api";
 import { useMutation, useQueryClient } from "react-query";
 import queryKeys from "utils/queryKeys";
 import { FolderId } from "../../../../types.global";
+import { useToast } from "@/components/ui/use-toast";
 
 export type PinFolderProps = {
   pinStatus: boolean;
@@ -22,6 +23,7 @@ export default function usePinFolder(
   const queryClient = useQueryClient();
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const getFoldersQueryKey = queryKeys.getFolders(currentFolderId);
+  const { toast } = useToast();
 
   return useMutation<
     FolderPut,
@@ -104,6 +106,12 @@ export default function usePinFolder(
           context.prevFolders,
         );
       }
+
+      toast({
+        title: "An error occured tying to pin/unpin folder",
+        description: err.message,
+        variant: "destructive",
+      });
     },
   });
 }

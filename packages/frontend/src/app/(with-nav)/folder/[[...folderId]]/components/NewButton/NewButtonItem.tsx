@@ -1,4 +1,5 @@
 import { ButtonLoading } from "@/components/ButtonLoading";
+import ErrorPill from "@/components/ErrorPill";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -91,7 +92,7 @@ function NewButtonItem<T extends FieldValues>({
           </form>
         </Form>
         <DialogFooter className="items-center">
-          {error ? <p className=" mr-8 text-red-600">{error.message}</p> : null}
+          {error ? <ErrorPill>{error.message}</ErrorPill> : null}
           <DialogClose asChild>
             <Button disabled={isLoading} variant={"secondary"}>
               Close

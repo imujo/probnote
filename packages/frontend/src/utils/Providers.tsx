@@ -1,4 +1,5 @@
 "use client";
+import { Toaster } from "@/components/ui/toaster";
 import React, { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 

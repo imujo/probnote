@@ -8,9 +8,11 @@ import { FolderChild } from "../components/Folders/Folders.types";
 import { getFolder } from "apiFunctions/folders.api";
 import { FolderId } from "../../../../../../types.global";
 import queryKeys from "utils/queryKeys";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function useFolders(folderId: FolderId) {
   const queryKey = queryKeys.getFolders(folderId);
+  const { toast } = useToast();
 
   return useQuery<FolderGetChildren, ErrorResponse, FolderChild[]>({
     queryKey: queryKey,
@@ -29,6 +31,13 @@ export default function useFolders(folderId: FolderId) {
         : [];
 
       return [...folders, ...notes];
+    },
+    onError: (err) => {
+      toast({
+        title: "An error occured tying to fetch folders",
+        description: err.message,
+        variant: "destructive",
+      });
     },
   });
 }

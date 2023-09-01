@@ -7,6 +7,7 @@ import {
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import queryKeys from "utils/queryKeys";
 import { FolderId } from "../../../../../../types.global";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function useDeleteFolder(
   folderId: number,
@@ -16,6 +17,7 @@ export default function useDeleteFolder(
   const queryClient = useQueryClient();
   const mutationKey = ["folder", "delete", folderId];
   const getFoldersKey = queryKeys.getFolders(currentFolderId);
+  const { toast } = useToast();
 
   const mutation = useMutation<
     FolderDelete,
@@ -45,7 +47,6 @@ export default function useDeleteFolder(
         ...previousFolders,
         data: { ChildFolders: newChildFolders, Note: newNotes },
       });
-
       return { previousFolders };
     },
     onError: (err, _, context) => {
@@ -53,6 +54,12 @@ export default function useDeleteFolder(
       if (context?.previousFolders) {
         queryClient.setQueryData(getFoldersKey, context.previousFolders);
       }
+
+      toast({
+        title: "An error occured tying to delete folders",
+        description: err.message,
+        variant: "destructive",
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(getFoldersKey);

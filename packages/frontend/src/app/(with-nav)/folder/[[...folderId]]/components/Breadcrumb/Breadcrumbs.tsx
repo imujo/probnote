@@ -4,8 +4,8 @@ import BreadcrumbItem from "./BreadcrumbItem";
 import { cn } from "@/lib/utils";
 import useBreadcrumbs from "../../hooks/useBreadcrumbs";
 import BreadcrumbSkeleton from "./BreadcrumbSkeleton";
-import BreadcumbError from "./BreadcumbError";
 import { FolderId } from "../../../../../../../types.global";
+import ErrorPill from "@/components/ErrorPill";
 
 interface BreadcrumbsProps {
   className?: string;
@@ -19,7 +19,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
   if (isLoading) {
     return <BreadcrumbSkeleton />;
   } else if (isError) {
-    return <BreadcumbError message={error.message} />;
+    return <ErrorPill className="w-40">{error.message}</ErrorPill>;
   } else if (!isSuccess) return;
 
   const breadcrumbs = data.data.parentFolders;

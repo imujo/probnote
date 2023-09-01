@@ -17,6 +17,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { ButtonLoading } from "@/components/ButtonLoading";
 import { useParams } from "next/navigation";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import ErrorPill from "@/components/ErrorPill";
 
 interface DeleteFolderDropdownItemProps {
   folderId: FolderId;
@@ -67,9 +68,7 @@ const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
           Are you sure you want to delete this folder
         </DialogDescription>
         <DialogFooter className="items-center">
-          {!!error && (
-            <p className=" mr-8 text-sm text-red-500">{error.message}</p>
-          )}
+          {!!error && <ErrorPill>{error.message}</ErrorPill>}
 
           <DialogClose asChild>
             <Button variant={"secondary"} disabled={isLoading}>

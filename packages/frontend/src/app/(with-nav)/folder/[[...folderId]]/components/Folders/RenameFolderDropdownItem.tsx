@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import ErrorPill from "@/components/ErrorPill";
 
 interface RenameFolderDropdownItemProps {
   folderId: FolderId;
@@ -101,9 +102,7 @@ const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
           </form>
         </Form>
         <DialogFooter className="items-center">
-          {!!error && (
-            <p className=" mr-8 text-sm text-red-500">{error.message}</p>
-          )}
+          {!!error && <ErrorPill>{error.message}</ErrorPill>}
 
           <DialogClose asChild>
             <Button disabled={isLoading} variant={"secondary"}>

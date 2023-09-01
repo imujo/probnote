@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import type { Metadata } from "next";
 import NavBar from "./components/NavBar";
 import SideNav from "@/app/(with-nav)/components/SideNav";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -10,12 +11,12 @@ export const metadata: Metadata = {
 
 export default function NavLayout({ children }: { children: React.ReactNode }) {
   return (
-    <body className="h-screen">
+    <>
       <NavBar />
       <section className="flex h-[calc(100svh-64px)]">
         <SideNav />
         <main className="h-full w-full p-8 ">{children}</main>
       </section>
-    </body>
+    </>
   );
 }

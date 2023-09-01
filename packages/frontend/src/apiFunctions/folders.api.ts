@@ -16,12 +16,12 @@ export const getFolder = async (folderId: FolderId) => {
     {
       cache: "no-store",
     },
-  );
+  ).catch((err) => console.log(err.message));
+  const data = (await response?.json()) as FolderGetChildren;
 
-  const data = (await response.json()) as FolderGetChildren;
-
-  if (!response.ok) {
+  if (!response?.ok) {
     const error = data as ErrorResponse;
+
     throw new Error(error.message);
   }
 

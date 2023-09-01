@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { z } from "zod";
 import { FolderId } from "../../../../../../types.global";
+import { useToast } from "@/components/ui/use-toast";
 
 const validaiton = z.object({
   label: z.string().min(4).max(40),
@@ -20,6 +21,7 @@ export default function useNewFolder(folderId: FolderId) {
   const form = useForm<Validation>({
     resolver: zodResolver(validaiton),
   });
+  const { toast } = useToast();
 
   const { mutate, error, isLoading } = useMutation<
     FolderPost,
@@ -32,6 +34,13 @@ export default function useNewFolder(folderId: FolderId) {
     onSuccess: (data) => {
       closeDialog();
       router.push(`/folder/${data.data.id}`);
+    },
+    onError: (err) => {
+      toast({
+        title: "An error occured tying to create a folder",
+        description: err.message,
+        variant: "destructive",
+      });
     },
   });
 
