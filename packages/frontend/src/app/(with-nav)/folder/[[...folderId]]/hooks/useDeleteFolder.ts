@@ -1,8 +1,14 @@
 import { deleteFolder } from "apiFunctions/folders.api";
-import { useMutation, useQueryClient } from "react-query";
+import {
+  QueryClient,
+  QueryKey,
+  useMutation,
+  useQueryClient,
+} from "react-query";
 import {
   FolderDelete,
   FolderGetChildren,
+  FolderGetPinned,
 } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import queryKeys from "utils/queryKeys";
@@ -16,43 +22,44 @@ export default function useDeleteFolder(
 ) {
   const queryClient = useQueryClient();
   const mutationKey = ["folder", "delete", folderId];
-  const getFoldersKey = queryKeys.getFolders(currentFolderId);
+  const getFoldersQueryKey = queryKeys.getFolders(currentFolderId);
+  const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const { toast } = useToast();
 
   const mutation = useMutation<
     FolderDelete,
     ErrorResponse,
     void,
-    { previousFolders: FolderGetChildren | undefined }
+    {
+      previousFolders: FolderGetChildren | undefined;
+      previousPinnedFolders: FolderGetPinned | undefined;
+    }
   >({
     mutationKey: mutationKey,
     mutationFn: () => deleteFolder(folderId),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: getFoldersKey });
-
-      const previousFolders =
-        queryClient.getQueryData<FolderGetChildren>(getFoldersKey);
-
-      if (!previousFolders) return { previousFolders: undefined };
-
-      const newChildFolders = previousFolders.data.ChildFolders.filter(
-        (folder) => folder.id !== folderId,
+      const previousFolders = await optimisticallyUpdateFolders(
+        queryClient,
+        getFoldersQueryKey,
+        folderId,
       );
-
-      const newNotes = previousFolders.data.Note.filter(
-        (note) => note.id !== folderId,
+      const previousPinnedFolders = await optimisticallyUpdatePinnedFolders(
+        queryClient,
+        getFoldersQueryKey,
+        folderId,
       );
-
-      queryClient.setQueryData<FolderGetChildren>(getFoldersKey, {
-        ...previousFolders,
-        data: { ChildFolders: newChildFolders, Note: newNotes },
-      });
-      return { previousFolders };
+      return { previousFolders, previousPinnedFolders };
     },
     onError: (err, _, context) => {
       // TODO toast error
       if (context?.previousFolders) {
-        queryClient.setQueryData(getFoldersKey, context.previousFolders);
+        queryClient.setQueryData(getFoldersQueryKey, context.previousFolders);
+      }
+      if (context?.previousPinnedFolders) {
+        queryClient.setQueryData(
+          getPinnedFoldersQueryKey,
+          context.previousPinnedFolders,
+        );
       }
 
       toast({
@@ -62,7 +69,8 @@ export default function useDeleteFolder(
       });
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(getFoldersKey);
+      queryClient.invalidateQueries(getFoldersQueryKey);
+      queryClient.invalidateQueries(getPinnedFoldersQueryKey);
       closeDialog();
       toast({
         title: "Successfully deleted folder",
@@ -73,3 +81,56 @@ export default function useDeleteFolder(
 
   return { ...mutation, mutationKey };
 }
+
+const optimisticallyUpdateFolders = async (
+  queryClient: QueryClient,
+  getFoldersQueryKey: QueryKey,
+  folderId: number,
+) => {
+  await queryClient.cancelQueries({ queryKey: getFoldersQueryKey });
+
+  const previousFolders =
+    queryClient.getQueryData<FolderGetChildren>(getFoldersQueryKey);
+
+  if (!previousFolders) return;
+
+  const newChildFolders = previousFolders.data.ChildFolders.filter(
+    (folder) => folder.id !== folderId,
+  );
+
+  const newNotes = previousFolders.data.Note.filter(
+    (note) => note.id !== folderId,
+  );
+
+  queryClient.setQueryData<FolderGetChildren>(getFoldersQueryKey, {
+    ...previousFolders,
+    data: { ChildFolders: newChildFolders, Note: newNotes },
+  });
+
+  return previousFolders;
+};
+
+const optimisticallyUpdatePinnedFolders = async (
+  queryClient: QueryClient,
+  getPinnedFoldersQueryKey: QueryKey,
+  folderId: number,
+) => {
+  await queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
+
+  const previousPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
+    getPinnedFoldersQueryKey,
+  );
+
+  if (!previousPinnedFolders) return;
+
+  const newPinnedFoldersData = previousPinnedFolders.data.filter(
+    (folder) => folder.id !== folderId,
+  );
+
+  queryClient.setQueryData<FolderGetPinned>(getPinnedFoldersQueryKey, {
+    ...previousPinnedFolders,
+    data: newPinnedFoldersData,
+  });
+
+  return previousPinnedFolders;
+};

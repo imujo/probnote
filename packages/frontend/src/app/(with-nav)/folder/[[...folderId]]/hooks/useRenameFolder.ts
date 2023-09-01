@@ -1,8 +1,14 @@
-import { useMutation, useQueryClient } from "react-query";
+import {
+  QueryClient,
+  QueryKey,
+  useMutation,
+  useQueryClient,
+} from "react-query";
 import queryKeys from "utils/queryKeys";
 import { FolderId } from "../../../../../../types.global";
 import {
   FolderGetChildren,
+  FolderGetPinned,
   FolderPut,
 } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
@@ -13,7 +19,7 @@ import { putFolder } from "apiFunctions/folders.api";
 import { useToast } from "@/components/ui/use-toast";
 
 const validaiton = z.object({
-  newLabel: z.string().min(4).max(40),
+  newLabel: z.string().min(4).max(30),
 });
 
 type Validation = z.infer<typeof validaiton>;
@@ -33,47 +39,46 @@ export default function useRenameFolder(
 
   const queryClient = useQueryClient();
   const getFoldersKey = queryKeys.getFolders(currentFolderId);
+  const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const { toast } = useToast();
 
   const { mutate, error, isLoading } = useMutation<
     FolderPut,
     ErrorResponse,
     string,
-    { previousFolders: FolderGetChildren | undefined }
+    {
+      previousFolders: FolderGetChildren | undefined;
+      previousPinnedFolders: FolderGetPinned | undefined;
+    }
   >({
     mutationFn: async (newLabel: string) =>
       putFolder(folderId, { label: newLabel, pinned: true }),
     onMutate: async (newLabel) => {
-      await queryClient.cancelQueries({ queryKey: getFoldersKey });
-
-      const previousFolders =
-        queryClient.getQueryData<FolderGetChildren>(getFoldersKey);
-
-      if (!previousFolders) return { previousFolders: undefined };
-
-      const newChildFolders = previousFolders.data.ChildFolders.map(
-        (folder) => {
-          if (folder.id !== folderId) return folder;
-
-          return { ...folder, label: newLabel };
-        },
+      const previousFolders = await optimisticallyUpdateFolders(
+        queryClient,
+        getFoldersKey,
+        folderId,
+        newLabel,
       );
 
-      const newNotes = previousFolders.data.Note.map((note) => {
-        if (note.id !== folderId) return note;
-        return { ...note, label: newLabel };
-      });
+      const previousPinnedFolders = await optimisticallyUpdatePinnedFolders(
+        queryClient,
+        getPinnedFoldersQueryKey,
+        folderId,
+        newLabel,
+      );
 
-      queryClient.setQueryData<FolderGetChildren>(getFoldersKey, {
-        ...previousFolders,
-        data: { ChildFolders: newChildFolders, Note: newNotes },
-      });
-
-      return { previousFolders };
+      return { previousFolders, previousPinnedFolders };
     },
     onError: (err, _, context) => {
       if (context?.previousFolders) {
         queryClient.setQueryData(getFoldersKey, context.previousFolders);
+      }
+      if (context?.previousPinnedFolders) {
+        queryClient.setQueryData(
+          getPinnedFoldersQueryKey,
+          context.previousPinnedFolders,
+        );
       }
 
       toast({
@@ -84,6 +89,7 @@ export default function useRenameFolder(
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(getFoldersKey);
+      queryClient.invalidateQueries(getPinnedFoldersQueryKey);
       closeDialog();
       toast({
         title: "Successfully renamed folder",
@@ -94,3 +100,66 @@ export default function useRenameFolder(
 
   return { mutate, error, isLoading, form, onSubmit };
 }
+
+const optimisticallyUpdateFolders = async (
+  queryClient: QueryClient,
+  getFoldersQueryKey: QueryKey,
+  folderId: number,
+  newLabel: string,
+) => {
+  await queryClient.cancelQueries({ queryKey: getFoldersQueryKey });
+
+  const previousFolders =
+    queryClient.getQueryData<FolderGetChildren>(getFoldersQueryKey);
+
+  if (!previousFolders) return;
+
+  const newChildFolders = previousFolders.data.ChildFolders.map((folder) => {
+    if (folder.id !== folderId) return folder;
+
+    return { ...folder, label: newLabel };
+  });
+
+  const newNotes = previousFolders.data.Note.map((note) => {
+    if (note.id !== folderId) return note;
+    return { ...note, label: newLabel };
+  });
+
+  queryClient.setQueryData<FolderGetChildren>(getFoldersQueryKey, {
+    ...previousFolders,
+    data: { ChildFolders: newChildFolders, Note: newNotes },
+  });
+
+  return previousFolders;
+};
+
+const optimisticallyUpdatePinnedFolders = async (
+  queryClient: QueryClient,
+  getPinnedFoldersQueryKey: QueryKey,
+  folderId: number,
+  newLabel: string,
+) => {
+  await queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
+
+  const previousPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
+    getPinnedFoldersQueryKey,
+  );
+
+  if (!previousPinnedFolders) return;
+
+  const newPinnedFoldersData = previousPinnedFolders.data.map((folder) => {
+    if (folder.id !== folderId) return folder;
+
+    return {
+      ...folder,
+      label: newLabel,
+    };
+  });
+
+  queryClient.setQueryData<FolderGetPinned>(getPinnedFoldersQueryKey, {
+    ...previousPinnedFolders,
+    data: newPinnedFoldersData,
+  });
+
+  return previousPinnedFolders;
+};

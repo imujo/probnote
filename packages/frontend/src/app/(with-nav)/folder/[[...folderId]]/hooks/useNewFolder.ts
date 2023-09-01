@@ -11,7 +11,7 @@ import { FolderId } from "../../../../../../types.global";
 import { useToast } from "@/components/ui/use-toast";
 
 const validaiton = z.object({
-  label: z.string().min(4).max(40),
+  label: z.string().min(4).max(30),
 });
 
 type Validation = z.infer<typeof validaiton>;
