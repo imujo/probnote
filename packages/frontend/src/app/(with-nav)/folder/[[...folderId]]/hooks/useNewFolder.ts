@@ -34,6 +34,10 @@ export default function useNewFolder(folderId: FolderId) {
     onSuccess: (data) => {
       closeDialog();
       router.push(`/folder/${data.data.id}`);
+      toast({
+        title: "Successfully created folder",
+        description: data.message,
+      });
     },
     onError: (err) => {
       toast({

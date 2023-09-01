@@ -113,5 +113,11 @@ export default function usePinFolder(
         variant: "destructive",
       });
     },
+    onSuccess: (data) => {
+      toast({
+        title: "Successfully pinned folder",
+        description: data.message,
+      });
+    },
   });
 }

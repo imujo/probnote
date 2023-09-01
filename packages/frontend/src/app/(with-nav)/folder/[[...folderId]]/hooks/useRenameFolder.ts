@@ -82,9 +82,13 @@ export default function useRenameFolder(
         variant: "destructive",
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(getFoldersKey);
       closeDialog();
+      toast({
+        title: "Successfully renamed folder",
+        description: data.message,
+      });
     },
   });
 

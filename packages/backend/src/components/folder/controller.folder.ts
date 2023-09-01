@@ -190,7 +190,7 @@ const put = async (
     const folder = await putFolder(id, body);
 
     res.status(200).json({
-      message: messages.putSuccess("Folder"),
+      message: messages.putSuccess("Folder", id),
       data: {
         id: folder.id,
       },
@@ -211,7 +211,7 @@ const del = async (
     const folder = await deleteFolder(id);
 
     res.status(200).json({
-      message: messages.deleteSuccess("Folder"),
+      message: messages.deleteSuccess("Folder", id),
       data: {
         id: folder.id,
       },

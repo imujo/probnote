@@ -61,9 +61,13 @@ export default function useDeleteFolder(
         variant: "destructive",
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(getFoldersKey);
       closeDialog();
+      toast({
+        title: "Successfully deleted folder",
+        description: data.message,
+      });
     },
   });
 

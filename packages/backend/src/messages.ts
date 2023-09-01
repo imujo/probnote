@@ -9,9 +9,10 @@ const invalidType = (entityName: string, typeName: string) =>
   `Invalid Type: ${entityName} is not a valid ${typeName}`;
 const postSuccess = (entityName: string) =>
   `${entityName} created successfully`;
-const putSuccess = (entityName: string) => `${entityName} updated successfully`;
-const deleteSuccess = (entityName: string) =>
-  `${entityName} deleted successfully`;
+const putSuccess = (entityName: string, id: number) =>
+  `${entityName} with id ${id} updated successfully`;
+const deleteSuccess = (entityName: string, id: number) =>
+  `${entityName} with ${id} deleted successfully`;
 const invalidSortOrder = `Invalid sort order: Please use 'asc' for ascending or 'desc' for descending order.`;
 
 export default {
