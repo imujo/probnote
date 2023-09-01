@@ -4,9 +4,10 @@ import { cva } from "class-variance-authority";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
-import usePinFolder from "../hooks/usePinFolder";
+
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
-import { FolderId } from "../../../../types.global";
+import { FolderId } from "../../../../../types.global";
+import usePinFolder from "../../hooks/usePinFolder";
 
 const sideNavItemVariants = cva(
   "cursor-pointer overflow-hidden px-6 flex-1 flex items-center hover:bg-zinc-50 text-ellipsis whitespace-nowrap py-2 text-sm hover:text-zinc-900 ",
@@ -42,11 +43,10 @@ const SideNavItem: FC<SideNavItemProps> = ({
     return;
   }
 
-  const {
-    mutate: pinFolder,
-    isLoading,
-    error,
-  } = usePinFolder(folderId, currentFolderId);
+  const { mutate: pinFolder, isLoading } = usePinFolder(
+    folderId,
+    currentFolderId,
+  );
 
   return (
     <li className="group relative flex">

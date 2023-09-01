@@ -1,10 +1,7 @@
 "use client";
 import { FC } from "react";
-import SideNavItem from "./SideNavItem";
 import SideNavLabel from "./SideNavLabel";
 import { LucidePin } from "lucide-react";
-import useGetPinned from "../hooks/useGetPinned";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import PinnedFolders from "./PinnedFolders";
 
 interface SideNavProps {}

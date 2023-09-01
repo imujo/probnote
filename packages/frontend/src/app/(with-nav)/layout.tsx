@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 import type { Metadata } from "next";
-import NavBar from "./components/NavBar";
-import SideNav from "@/app/(with-nav)/components/SideNav";
-import { Toaster } from "@/components/ui/toaster";
+import NavBar from "./components/NavBar/NavBar";
+import SideNav from "./components/SideNav/SideNav";
 
 export const metadata: Metadata = {
   title: "Create Next App",

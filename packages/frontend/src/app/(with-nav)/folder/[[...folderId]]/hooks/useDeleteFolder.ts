@@ -45,7 +45,7 @@ export default function useDeleteFolder(
       );
       const previousPinnedFolders = await optimisticallyUpdatePinnedFolders(
         queryClient,
-        getFoldersQueryKey,
+        getPinnedFoldersQueryKey,
         folderId,
       );
       return { previousFolders, previousPinnedFolders };

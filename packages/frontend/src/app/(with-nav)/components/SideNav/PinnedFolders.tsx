@@ -1,5 +1,5 @@
 import { FC } from "react";
-import useGetPinned from "../hooks/useGetPinned";
+import useGetPinned from "../../hooks/useGetPinned";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import SideNavItem from "./SideNavItem";
 import SideNavItemSkeleton from "./SideNavItemSkeleton";

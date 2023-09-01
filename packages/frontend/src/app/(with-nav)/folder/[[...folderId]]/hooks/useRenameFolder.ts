@@ -52,7 +52,7 @@ export default function useRenameFolder(
     }
   >({
     mutationFn: async (newLabel: string) =>
-      putFolder(folderId, { label: newLabel, pinned: true }),
+      putFolder(folderId, { label: newLabel, pinned: false }),
     onMutate: async (newLabel) => {
       const previousFolders = await optimisticallyUpdateFolders(
         queryClient,
