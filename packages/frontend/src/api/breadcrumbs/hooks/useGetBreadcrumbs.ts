@@ -4,11 +4,14 @@ import { getBreadcrumbs } from "api/breadcrumbs/breadcrumbs.api";
 import { QueryKey, useQuery } from "react-query";
 import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
+import queryKeys from "utils/queryKeys";
 
 export default function useGetBreadcrumbs(folderId: FolderId) {
   const { toast } = useToast();
+  const getBreadcrumbsQueryKey = queryKeys.getBreadcrumbs(folderId);
+
   return useQuery<FolderGetParents, ErrorResponse, FolderGetParents, QueryKey>({
-    queryKey: ["breadcrumbs", folderId],
+    queryKey: getBreadcrumbsQueryKey,
     queryFn: () => {
       if (folderId === "base") {
         return {

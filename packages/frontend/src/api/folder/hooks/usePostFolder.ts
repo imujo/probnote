@@ -1,17 +1,13 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPost } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { postFolder } from "api/folder/folder.api";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import {
   QueryClient,
   QueryKey,
   useMutation,
   useQueryClient,
 } from "react-query";
-import { z } from "zod";
 import queryKeys from "utils/queryKeys";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { useToast } from "@/components/ui/use-toast";
@@ -43,15 +39,18 @@ export default function usePostFolder(
         getFolderItemsQueryKey,
         label,
       );
+
       return { previousFolderItems };
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries(getFolderItemsQueryKey);
+
       router.push(`/folder/${data.data.folderId}`);
       toast({
         title: "Successfully created folder",
         description: data.message,
       });
+
       if (onSuccess) onSuccess();
     },
     onError: (err, _, context) => {
@@ -61,6 +60,7 @@ export default function usePostFolder(
           context.previousFolderItems,
         );
       }
+
       toast({
         title: "An error occured tying to create a folder",
         description: err.message,
