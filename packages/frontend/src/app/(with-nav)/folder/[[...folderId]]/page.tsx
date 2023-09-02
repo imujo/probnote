@@ -30,7 +30,7 @@ function FolderPage({ params }: FolderPageProps) {
         <NewButton folderId={folderId} />
       </div>
       <DataTable
-        data={data}
+        data={data?.data}
         columns={columns}
         error={error}
         isLoading={isLoading}

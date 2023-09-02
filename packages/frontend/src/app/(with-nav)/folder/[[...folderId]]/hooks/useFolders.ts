@@ -1,40 +1,21 @@
-import {
-  FolderGet,
-  FolderGetChildren,
-} from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { useQuery } from "react-query";
-import { FolderChild } from "../components/Folders/Folders.types";
-import { getFolder } from "apiFunctions/folders.api";
 import { FolderId } from "../../../../../../types.global";
 import queryKeys from "utils/queryKeys";
 import { useToast } from "@/components/ui/use-toast";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
+import { getFolderItems } from "apiFunctions/folderItem.api";
 
 export default function useFolders(folderId: FolderId) {
-  const queryKey = queryKeys.getFolders(folderId);
+  const queryKey = queryKeys.getFolderItems(folderId);
   const { toast } = useToast();
 
-  return useQuery<FolderGetChildren, ErrorResponse, FolderChild[]>({
+  return useQuery<FolderItemsGet, ErrorResponse>({
     queryKey: queryKey,
-    queryFn: () => getFolder(folderId),
-    select: (data) => {
-      const notes: FolderChild[] = data
-        ? data?.data.Note.map((note) => {
-            return { ...note, type: "note" };
-          })
-        : [];
-
-      const folders: FolderChild[] = data
-        ? data?.data.ChildFolders.map((note) => {
-            return { ...note, type: "folder" };
-          })
-        : [];
-
-      return [...folders, ...notes];
-    },
+    queryFn: () => getFolderItems(folderId),
     onError: (err) => {
       toast({
-        title: "An error occured tying to fetch folders",
+        title: "An error occured tying to fetch folder items",
         description: err.message,
         variant: "destructive",
       });

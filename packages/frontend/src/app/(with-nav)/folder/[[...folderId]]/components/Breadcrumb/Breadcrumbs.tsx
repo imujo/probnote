@@ -1,5 +1,5 @@
 "use client";
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { cn } from "@/lib/utils";
 import useBreadcrumbs from "../../hooks/useBreadcrumbs";
@@ -42,8 +42,8 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
       {breadcrumbs.map((item, i) => {
         return (
           <BreadcrumbItem
-            href={`/folder/${item.id}`}
-            key={item.id}
+            href={`/folder/${item.folderId}`}
+            key={item.folderId}
             last={i === breadcrumbs.length - 1}
           >
             {item.label}

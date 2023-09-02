@@ -8,7 +8,7 @@ import ErrorPill from "@/components/ErrorPill";
 interface PinnedFoldersProps {}
 
 const PinnedFolders: FC<PinnedFoldersProps> = ({}) => {
-  const { data, isLoading, isError, isSuccess, error } = useGetPinned();
+  const { data, isLoading, isError, isSuccess } = useGetPinned();
 
   const folderId = useFolderIdFromParams();
 
@@ -31,9 +31,9 @@ const PinnedFolders: FC<PinnedFoldersProps> = ({}) => {
   return data.data.map((folder) => {
     return (
       <SideNavItem
-        key={folder.id}
-        folderId={folder.id}
-        selected={folderId == folder.id}
+        key={folder.folderId}
+        folderId={folder.folderId}
+        selected={folderId == folder.folderId}
       >
         {folder.label}
       </SideNavItem>

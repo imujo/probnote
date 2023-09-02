@@ -2,7 +2,7 @@
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Pen, Trash } from "lucide-react";
 import { FC, useCallback, useState } from "react";
-import useRenameFolder from "../../hooks/useRenameFolder";
+import useRenameFolder from "../../hooks/useRenameFolderItem";
 import { FolderId } from "../../../../../../../types.global";
 import {
   Dialog,

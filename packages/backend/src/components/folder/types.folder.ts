@@ -4,101 +4,11 @@ import { SuccessResponse, SortSchema } from "../../globalTypes";
 import messages from "../../messages";
 import { Response } from "express";
 
-// GET FOLDER
-
-export const folderGetSchema = {
-  params: z.object({
-    id: z
-      .string({
-        required_error: messages.required("Id"),
-      })
-      .regex(/^\d+$/, messages.invalidType("Id", "number")),
-  }),
-  query: SortSchema,
-};
-
-const folderGetBuilder = new RequestBuilder(folderGetSchema);
-export type FolderGetRequest = ReturnType<
-  typeof folderGetBuilder.getRequestType
->;
-export type FolderGet = SuccessResponse<
-  {
-    ChildFolders: {
-      id: number;
-      label: string;
-      pinned: boolean;
-      createdAt: Date;
-      updatedAt: Date;
-    }[];
-    Note: {
-      id: number;
-      label: string;
-      createdAt: Date;
-      updatedAt: Date;
-    }[];
-  } & {
-    id: number;
-    label: string;
-    parentFolderId: number | null;
-    createdAt: Date;
-    updatedAt: Date;
-  }
->;
-export type FolderGetResponse = Response<FolderGet>;
-
-// GET FOLDER CHILDREN
-
-export const folderGetChildrenSchema = {
-  params: z.object({
-    id: z
-      .string({
-        required_error: messages.required("Id"),
-      })
-      .regex(/^\d+$/, messages.invalidType("Id", "number")),
-  }),
-  query: SortSchema,
-};
-
-const folderGetChildrenBuilder = new RequestBuilder(folderGetChildrenSchema);
-export type FolderGetChildrenRequest = ReturnType<
-  typeof folderGetChildrenBuilder.getRequestType
->;
-
-// base
-
-export const folderGetBaseChildrenSchema = {
-  query: SortSchema,
-};
-
-const folderGetBaseChildrenBuilder = new RequestBuilder(
-  folderGetBaseChildrenSchema
-);
-export type FolderGetBaseChildrenRequest = ReturnType<
-  typeof folderGetBaseChildrenBuilder.getRequestType
->;
-
-export type FolderGetChildren = SuccessResponse<{
-  ChildFolders: {
-    id: number;
-    label: string;
-    pinned: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  Note: {
-    id: number;
-    label: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-}>;
-export type FolderGetChildrenResponse = Response<FolderGetChildren>;
-
 // GET FOLDER PARENTS
 
 export const folderGetParentsSchema = {
   params: z.object({
-    id: z
+    folderId: z
       .string({
         required_error: messages.required("Id"),
       })
@@ -112,7 +22,7 @@ export type FolderGetParentsRequest = ReturnType<
 >;
 export type FolderGetParents = SuccessResponse<{
   parentFolders: {
-    id: number;
+    folderId: number;
     label: string;
   }[];
   more: boolean;
@@ -142,7 +52,7 @@ export type FolderPostRequest = ReturnType<
   typeof folderPostBuilder.getRequestType
 >;
 export type FolderPost = SuccessResponse<{
-  id: number;
+  folderId: number;
 }>;
 export type FolderPostResposne = Response<FolderPost>;
 
@@ -150,29 +60,15 @@ export type FolderPostResposne = Response<FolderPost>;
 
 export const folderPutSchema = {
   params: z.object({
-    id: z
+    folderId: z
       .string({
         required_error: messages.required("Id"),
       })
       .regex(/^\d+$/, messages.invalidType("Id", "number")),
   }),
   body: z.object({
-    label: z
-      .string({
-        invalid_type_error: messages.invalidType("Label", "string"),
-      })
-      .optional(),
-    parentFolderId: z
-      .union([z.number(), z.null()], {
-        invalid_type_error: messages.invalidType(
-          "ParentFolderId",
-          "number or null"
-        ),
-      })
-      .optional(),
     pinned: z
       .boolean({
-        required_error: messages.required("Pinned"),
         invalid_type_error: messages.invalidType("Pinned", "boolean"),
       })
       // .regex(/^(true|false)$/, messages.invalidType("Pinned", "boolean"))
@@ -186,32 +82,10 @@ export type FolderPutRequest = ReturnType<
   typeof folderPutBuilder.getRequestType
 >;
 export type FolderPut = SuccessResponse<{
-  id: number;
+  folderId: number;
 }>;
 
 export type FolderPutResposne = Response<FolderPut>;
-
-// DELETE FOLDER
-
-export const folderDeleteSchema = {
-  params: z.object({
-    id: z
-      .string({
-        required_error: messages.required("Id"),
-      })
-      .regex(/^\d+$/, messages.invalidType("Id", "number")),
-  }),
-};
-
-const folderDeleteBuilder = new RequestBuilder(folderDeleteSchema);
-export type FolderDeleteRequest = ReturnType<
-  typeof folderDeleteBuilder.getRequestType
->;
-export type FolderDelete = SuccessResponse<{
-  id: number;
-}>;
-
-export type FolderDeleteResposne = Response<FolderDelete>;
 
 // GET PINNED FOLDER
 
@@ -225,7 +99,8 @@ export type FolderGetPinnedRequest = ReturnType<
 >;
 export type FolderGetPinned = SuccessResponse<
   {
-    id: number;
+    folderItemId: number;
+    folderId: number;
     label: string;
   }[]
 >;

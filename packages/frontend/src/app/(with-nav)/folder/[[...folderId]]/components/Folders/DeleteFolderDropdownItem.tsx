@@ -2,7 +2,7 @@
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Trash } from "lucide-react";
 import { FC, useCallback, useState } from "react";
-import useDeleteFolder from "../../hooks/useDeleteFolder";
+import useDeleteFolder from "../../hooks/useDeleteFolderItem";
 import { FolderId } from "../../../../../../../types.global";
 import {
   Dialog,
@@ -15,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ButtonLoading } from "@/components/ButtonLoading";
-import { useParams } from "next/navigation";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import ErrorPill from "@/components/ErrorPill";
 
@@ -34,7 +33,7 @@ const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
   }
 
   const [open, setOpen] = useState(false);
-  if (folderId === "base") return <div>Cannot delete base folder</div>;
+  if (folderId === "base") throw new Error("Cannote delete base folder");
 
   const closeDialog = useCallback(() => {
     setOpen(false);

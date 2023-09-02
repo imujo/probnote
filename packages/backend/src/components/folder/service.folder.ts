@@ -1,142 +1,40 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Sort } from "../../globalTypes";
-import { string } from "zod";
 import { FolderPutBody } from "./types.folder";
 
 const prisma = new PrismaClient();
 
-export const getFolder = async (folderId: number, sort: Sort) => {
-  const currentFolder = await prisma.folder.findFirst({
-    where: {
-      id: folderId,
-    },
-    include: {
-      ChildFolders: {
-        select: {
-          id: true,
-          label: true,
-          createdAt: true,
-          pinned: true,
-          updatedAt: true,
-        },
-        orderBy: {
-          [sort.sortBy]: sort.sortOrder,
-        },
-      },
-      Note: {
-        select: {
-          id: true,
-          label: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: {
-          [sort.sortBy]: sort.sortOrder,
-        },
-      },
-    },
-  });
-
-  return currentFolder;
-};
-
 export const getPinnedFolders = async (sort: Sort) => {
-  const currentFolder = await prisma.folder.findMany({
+  const pinnedFolders = await prisma.folder.findMany({
     where: {
       pinned: true,
     },
     select: {
       id: true,
-      label: true,
-    },
-    orderBy: {
-      [sort.sortBy]: sort.sortOrder,
-    },
-  });
-
-  return currentFolder;
-};
-
-export const getFolderChildren = async (folderId: number, sort: Sort) => {
-  const children = await prisma.folder.findFirst({
-    where: {
-      id: folderId,
-    },
-    select: {
-      ChildFolders: {
+      FolderItem: {
         select: {
           id: true,
           label: true,
-          pinned: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: {
-          [sort.sortBy]: sort.sortOrder,
-        },
-      },
-      Note: {
-        select: {
-          id: true,
-          label: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: {
-          [sort.sortBy]: sort.sortOrder,
         },
       },
     },
-  });
-
-  return children;
-};
-
-export const getBaseFolderChildren = async (sort: Sort) => {
-  const baseFolders = await prisma.folder.findMany({
-    where: {
-      parentFolderId: null,
-    },
-    select: {
-      id: true,
-      label: true,
-      pinned: true,
-      createdAt: true,
-      updatedAt: true,
-    },
     orderBy: {
-      [sort.sortBy]: sort.sortOrder,
-    },
-  });
-  const baseNotes = await prisma.note.findMany({
-    where: {
-      folderId: null,
-    },
-    select: {
-      id: true,
-      label: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-    orderBy: {
-      [sort.sortBy]: sort.sortOrder,
+      [sort.sortBy]: sort.sortOrder, // can only be datePinned
     },
   });
 
-  return {
-    ChildFolders: baseFolders,
-    Note: baseNotes,
-  };
+  return pinnedFolders;
 };
 
 export const getParentFolders = async (folderId: number) => {
   const MAX = 3;
   let currentFolderId = folderId;
   const parentFolders: {
-    id: number;
+    folderId: number;
     label: string;
   }[] = [];
   let moreParentsExist = false;
+
   for (let i = 0; i < MAX; i++) {
     const currentFolder = await prisma.folder.findFirst({
       where: {
@@ -144,10 +42,14 @@ export const getParentFolders = async (folderId: number) => {
       },
       select: {
         id: true,
-        label: true,
-        ParentFolder: {
+        FolderItem: {
           select: {
-            id: true,
+            label: true,
+            ParentFolder: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
       },
@@ -156,15 +58,19 @@ export const getParentFolders = async (folderId: number) => {
     if (!currentFolder) break;
 
     const currentFolderData = {
-      id: currentFolder.id,
-      label: currentFolder.label,
+      folderId: currentFolder.id,
+      label: currentFolder.FolderItem.label,
     };
 
     parentFolders.push(currentFolderData);
-    if (!currentFolder.ParentFolder) break;
-    currentFolderId = currentFolder.ParentFolder.id;
+    if (!currentFolder.FolderItem.ParentFolder) break;
+    currentFolderId = currentFolder.FolderItem.ParentFolder.id;
 
     if (i === MAX - 1) moreParentsExist = true;
+  }
+
+  if (parentFolders.length === 0) {
+    return null;
   }
 
   return {
@@ -177,37 +83,39 @@ export const postFolder = async (
   label: string,
   parentFolderId: number | null
 ) => {
-  const folder = await prisma.folder.create({
+  const folder = await prisma.folderItem.create({
     data: {
       label,
       parentFolderId,
-      pinned: false,
+      Folder: {
+        create: {
+          pinned: false,
+          datePinned: new Date(),
+        },
+      },
+    },
+    select: {
+      id: true,
+      Folder: {
+        select: {
+          id: true,
+        },
+      },
     },
   });
-
   return folder;
 };
 
-export const putFolder = async (id: number, body: FolderPutBody) => {
+export const putFolder = async (folderId: number, body: FolderPutBody) => {
   const pinStatusChanged = body.pinned !== undefined;
-  console.log(body);
+
   const folder = await prisma.folder.update({
     where: {
-      id,
+      id: folderId,
     },
     data: {
-      ...body,
+      pinned: body.pinned,
       datePinned: pinStatusChanged ? new Date() : undefined,
-    },
-  });
-
-  return folder;
-};
-
-export const deleteFolder = async (id: number) => {
-  const folder = await prisma.folder.delete({
-    where: {
-      id,
     },
   });
 

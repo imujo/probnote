@@ -1,8 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FolderGetChildren,
-  FolderPost,
-} from "@probnote/backend/src/components/folder/types.folder";
+import { FolderPost } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { postFolder } from "apiFunctions/folders.api";
 import { useRouter } from "next/navigation";
@@ -15,9 +12,10 @@ import {
   useQueryClient,
 } from "react-query";
 import { z } from "zod";
-import { FolderId } from "../../../../../../types.global";
 import { useToast } from "@/components/ui/use-toast";
 import queryKeys from "utils/queryKeys";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
+import { FolderId } from "../../../../../../types.global";
 
 const validaiton = z.object({
   label: z.string().min(4).max(30),
@@ -25,46 +23,51 @@ const validaiton = z.object({
 
 type Validation = z.infer<typeof validaiton>;
 
-export default function useNewFolder(folderId: FolderId) {
+export default function useNewFolder(parentFolderId: FolderId) {
   const router = useRouter();
   const form = useForm<Validation>({
     resolver: zodResolver(validaiton),
+    defaultValues: {
+      label: "",
+    },
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const getFoldersQueryKey = queryKeys.getFolders(folderId);
+  const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
 
   const { mutate, error, isLoading } = useMutation<
     FolderPost,
     ErrorResponse,
     string,
     {
-      previousFolders: FolderGetChildren | undefined;
+      previousFolderItems: FolderItemsGet | undefined;
     }
   >({
-    mutationKey: ["post", "folder"],
     mutationFn: (label) =>
-      postFolder(label, folderId === "base" ? null : folderId),
+      postFolder(label, parentFolderId === "base" ? null : parentFolderId),
     onMutate: async (label) => {
-      const previousFolders = await optimisticallyUpdateFolders(
+      const previousFolderItems = await optimisticallyUpdateFolderItems(
         queryClient,
-        getFoldersQueryKey,
+        getFolderItemsQueryKey,
         label,
       );
-      return { previousFolders };
+      return { previousFolderItems };
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(getFoldersQueryKey);
+      queryClient.invalidateQueries(getFolderItemsQueryKey);
       closeDialog();
-      router.push(`/folder/${data.data.id}`);
+      router.push(`/folder/${data.data.folderId}`);
       toast({
         title: "Successfully created folder",
         description: data.message,
       });
     },
     onError: (err, _, context) => {
-      if (context?.previousFolders) {
-        queryClient.setQueryData(getFoldersQueryKey, context.previousFolders);
+      if (context?.previousFolderItems) {
+        queryClient.setQueryData(
+          getFolderItemsQueryKey,
+          context.previousFolderItems,
+        );
       }
       toast({
         title: "An error occured tying to create a folder",
@@ -96,36 +99,38 @@ export default function useNewFolder(folderId: FolderId) {
   };
 }
 
-const optimisticallyUpdateFolders = async (
+const optimisticallyUpdateFolderItems = async (
   queryClient: QueryClient,
-  getFoldersQueryKey: QueryKey,
+  getFolderItemsQueryKey: QueryKey,
   newLabel: string,
 ) => {
-  await queryClient.cancelQueries({ queryKey: getFoldersQueryKey });
+  await queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
 
-  const previousFolders =
-    queryClient.getQueryData<FolderGetChildren>(getFoldersQueryKey);
+  const previousFolderItems = queryClient.getQueryData<FolderItemsGet>(
+    getFolderItemsQueryKey,
+  );
 
-  if (!previousFolders) return;
+  if (!previousFolderItems) return;
 
-  const newChildFolders = [
-    ...previousFolders.data.ChildFolders,
+  const newFolderItemsData = [
+    ...previousFolderItems.data,
     {
       label: newLabel,
       createdAt: new Date(),
       updatedAt: new Date(),
       pinned: false,
       id: -1,
+      Folder: {
+        id: -1,
+        pinned: false,
+      },
     },
   ];
 
-  queryClient.setQueryData<FolderGetChildren>(getFoldersQueryKey, {
-    ...previousFolders,
-    data: {
-      ChildFolders: newChildFolders,
-      Note: [...previousFolders.data.Note],
-    },
+  queryClient.setQueryData<FolderItemsGet>(getFolderItemsQueryKey, {
+    ...previousFolderItems,
+    data: newFolderItemsData,
   });
 
-  return previousFolders;
+  return previousFolderItems;
 };

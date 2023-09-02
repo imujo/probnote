@@ -1,10 +1,9 @@
 "use client";
 import { TableCell, TableRow, TableRowCenter } from "@/components/ui/table";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { ColumnDef, Table, flexRender } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import { FolderChild } from "./Folders.types";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface TableContentProps<TData> {
   error: ErrorResponse | null;
@@ -35,8 +34,13 @@ function TableContent<TData>({
     return table.getRowModel().rows.map((row) => (
       <TableRow
         onClick={(e) => {
-          const original = row.original as FolderChild;
-          router.push(`/folder/${original.id}`);
+          const original = row.original as FolderItemsGet["data"][0];
+
+          if (original.Folder) {
+            router.push(`/folder/${original.Folder.id}`);
+          } else {
+            console.log("Folder items is not a folder");
+          }
         }}
         className="cursor-pointer"
         key={row.id}

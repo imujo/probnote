@@ -1,15 +1,19 @@
 import {
-  FolderGet,
-  FolderGetChildren,
   FolderGetPinned,
   FolderPut,
 } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { putFolder } from "apiFunctions/folders.api";
-import { useMutation, useQueryClient } from "react-query";
+import {
+  QueryClient,
+  QueryKey,
+  useMutation,
+  useQueryClient,
+} from "react-query";
 import queryKeys from "utils/queryKeys";
 import { FolderId } from "../../../../types.global";
 import { useToast } from "@/components/ui/use-toast";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 
 export type PinFolderProps = {
   pinStatus: boolean;
@@ -18,11 +22,11 @@ export type PinFolderProps = {
 
 export default function usePinFolder(
   folderId: number,
-  currentFolderId: FolderId,
+  parentFolderId: FolderId,
 ) {
   const queryClient = useQueryClient();
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
-  const getFoldersQueryKey = queryKeys.getFolders(currentFolderId);
+  const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const { toast } = useToast();
 
   return useMutation<
@@ -31,66 +35,30 @@ export default function usePinFolder(
     PinFolderProps,
     {
       prevPinnedFolders: FolderGetPinned | undefined;
-      prevFolders: FolderGetChildren | undefined;
+      prevFolderItems: FolderItemsGet | undefined;
     }
   >({
     mutationFn: ({ pinStatus, label }: PinFolderProps) =>
       putFolder(folderId, { pinned: pinStatus }),
-    onMutate: (data) => {
-      const { pinStatus, label } = data;
-      queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
-      queryClient.cancelQueries({ queryKey: getFoldersQueryKey });
-
-      const prevPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
+    onMutate: async (data) => {
+      const prevPinnedFolders = await optimisticallyUpdatePinnedFolders(
+        queryClient,
         getPinnedFoldersQueryKey,
+        folderId,
+        data,
       );
-      const prevFolders =
-        queryClient.getQueryData<FolderGetChildren>(getFoldersQueryKey);
 
-      if (!prevPinnedFolders || !prevFolders) return;
+      const prevFolderItems = await optimisticallyUpdateFolderItems(
+        queryClient,
+        getFolderItemsQueryKey,
+        folderId,
+      );
 
-      let newPinnedFolders: FolderGetPinned["data"];
-
-      if (pinStatus === false) {
-        newPinnedFolders = prevPinnedFolders.data.filter(
-          (folder) => folder.id !== folderId,
-        );
-      } else {
-        newPinnedFolders = [
-          {
-            id: folderId,
-            label,
-          },
-          ...prevPinnedFolders.data,
-        ];
-      }
-
-      const newChildFolders = prevFolders.data.ChildFolders.map((folder) => {
-        if (folder.id !== folderId) return folder;
-        return {
-          ...folder,
-          pinned: !folder.pinned,
-        };
-      });
-
-      queryClient.setQueriesData<FolderGetPinned>(getPinnedFoldersQueryKey, {
-        ...prevPinnedFolders,
-        data: newPinnedFolders,
-      });
-
-      queryClient.setQueriesData<FolderGetChildren>(getFoldersQueryKey, {
-        ...prevFolders,
-        data: {
-          ...prevFolders.data,
-          ChildFolders: newChildFolders,
-        },
-      });
-
-      return { prevPinnedFolders, prevFolders };
+      return { prevPinnedFolders, prevFolderItems };
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: getPinnedFoldersQueryKey });
-      queryClient.invalidateQueries({ queryKey: getFoldersQueryKey });
+      queryClient.invalidateQueries({ queryKey: getFolderItemsQueryKey });
     },
     onError: (err, _, context) => {
       if (context?.prevPinnedFolders) {
@@ -100,10 +68,10 @@ export default function usePinFolder(
         );
       }
 
-      if (context?.prevFolders) {
-        queryClient.setQueriesData<FolderGetChildren>(
-          getFoldersQueryKey,
-          context.prevFolders,
+      if (context?.prevFolderItems) {
+        queryClient.setQueriesData<FolderItemsGet>(
+          getFolderItemsQueryKey,
+          context.prevFolderItems,
         );
       }
 
@@ -121,3 +89,73 @@ export default function usePinFolder(
     },
   });
 }
+
+const optimisticallyUpdatePinnedFolders = (
+  queryClient: QueryClient,
+  getPinnedFoldersQueryKey: QueryKey,
+  folderId: number,
+  data: PinFolderProps,
+) => {
+  const { pinStatus, label } = data;
+  queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
+
+  const prevPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
+    getPinnedFoldersQueryKey,
+  );
+
+  if (!prevPinnedFolders) return;
+
+  let newPinnedFoldersData: FolderGetPinned["data"];
+
+  if (pinStatus === false) {
+    newPinnedFoldersData = prevPinnedFolders.data.filter(
+      (folder) => folder.folderId !== folderId,
+    );
+  } else {
+    newPinnedFoldersData = [
+      {
+        folderItemId: -1,
+        folderId: folderId,
+        label,
+      },
+      ...prevPinnedFolders.data,
+    ];
+  }
+
+  queryClient.setQueriesData<FolderGetPinned>(getPinnedFoldersQueryKey, {
+    ...prevPinnedFolders,
+    data: newPinnedFoldersData,
+  });
+
+  return prevPinnedFolders;
+};
+
+const optimisticallyUpdateFolderItems = (
+  queryClient: QueryClient,
+  getFolderItemsQueryKey: QueryKey,
+  folderId: number,
+) => {
+  queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
+
+  const prevFolderItems = queryClient.getQueryData<FolderItemsGet>(
+    getFolderItemsQueryKey,
+  );
+
+  if (!prevFolderItems) return;
+
+  const newFolderItemsData = prevFolderItems.data.map((folderItem) => {
+    if (folderItem.Folder === null || folderItem.Folder.id !== folderId)
+      return folderItem;
+    return {
+      ...folderItem,
+      pinned: !folderItem.Folder.pinned,
+    };
+  });
+
+  queryClient.setQueriesData<FolderItemsGet>(getFolderItemsQueryKey, {
+    ...prevFolderItems,
+    data: newFolderItemsData,
+  });
+
+  return prevFolderItems;
+};

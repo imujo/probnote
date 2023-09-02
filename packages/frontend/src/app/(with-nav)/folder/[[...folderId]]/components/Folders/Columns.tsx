@@ -8,24 +8,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { File, Folder, MoreVertical, Trash } from "lucide-react";
-import { FolderChild } from "./Folders.types";
+
 import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
 import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
 import moment from "moment";
 import PinFolderDropdownItem from "./PinFolderDropdownItem";
+import { FolderGetItems } from "@probnote/backend/src/components/folder/types.folder";
 
-export const columns: ColumnDef<FolderChild>[] = [
+export const columns: ColumnDef<FolderGetItems["data"][0]>[] = [
   {
     accessorKey: "label",
     header: "Label",
     size: 10000,
     cell: ({ row }) => {
       const label = row.original.label;
-      const type = row.original.type;
+      const isFolder = row.original.Folder;
 
       return (
         <div className="flex items-center gap-2 text-zinc-900">
-          {type === "folder" ? (
+          {isFolder ? (
             <Folder className="h-4 w-4" />
           ) : (
             <File className="h-4 w-4" />
@@ -68,7 +69,8 @@ export const columns: ColumnDef<FolderChild>[] = [
     header: "",
     size: 100,
     cell: ({ row }) => {
-      const { id, label, type } = row.original;
+      const label = row.original.label;
+      const folderItemId = row.original.id;
 
       return (
         <DropdownMenu>
@@ -79,15 +81,18 @@ export const columns: ColumnDef<FolderChild>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent onClick={(e) => e.stopPropagation()} align="end">
-            {type === "folder" ? (
+            {row.original.Folder ? (
               <PinFolderDropdownItem
-                folderId={id}
-                pinned={row.original.pinned}
+                folderId={row.original.Folder.id}
+                pinned={row.original.Folder.pinned}
                 label={label}
               />
             ) : null}
-            <RenameFolderDropdownItem folderId={id} currentLabel={label} />
-            <DeleteFolderDropdownItem folderId={id} />
+            <RenameFolderDropdownItem
+              folderId={folderItemId}
+              currentLabel={label}
+            />
+            <DeleteFolderDropdownItem folderId={folderItemId} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

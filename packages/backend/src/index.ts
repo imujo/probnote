@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import express from "express";
 import env from "./config/envConfig";
 import folderRoutes from "./components/folder/routes.folder";
+import folderItemRoutes from "./components/folderItem/routes.folderItem";
 import errorMiddleware from "./middleware/error.middleware";
 import cors from "cors";
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/folder", folderRoutes);
+app.use("/folderItem", folderItemRoutes);
 
 app.use(errorMiddleware);
 

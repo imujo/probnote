@@ -1,62 +1,23 @@
 import { NextFunction } from "express";
 import {
-  deleteFolder,
-  getFolderChildren,
-  getFolder,
   getParentFolders,
   postFolder,
   putFolder,
-  getBaseFolderChildren,
   getPinnedFolders,
 } from "./service.folder";
 import {
-  FolderDeleteRequest,
-  FolderDeleteResposne,
   FolderGetParentsRequest,
   FolderGetParentsResposne,
-  FolderGetRequest,
   FolderPostRequest,
   FolderPostResposne,
   FolderPutRequest,
   FolderPutResposne,
-  FolderGetResponse,
-  FolderGetBaseChildrenRequest,
-  FolderGetChildrenResponse,
-  FolderGetChildrenRequest,
   FolderGetPinnedRequest,
   FolderGetPinnedResponse,
 } from "./types.folder";
 import messages from "../../messages";
 import { Sort } from "../../globalTypes";
 import CustomError from "../../utils/CustomError";
-
-const get = async (
-  req: FolderGetRequest,
-  res: FolderGetResponse,
-  next: NextFunction
-) => {
-  try {
-    const id = parseInt(req.params.id, 10);
-    const { sortBy, sortOrder } = req.query;
-    const sort: Sort = {
-      sortBy,
-      sortOrder,
-    };
-
-    const folder = await getFolder(id, sort);
-
-    if (!folder) {
-      throw new CustomError(messages.notFoundWithId("Folder", id), 404);
-    }
-
-    res.status(200).json({
-      message: messages.getSuccess("Folder"),
-      data: folder,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 const getPinned = async (
   req: FolderGetPinnedRequest,
@@ -70,68 +31,22 @@ const getPinned = async (
       sortOrder,
     };
 
-    const folder = await getPinnedFolders(sort);
+    const pinnedFoldersData = await getPinnedFolders(sort);
+    const pinnedFolders = pinnedFoldersData.map((pinnedFolderData) => {
+      return {
+        folderItemId: pinnedFolderData.FolderItem.id,
+        folderId: pinnedFolderData.id,
+        label: pinnedFolderData.FolderItem.label,
+      };
+    });
 
-    if (!folder) {
+    if (!pinnedFolders) {
       throw new CustomError(messages.notFound("Pinned folders"), 404);
     }
 
     res.status(200).json({
       message: messages.getSuccess("Pinned folders"),
-      data: folder,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const getChildren = async (
-  req: FolderGetChildrenRequest,
-  res: FolderGetChildrenResponse,
-  next: NextFunction
-) => {
-  try {
-    const id = parseInt(req.params.id, 10);
-    const { sortBy, sortOrder } = req.query;
-    const sort: Sort = {
-      sortBy,
-      sortOrder,
-    };
-
-    const children = await getFolderChildren(id, sort);
-
-    console.log(children?.ChildFolders);
-
-    if (!children) {
-      throw new CustomError(messages.notFoundWithId("Folder", id), 404);
-    }
-
-    res.status(200).json({
-      message: messages.getSuccess("Folder"),
-      data: children,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const getBaseChildren = async (
-  req: FolderGetBaseChildrenRequest,
-  res: FolderGetChildrenResponse,
-  next: NextFunction
-) => {
-  try {
-    const { sortBy, sortOrder } = req.query;
-    const sort: Sort = {
-      sortBy,
-      sortOrder,
-    };
-
-    const children = await getBaseFolderChildren(sort);
-
-    res.status(200).json({
-      message: messages.getSuccess("Base folder children"),
-      data: children,
+      data: pinnedFolders,
     });
   } catch (error) {
     next(error);
@@ -144,13 +59,20 @@ const getParents = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const folderId = parseInt(req.params.folderId, 10);
 
-    const data = await getParentFolders(id);
+    const parentFolders = await getParentFolders(folderId);
+
+    if (!parentFolders) {
+      throw new CustomError(
+        messages.notFoundWithId("Items from folder", folderId),
+        404
+      );
+    }
 
     res.status(200).json({
       message: messages.getSuccess("Folder parents"),
-      data: data,
+      data: parentFolders,
     });
   } catch (error) {
     next(error);
@@ -167,10 +89,17 @@ const post = async (
 
     const folder = await postFolder(label, parentFolderId);
 
+    if (folder.Folder === null) {
+      throw new CustomError(
+        `Folder item with id ${folder.id} does not have a folder`,
+        500
+      );
+    }
+
     res.status(200).json({
       message: messages.postSuccess("Folder"),
       data: {
-        id: folder.id,
+        folderId: folder.Folder.id,
       },
     });
   } catch (error) {
@@ -184,36 +113,15 @@ const put = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const folderId = parseInt(req.params.folderId, 10);
     const body = req.body;
 
-    const folder = await putFolder(id, body);
+    const folder = await putFolder(folderId, body);
 
     res.status(200).json({
-      message: messages.putSuccess("Folder", id),
+      message: messages.putSuccess("Folder", folderId),
       data: {
-        id: folder.id,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const del = async (
-  req: FolderDeleteRequest,
-  res: FolderDeleteResposne,
-  next: NextFunction
-) => {
-  try {
-    const id = parseInt(req.params.id, 10);
-
-    const folder = await deleteFolder(id);
-
-    res.status(200).json({
-      message: messages.deleteSuccess("Folder", id),
-      data: {
-        id: folder.id,
+        folderId: folder.id,
       },
     });
   } catch (error) {
@@ -222,12 +130,8 @@ const del = async (
 };
 
 export default {
-  get,
-  getChildren,
-  getBaseChildren,
   getParents,
   post,
   put,
-  del,
   getPinned,
 };

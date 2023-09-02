@@ -16,7 +16,7 @@ model FolderItem {
   Note      Note?
 
   parentFolderId Int?
-  ParentFolder   Folder? @relation(name: "parent", fields: [parentFolderId], references: [id])
+  ParentFolder   Folder? @relation(name: "parent", fields: [parentFolderId], references: [id], onDelete: Cascade)
 }
 
 model Folder {
@@ -24,7 +24,7 @@ model Folder {
   pinned       Boolean    @default(false)
   datePinned   DateTime   @default(now())
   folderItemId Int        @unique
-  FolderItem   FolderItem @relation(name: "item", fields: [folderItemId], references: [id])
+  FolderItem   FolderItem @relation(name: "item", fields: [folderItemId], references: [id], onDelete: Cascade)
 
   Children FolderItem[] @relation("parent")
 }
