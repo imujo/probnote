@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPost } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { postFolder } from "apiFunctions/folders.api";
+import { postFolder } from "api/folder/folder.api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import queryKeys from "utils/queryKeys";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { FolderId } from "../../../../../../types.global";
+import { FolderId } from "../../../utils/types.global";
 
 const validaiton = z.object({
   label: z.string().min(4).max(30),
@@ -23,7 +23,7 @@ const validaiton = z.object({
 
 type Validation = z.infer<typeof validaiton>;
 
-export default function useNewFolder(parentFolderId: FolderId) {
+export default function usePostFolder(parentFolderId: FolderId) {
   const router = useRouter();
   const form = useForm<Validation>({
     resolver: zodResolver(validaiton),

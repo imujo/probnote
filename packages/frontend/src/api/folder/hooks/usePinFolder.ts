@@ -3,7 +3,7 @@ import {
   FolderPut,
 } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { putFolder } from "apiFunctions/folders.api";
+import { putFolder } from "api/folder/folder.api";
 import {
   QueryClient,
   QueryKey,
@@ -11,7 +11,7 @@ import {
   useQueryClient,
 } from "react-query";
 import queryKeys from "utils/queryKeys";
-import { FolderId } from "../../../../types.global";
+import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 

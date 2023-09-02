@@ -8,8 +8,8 @@ import {
 import { Folder, LucidePlus } from "lucide-react";
 import { FC } from "react";
 import NewButtonItem from "./NewButtonItem";
-import useNewFolder from "../../hooks/useNewFolder";
-import { FolderId } from "../../../../../../../types.global";
+import { FolderId } from "../../../../../../utils/types.global";
+import usePostFolder from "api/folder/hooks/usePostFolder";
 
 interface NewButtonProps {
   folderId: FolderId;
@@ -17,7 +17,7 @@ interface NewButtonProps {
 
 const NewButton: FC<NewButtonProps> = ({ folderId }) => {
   const { form, onSubmit, isLoading, dialogOpen, error, setDialogOpen } =
-    useNewFolder(folderId);
+    usePostFolder(folderId);
 
   return (
     <DropdownMenu>

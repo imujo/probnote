@@ -1,7 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { getPinnedFolders } from "apiFunctions/folders.api";
+import { getPinnedFolders } from "api/folder/folder.api";
 import { useQuery } from "react-query";
 import queryKeys from "utils/queryKeys";
 

@@ -1,11 +1,11 @@
 import { FolderGetParents } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { getBreadcrumbs } from "apiFunctions/breadcrumbs.api";
+import { getBreadcrumbs } from "api/breadcrumbs/breadcrumbs.api";
 import { QueryKey, useQuery } from "react-query";
-import { FolderId } from "../../../../../../types.global";
+import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function useBreadcrumbs(folderId: FolderId) {
+export default function useGetBreadcrumbs(folderId: FolderId) {
   const { toast } = useToast();
   return useQuery<FolderGetParents, ErrorResponse, FolderGetParents, QueryKey>({
     queryKey: ["breadcrumbs", folderId],

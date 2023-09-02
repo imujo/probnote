@@ -1,9 +1,8 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Pen, Trash } from "lucide-react";
+import { Pen } from "lucide-react";
 import { FC, useCallback, useState } from "react";
-import useRenameFolder from "../../hooks/useRenameFolderItem";
-import { FolderId } from "../../../../../../../types.global";
+import { FolderId } from "../../../../../../utils/types.global";
 import {
   Dialog,
   DialogHeader,
@@ -28,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ErrorPill from "@/components/ErrorPill";
+import useRenameFolderItem from "api/folderItem/hooks/useRenameFolderItem";
 
 interface RenameFolderDropdownItemProps {
   folderId: FolderId;
@@ -52,7 +52,7 @@ const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
     setOpen(false);
   }, []);
 
-  const { isLoading, error, form, onSubmit } = useRenameFolder(
+  const { isLoading, error, form, onSubmit } = useRenameFolderItem(
     folderId,
     currentFolderId,
     closeDialog,

@@ -1,32 +1,10 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Pen, Pin, PinOff, Trash } from "lucide-react";
-import { FC, useCallback, useState } from "react";
-import { FolderId } from "../../../../../../../types.global";
-import {
-  Dialog,
-  DialogHeader,
-  DialogTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { ButtonLoading } from "@/components/ButtonLoading";
-import { useParams } from "next/navigation";
+import { Pin, PinOff } from "lucide-react";
+import { FC } from "react";
+import { FolderId } from "../../../../../../utils/types.global";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import usePinFolder from "@/app/(with-nav)/hooks/usePinFolder";
+import usePinFolder from "api/folder/hooks/usePinFolder";
 
 interface PinFolderDropdownItemProps {
   folderId: FolderId;

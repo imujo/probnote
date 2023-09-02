@@ -4,56 +4,80 @@ import {
   useMutation,
   useQueryClient,
 } from "react-query";
+import queryKeys from "utils/queryKeys";
+import { FolderId } from "../../../../../../types.global";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import queryKeys from "utils/queryKeys";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
-import { FolderId } from "../../../../../../types.global";
 import {
-  FolderItemDelete,
   FolderItemsGet,
+  FolderItemPut,
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { deleteFolderItem } from "apiFunctions/folderItem.api";
+import { putFolderItem } from "api/folderItem/folderItem.api";
 
-export default function useDeleteFolderItem(
+const validaiton = z.object({
+  newLabel: z.string().min(4).max(30),
+});
+
+type Validation = z.infer<typeof validaiton>;
+
+export default function useRenameFolderItem(
   folderItemId: number,
   parentFolderId: FolderId,
   closeDialog: () => void,
 ) {
+  const form = useForm<Validation>({
+    resolver: zodResolver(validaiton),
+    defaultValues: {
+      newLabel: "",
+    },
+  });
+
+  const onSubmit = async (data: Validation) => {
+    await mutate(data.newLabel);
+  };
+
   const queryClient = useQueryClient();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const { toast } = useToast();
 
-  const mutation = useMutation<
-    FolderItemDelete,
+  const { mutate, error, isLoading } = useMutation<
+    FolderItemPut,
     ErrorResponse,
-    void,
+    string,
     {
-      previousFolderItems: FolderItemsGet | undefined;
+      previousFolders: FolderItemsGet | undefined;
       previousPinnedFolders: FolderGetPinned | undefined;
     }
   >({
-    mutationFn: () => deleteFolderItem(folderItemId),
-    onMutate: async () => {
-      const previousFolderItems = await optimisticallyUpdateFolderItems(
+    mutationFn: async (newLabel: string) =>
+      putFolderItem(folderItemId, { label: newLabel }),
+    onMutate: async (newLabel) => {
+      const previousFolders = await optimisticallyUpdateFolderItems(
         queryClient,
         getFolderItemsQueryKey,
         folderItemId,
+        newLabel,
       );
+
       const previousPinnedFolders = await optimisticallyUpdatePinnedFolders(
         queryClient,
         getPinnedFoldersQueryKey,
         folderItemId,
+        newLabel,
       );
-      return { previousFolderItems, previousPinnedFolders };
+
+      return { previousFolders, previousPinnedFolders };
     },
     onError: (err, _, context) => {
-      // TODO toast error
-      if (context?.previousFolderItems) {
+      if (context?.previousFolders) {
         queryClient.setQueryData(
           getFolderItemsQueryKey,
-          context.previousFolderItems,
+          context.previousFolders,
         );
       }
       if (context?.previousPinnedFolders) {
@@ -64,7 +88,7 @@ export default function useDeleteFolderItem(
       }
 
       toast({
-        title: "An error occured tying to delete folder item",
+        title: "An error occured tying to rename folder item",
         description: err.message,
         variant: "destructive",
       });
@@ -74,33 +98,38 @@ export default function useDeleteFolderItem(
       queryClient.invalidateQueries(getPinnedFoldersQueryKey);
       closeDialog();
       toast({
-        title: "Successfully deleted folder item",
+        title: "Successfully renamed folder item",
         description: data.message,
       });
     },
   });
 
-  return { ...mutation };
+  return { mutate, error, isLoading, form, onSubmit };
 }
 
 const optimisticallyUpdateFolderItems = async (
   queryClient: QueryClient,
-  getFolderItemsQueryKey: QueryKey,
+  getFoldersQueryKey: QueryKey,
   folderItemId: number,
+  newLabel: string,
 ) => {
-  await queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
+  await queryClient.cancelQueries({ queryKey: getFoldersQueryKey });
 
-  const previousFolderItems = queryClient.getQueryData<FolderItemsGet>(
-    getFolderItemsQueryKey,
-  );
+  const previousFolderItems =
+    queryClient.getQueryData<FolderItemsGet>(getFoldersQueryKey);
 
   if (!previousFolderItems) return;
 
-  const newFolderItemsData = previousFolderItems.data.filter(
-    (folderItem) => folderItem.id !== folderItemId,
-  );
+  const newFolderItemsData = previousFolderItems.data.map((folderItem) => {
+    if (folderItem.id !== folderItemId) return folderItem;
 
-  queryClient.setQueryData<FolderItemsGet>(getFolderItemsQueryKey, {
+    return {
+      ...folderItem,
+      label: newLabel,
+    };
+  });
+
+  queryClient.setQueryData<FolderItemsGet>(getFoldersQueryKey, {
     ...previousFolderItems,
     data: newFolderItemsData,
   });
@@ -112,6 +141,7 @@ const optimisticallyUpdatePinnedFolders = async (
   queryClient: QueryClient,
   getPinnedFoldersQueryKey: QueryKey,
   folderItemId: number,
+  newLabel: string,
 ) => {
   await queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
 
@@ -121,9 +151,14 @@ const optimisticallyUpdatePinnedFolders = async (
 
   if (!previousPinnedFolders) return;
 
-  const newPinnedFoldersData = previousPinnedFolders.data.filter(
-    (folder) => folder.folderItemId !== folderItemId,
-  );
+  const newPinnedFoldersData = previousPinnedFolders.data.map((folder) => {
+    if (folder.folderItemId !== folderItemId) return folder;
+
+    return {
+      ...folder,
+      label: newLabel,
+    };
+  });
 
   queryClient.setQueryData<FolderGetPinned>(getPinnedFoldersQueryKey, {
     ...previousPinnedFolders,

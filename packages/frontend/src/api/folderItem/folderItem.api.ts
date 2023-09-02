@@ -6,7 +6,7 @@ import {
   FolderItemPutBody,
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { FolderId } from "../../types.global";
+import { FolderId } from "../../utils/types.global";
 
 export const getFolderItems = async (parentFolderId: FolderId) => {
   const response = await fetch(

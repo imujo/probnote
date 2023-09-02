@@ -5,9 +5,9 @@ import { LucidePlus, MoreVertical } from "lucide-react";
 import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
 import { DataTable } from "./components/Folders/DataTable";
 import { columns } from "./components/Folders/Columns";
-import useFolders from "./hooks/useFolders";
+import useFolders from "../../../../api/folderItem/hooks/useGetFolderItems";
 import NewButton from "./components/NewButton/NewButton";
-import { FolderId } from "../../../../../types.global";
+import { FolderId } from "../../../../utils/types.global";
 
 interface FolderPageProps {
   params: {

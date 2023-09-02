@@ -1,5 +1,5 @@
 import { useParams } from "next/navigation";
-import { FolderId } from "../../types.global";
+import { FolderId } from "../utils/types.global";
 
 export default function useFolderIdFromParams() {
   const params = useParams();

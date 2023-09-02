@@ -1,5 +1,5 @@
 import { FolderGetParents } from "@probnote/backend/src/components/folder/types.folder";
-import env from "../config/env.config";
+import env from "../../config/env.config";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 
 export const getBreadcrumbs = async (folderId: number) => {

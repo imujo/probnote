@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { cn } from "utils/cn";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { useMemo } from "react";
 import TableContent from "./TableContent";

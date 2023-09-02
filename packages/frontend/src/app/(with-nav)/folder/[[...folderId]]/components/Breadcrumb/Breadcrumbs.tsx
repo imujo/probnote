@@ -1,10 +1,10 @@
 "use client";
 import { FC } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
-import { cn } from "@/lib/utils";
-import useBreadcrumbs from "../../hooks/useBreadcrumbs";
+import { cn } from "utils/cn";
+import useBreadcrumbs from "../../../../../../api/breadcrumbs/hooks/useGetBreadcrumbs";
 import BreadcrumbSkeleton from "./BreadcrumbSkeleton";
-import { FolderId } from "../../../../../../../types.global";
+import { FolderId } from "../../../../../../utils/types.global";
 import ErrorPill from "@/components/ErrorPill";
 
 interface BreadcrumbsProps {

@@ -1,4 +1,4 @@
-import { FolderId } from "../../types.global";
+import { FolderId } from "./types.global";
 
 export const getFolderItems = (parentFolderId: FolderId) => [
   "folder",

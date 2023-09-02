@@ -1,18 +1,18 @@
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { useQuery } from "react-query";
-import { FolderId } from "../../../../../../types.global";
+import { FolderId } from "../../../utils/types.global";
 import queryKeys from "utils/queryKeys";
 import { useToast } from "@/components/ui/use-toast";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { getFolderItems } from "apiFunctions/folderItem.api";
+import { getFolderItems } from "api/folderItem/folderItem.api";
 
-export default function useFolders(folderId: FolderId) {
-  const queryKey = queryKeys.getFolderItems(folderId);
+export default function useGetFolderItems(parentFolderId: FolderId) {
+  const queryKey = queryKeys.getFolderItems(parentFolderId);
   const { toast } = useToast();
 
   return useQuery<FolderItemsGet, ErrorResponse>({
     queryKey: queryKey,
-    queryFn: () => getFolderItems(folderId),
+    queryFn: () => getFolderItems(parentFolderId),
     onError: (err) => {
       toast({
         title: "An error occured tying to fetch folder items",
