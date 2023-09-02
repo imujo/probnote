@@ -1,7 +1,7 @@
 "use client";
-import { Toaster } from "@/components/ui/toaster";
-import React, { ReactNode } from "react";
+
 import { QueryClient, QueryClientProvider } from "react-query";
+import React, { ReactNode } from "react";
 
 interface ProvidersProps {
   children: ReactNode;

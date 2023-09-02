@@ -7,13 +7,13 @@ import {
 import queryKeys from "utils/queryKeys";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { useToast } from "@/components/ui/use-toast";
+import { FolderId } from "utils/types.global";
 import {
   FolderItemsGet,
   FolderItemPut,
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { putFolderItem } from "api/folderItem/folderItem.api";
-import { FolderId } from "utils/types.global";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function useRenameFolderItem(
   folderItemId: number,
@@ -88,12 +88,12 @@ export default function useRenameFolderItem(
   return mutation;
 }
 
-const optimisticallyUpdateFolderItems = async (
+async function optimisticallyUpdateFolderItems(
   queryClient: QueryClient,
   getFoldersQueryKey: QueryKey,
   folderItemId: number,
   newLabel: string,
-) => {
+) {
   await queryClient.cancelQueries({ queryKey: getFoldersQueryKey });
 
   const previousFolderItems =
@@ -116,14 +116,14 @@ const optimisticallyUpdateFolderItems = async (
   });
 
   return previousFolderItems;
-};
+}
 
-const optimisticallyUpdatePinnedFolders = async (
+async function optimisticallyUpdatePinnedFolders(
   queryClient: QueryClient,
   getPinnedFoldersQueryKey: QueryKey,
   folderItemId: number,
   newLabel: string,
-) => {
+) {
   await queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
 
   const previousPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
@@ -147,4 +147,4 @@ const optimisticallyUpdatePinnedFolders = async (
   });
 
   return previousPinnedFolders;
-};
+}

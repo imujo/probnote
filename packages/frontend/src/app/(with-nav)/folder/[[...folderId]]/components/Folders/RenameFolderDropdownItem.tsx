@@ -1,7 +1,17 @@
 "use client";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
 import { Pen } from "lucide-react";
-import { Dispatch, FC, SetStateAction, useCallback, useState } from "react";
+import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import { DialogClose } from "@radix-ui/react-dialog";
+import useRenameFolderItemDropdownItem from "../../hooks/useRenameFolderItemDropdownItem";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { FolderId } from "../../../../../../utils/types.global";
 import {
   Dialog,
@@ -12,9 +22,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { ButtonLoading } from "@/components/ButtonLoading";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import ButtonLoading from "@/components/ButtonLoading";
 import {
   Form,
   FormControl,
@@ -26,7 +34,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ErrorPill from "@/components/ErrorPill";
-import useRenameFolderItemDropdownItem from "../../hooks/useRenameFolderItemDropdownItem";
 
 interface RenameFolderDropdownItemProps {
   folderItemId: FolderId;
@@ -41,22 +48,16 @@ const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
 }) => {
   const currentFolderId = useFolderIdFromParams();
 
-  if (!currentFolderId) {
-    // TODO navigate to 404
-    return;
-  }
-
   const [dialogOpen, setDialogOpen] = useState(false);
-  if (folderItemId === "base") throw new Error("Cannot rename base folder");
 
   const onSuccess = useCallback(() => {
     setDialogOpen(false);
     setDropdownOpen(false);
-  }, []);
+  }, [setDialogOpen, setDropdownOpen]);
 
   const { isLoading, error, form, onSubmit } = useRenameFolderItemDropdownItem(
-    folderItemId,
-    currentFolderId,
+    folderItemId as number, // cannot be base
+    currentFolderId as FolderId, // cannot be undefined
     onSuccess,
   );
 
@@ -83,7 +84,7 @@ const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
           <form className="my-3" onSubmit={(e) => e.preventDefault()}>
             <FormField
               control={form.control}
-              name={"newLabel"}
+              name="newLabel"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel htmlFor="newLabel">Label</FormLabel>
@@ -107,7 +108,7 @@ const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
           {!!error && <ErrorPill>{error.message}</ErrorPill>}
 
           <DialogClose asChild>
-            <Button disabled={isLoading} variant={"secondary"}>
+            <Button disabled={isLoading} variant="secondary">
               Cancel
             </Button>
           </DialogClose>

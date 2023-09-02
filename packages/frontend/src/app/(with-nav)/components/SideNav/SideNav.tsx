@@ -1,12 +1,13 @@
 "use client";
-import { FC } from "react";
-import SideNavLabel from "./SideNavLabel";
+
+import React, { FC } from "react";
 import { LucidePin } from "lucide-react";
+import SideNavLabel from "./SideNavLabel";
 import PinnedFolders from "./PinnedFolders";
 
 interface SideNavProps {}
 
-const SideNav: FC<SideNavProps> = ({}) => {
+const SideNav: FC<SideNavProps> = () => {
   return (
     <div className="z-10 box-border flex h-[calc(100vh-64px)]  w-48 flex-col gap-8 border-r-[1px] pt-6 ">
       <ul>

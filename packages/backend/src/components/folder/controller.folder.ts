@@ -32,13 +32,11 @@ const getPinned = async (
     };
 
     const pinnedFoldersData = await getPinnedFolders(sort);
-    const pinnedFolders = pinnedFoldersData.map((pinnedFolderData) => {
-      return {
-        folderItemId: pinnedFolderData.FolderItem.id,
-        folderId: pinnedFolderData.id,
-        label: pinnedFolderData.FolderItem.label,
-      };
-    });
+    const pinnedFolders = pinnedFoldersData.map((pinnedFolderData) => ({
+      folderItemId: pinnedFolderData.FolderItem.id,
+      folderId: pinnedFolderData.id,
+      label: pinnedFolderData.FolderItem.label,
+    }));
 
     if (!pinnedFolders) {
       throw new CustomError(messages.notFound("Pinned folders"), 404);
@@ -116,12 +114,12 @@ const put = async (
     const folderId = parseInt(req.params.folderId, 10);
     const body = req.body;
 
-    const folder = await putFolder(folderId, body);
+    const { id } = await putFolder(folderId, body);
 
     res.status(200).json({
-      message: messages.putSuccess("Folder", folderId),
+      message: messages.putSuccess("Folder", id),
       data: {
-        folderId: folder.id,
+        folderId: id,
       },
     });
   } catch (error) {

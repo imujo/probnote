@@ -1,11 +1,11 @@
-import { FC } from "react";
+import React, { FC } from "react";
+import { cn } from "utils/cn";
+import { Info } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Info } from "lucide-react";
-import { cn } from "utils/cn";
 
 interface ErrorPillProps {
   children?: string;

@@ -1,13 +1,13 @@
+import React, { FC } from "react";
 import Link from "next/link";
-import { FC } from "react";
-import { Input } from "../../../../components/ui/input";
-import { ButtonIcon } from "../../../../components/ButtonIcon";
 import { LucideSearch } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import { Input } from "../../../../components/ui/input";
+import ButtonIcon from "@/components/ButtonIcon";
 
 interface NavBarProps {}
 
-const NavBar: FC<NavBarProps> = ({}) => {
+const NavBar: FC<NavBarProps> = () => {
   return (
     <header className="z-20 flex h-16  w-screen items-center justify-between border-b-[1px] bg-white px-8">
       <Link href="/" className=" font-medium">

@@ -14,8 +14,18 @@
       "double",
       { "avoidEscape": true, "allowTemplateLiterals": true }
     ],
+    "react/function-component-definition": "off",
+    "consistent-return": "off",
+    "import/extensions": "off",
+    "react/require-default-props": "off",
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "no-await-in-loop": "off",
+    "react/jsx-props-no-spreading": "off",
+    "arrow-body-style": "off",
+    "no-use-before-define": "off",
+    "no-else-return": "off",
+
+    "prefer-destructuring": "off",
     "@typescript-eslint/quotes": [
       "error",
       "double",

@@ -2,8 +2,8 @@ import React from "react";
 import "./global.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Providers from "../utils/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import Providers from "../utils/Providers";
 import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });

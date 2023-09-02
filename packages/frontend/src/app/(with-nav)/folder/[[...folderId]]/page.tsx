@@ -1,25 +1,15 @@
 "use client";
-import React, { useEffect } from "react";
-import { ButtonWithIcon } from "@/components/ButtonWithIcon";
-import { LucidePlus, MoreVertical } from "lucide-react";
-import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
-import { DataTable } from "./components/Folders/DataTable";
-import { columns } from "./components/Folders/Columns";
+
+import React from "react";
+import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import useFolders from "../../../../api/folderItem/hooks/useGetFolderItems";
+import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
+import columns from "./components/Folders/Columns";
 import NewButton from "./components/NewButton/NewButton";
-import { FolderId } from "../../../../utils/types.global";
+import { DataTable } from "./components/Folders/DataTable";
 
-interface FolderPageProps {
-  params: {
-    folderId: string;
-  };
-}
-
-function FolderPage({ params }: FolderPageProps) {
-  let tempFolderId = params.folderId[0];
-  if (isNaN(parseInt(tempFolderId, 10)) && tempFolderId !== "base") return;
-
-  const folderId = tempFolderId as FolderId;
+function FolderPage() {
+  const folderId = useFolderIdFromParams();
 
   const { data, error, isLoading } = useFolders(folderId);
 

@@ -1,10 +1,11 @@
 "use client";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Pin, PinOff } from "lucide-react";
-import { FC } from "react";
-import { FolderId } from "../../../../../../utils/types.global";
+
+import React, { FC } from "react";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import usePinFolder from "api/folder/hooks/usePinFolder";
+import { Pin, PinOff } from "lucide-react";
+import { FolderId } from "../../../../../../utils/types.global";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface PinFolderDropdownItemProps {
   folderId: FolderId;
@@ -18,13 +19,11 @@ const PinFolderDropdownItem: FC<PinFolderDropdownItemProps> = ({
   label,
 }) => {
   const currentFolderId = useFolderIdFromParams();
-  if (folderId === "base") throw new Error("Cannot pin base folder");
-  if (!currentFolderId) {
-    // TODO 404
-    return;
-  }
 
-  const { mutate: pinFolder } = usePinFolder(folderId, currentFolderId);
+  const { mutate: pinFolder } = usePinFolder(
+    folderId as number, // cannot be base
+    currentFolderId as FolderId, // cannot be undefined
+  );
 
   return (
     <DropdownMenuItem
@@ -32,7 +31,7 @@ const PinFolderDropdownItem: FC<PinFolderDropdownItemProps> = ({
         e.stopPropagation();
         pinFolder({
           pinStatus: !pinned,
-          label: label,
+          label,
         });
       }}
       className="cursor-pointer"

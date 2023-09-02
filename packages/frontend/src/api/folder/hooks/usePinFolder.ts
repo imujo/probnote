@@ -11,9 +11,9 @@ import {
   useQueryClient,
 } from "react-query";
 import queryKeys from "utils/queryKeys";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
-import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 
 export type PinFolderProps = {
   pinStatus: boolean;
@@ -38,7 +38,7 @@ export default function usePinFolder(
       prevFolderItems: FolderItemsGet | undefined;
     }
   >({
-    mutationFn: ({ pinStatus, label }: PinFolderProps) =>
+    mutationFn: ({ pinStatus }: PinFolderProps) =>
       putFolder(folderId, { pinned: pinStatus }),
     onMutate: async (data) => {
       const prevPinnedFolders = await optimisticallyUpdatePinnedFolders(
@@ -90,14 +90,14 @@ export default function usePinFolder(
   });
 }
 
-const optimisticallyUpdatePinnedFolders = (
+async function optimisticallyUpdatePinnedFolders(
   queryClient: QueryClient,
   getPinnedFoldersQueryKey: QueryKey,
   folderId: number,
   data: PinFolderProps,
-) => {
+) {
   const { pinStatus, label } = data;
-  queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
+  await queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
 
   const prevPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
     getPinnedFoldersQueryKey,
@@ -115,7 +115,7 @@ const optimisticallyUpdatePinnedFolders = (
     newPinnedFoldersData = [
       {
         folderItemId: -1,
-        folderId: folderId,
+        folderId,
         label,
       },
       ...prevPinnedFolders.data,
@@ -128,14 +128,14 @@ const optimisticallyUpdatePinnedFolders = (
   });
 
   return prevPinnedFolders;
-};
+}
 
-const optimisticallyUpdateFolderItems = (
+async function optimisticallyUpdateFolderItems(
   queryClient: QueryClient,
   getFolderItemsQueryKey: QueryKey,
   folderId: number,
-) => {
-  queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
+) {
+  await queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
 
   const prevFolderItems = queryClient.getQueryData<FolderItemsGet>(
     getFolderItemsQueryKey,
@@ -158,4 +158,4 @@ const optimisticallyUpdateFolderItems = (
   });
 
   return prevFolderItems;
-};
+}

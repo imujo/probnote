@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button";
+import React, { FC } from "react";
 import { cn } from "utils/cn";
 import { LucideIcon } from "lucide-react";
-import { FC } from "react";
 
 interface SideNavLabelProps {
   children: string;

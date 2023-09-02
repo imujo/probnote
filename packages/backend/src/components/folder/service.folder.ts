@@ -74,7 +74,7 @@ export const getParentFolders = async (folderId: number) => {
   }
 
   return {
-    parentFolders: parentFolders,
+    parentFolders,
     more: moreParentsExist,
   };
 };

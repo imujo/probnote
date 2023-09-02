@@ -1,0 +1,5 @@
+node_modules
+packages/frontend/postcss.config.js
+packages/frontend/next.config.js
+packages/frontend/src/components/ui
+packages/frontend/tailwind.config.ts

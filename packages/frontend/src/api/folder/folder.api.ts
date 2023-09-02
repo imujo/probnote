@@ -1,11 +1,11 @@
-import env from "@/config/env.config";
+import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import {
   FolderGetPinned,
   FolderPost,
   FolderPut,
   FolderPutBody,
 } from "@probnote/backend/src/components/folder/types.folder";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
+import env from "@/config/env.config";
 
 export const getPinnedFolders = async () => {
   const response = await fetch(
@@ -36,9 +36,9 @@ export const postFolder = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      label: label,
+      label,
       parentFolderId:
-        parentFolderId === null ? null : parseFloat(parentFolderId + ""),
+        parentFolderId === null ? null : parseFloat(parentFolderId.toString()),
     }),
     cache: "no-store",
   });

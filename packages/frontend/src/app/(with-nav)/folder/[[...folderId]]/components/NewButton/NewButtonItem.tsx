@@ -1,4 +1,14 @@
-import { ButtonLoading } from "@/components/ButtonLoading";
+import React from "react";
+import {
+  FieldValues,
+  Path,
+  SubmitHandler,
+  UseFormReturn,
+} from "react-hook-form";
+import { ErrorResponse } from "@probnote/backend/src/globalTypes";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { LucideIcon } from "lucide-react";
+import ButtonLoading from "@/components/ButtonLoading";
 import ErrorPill from "@/components/ErrorPill";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,15 +31,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { Close, DialogClose } from "@radix-ui/react-dialog";
-import { LucideIcon } from "lucide-react";
-import {
-  FieldValues,
-  Path,
-  SubmitHandler,
-  UseFormReturn,
-} from "react-hook-form";
 
 interface NewButtonItemProps<T extends FieldValues> {
   form: UseFormReturn<T, any, undefined>;
@@ -94,7 +95,7 @@ function NewButtonItem<T extends FieldValues>({
         <DialogFooter className="items-center">
           {error ? <ErrorPill>{error.message}</ErrorPill> : null}
           <DialogClose asChild>
-            <Button disabled={isLoading} variant={"secondary"}>
+            <Button disabled={isLoading} variant="secondary">
               Close
             </Button>
           </DialogClose>

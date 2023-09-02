@@ -1,15 +1,16 @@
 "use client";
-import { ButtonWithIcon } from "@/components/ButtonWithIcon";
+
+import React, { FC } from "react";
+import usePostFolder from "api/folder/hooks/usePostFolder";
+import { Folder, LucidePlus } from "lucide-react";
+import ButtonWithIcon from "@/components/ButtonWithIcon";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Folder, LucidePlus } from "lucide-react";
-import { FC } from "react";
 import NewButtonItem from "./NewButtonItem";
 import { FolderId } from "../../../../../../utils/types.global";
-import usePostFolder from "api/folder/hooks/usePostFolder";
 
 interface NewButtonProps {
   folderId: FolderId;

@@ -1,21 +1,21 @@
 "use client";
+
+import React, { useState } from "react";
+import { ColumnDef } from "@tanstack/react-table";
+import moment from "moment";
+import { File, Folder, MoreVertical } from "lucide-react";
+import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
+import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
+import PinFolderDropdownItem from "./PinFolderDropdownItem";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ColumnDef } from "@tanstack/react-table";
-import { File, Folder, MoreVertical, Trash } from "lucide-react";
 
-import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
-import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
-import moment from "moment";
-import PinFolderDropdownItem from "./PinFolderDropdownItem";
-import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { useState } from "react";
-
-export const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
+const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
   {
     accessorKey: "label",
     header: "Label",
@@ -105,3 +105,5 @@ export const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
     },
   },
 ];
+
+export default columns;

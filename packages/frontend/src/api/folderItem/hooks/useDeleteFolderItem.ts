@@ -4,16 +4,16 @@ import {
   useMutation,
   useQueryClient,
 } from "react-query";
+import { deleteFolderItem } from "api/folderItem/folderItem.api";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import queryKeys from "utils/queryKeys";
-import { useToast } from "@/components/ui/use-toast";
-import { FolderId } from "../../../utils/types.global";
 import {
   FolderItemDelete,
   FolderItemsGet,
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { deleteFolderItem } from "api/folderItem/folderItem.api";
+import { useToast } from "@/components/ui/use-toast";
+import { FolderId } from "../../../utils/types.global";
 
 export default function useDeleteFolderItem(
   folderItemId: number,
@@ -82,11 +82,11 @@ export default function useDeleteFolderItem(
   return { ...mutation };
 }
 
-const optimisticallyUpdateFolderItems = async (
+async function optimisticallyUpdateFolderItems(
   queryClient: QueryClient,
   getFolderItemsQueryKey: QueryKey,
   folderItemId: number,
-) => {
+) {
   await queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
 
   const previousFolderItems = queryClient.getQueryData<FolderItemsGet>(
@@ -105,13 +105,13 @@ const optimisticallyUpdateFolderItems = async (
   });
 
   return previousFolderItems;
-};
+}
 
-const optimisticallyUpdatePinnedFolders = async (
+async function optimisticallyUpdatePinnedFolders(
   queryClient: QueryClient,
   getPinnedFoldersQueryKey: QueryKey,
   folderItemId: number,
-) => {
+) {
   await queryClient.cancelQueries({ queryKey: getPinnedFoldersQueryKey });
 
   const previousPinnedFolders = queryClient.getQueryData<FolderGetPinned>(
@@ -130,4 +130,4 @@ const optimisticallyUpdatePinnedFolders = async (
   });
 
   return previousPinnedFolders;
-};
+}

@@ -1,14 +1,14 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useGetPinned from "api/folder/hooks/useGetPinned";
 import SideNavItem from "./SideNavItem";
 import SideNavItemSkeleton from "./SideNavItemSkeleton";
 import ErrorPill from "@/components/ErrorPill";
-import useGetPinned from "api/folder/hooks/useGetPinned";
 
 interface PinnedFoldersProps {}
 
-const PinnedFolders: FC<PinnedFoldersProps> = ({}) => {
-  const { data, isLoading, isError, isSuccess } = useGetPinned();
+const PinnedFolders: FC<PinnedFoldersProps> = () => {
+  const { data, isLoading, isError, isSuccess, error } = useGetPinned();
 
   const folderId = useFolderIdFromParams();
 
@@ -25,20 +25,18 @@ const PinnedFolders: FC<PinnedFoldersProps> = ({}) => {
         <SideNavItemSkeleton />
       </>
     );
-  else if (isError) return <ErrorPill></ErrorPill>;
+  else if (isError) return <ErrorPill>{error.message}</ErrorPill>;
   else if (!isSuccess) return;
 
-  return data.data.map((folder) => {
-    return (
-      <SideNavItem
-        key={folder.folderId}
-        folderId={folder.folderId}
-        selected={folderId == folder.folderId}
-      >
-        {folder.label}
-      </SideNavItem>
-    );
-  });
+  return data.data.map((folder) => (
+    <SideNavItem
+      key={folder.folderId}
+      folderId={folder.folderId}
+      selected={folderId === folder.folderId}
+    >
+      {folder.label}
+    </SideNavItem>
+  ));
 };
 
 export default PinnedFolders;

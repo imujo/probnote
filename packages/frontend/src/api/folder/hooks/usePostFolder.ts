@@ -12,9 +12,9 @@ import {
   useQueryClient,
 } from "react-query";
 import { z } from "zod";
-import { useToast } from "@/components/ui/use-toast";
 import queryKeys from "utils/queryKeys";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
+import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
 
 const validaiton = z.object({
@@ -99,11 +99,11 @@ export default function usePostFolder(parentFolderId: FolderId) {
   };
 }
 
-const optimisticallyUpdateFolderItems = async (
+async function optimisticallyUpdateFolderItems(
   queryClient: QueryClient,
   getFolderItemsQueryKey: QueryKey,
   newLabel: string,
-) => {
+) {
   await queryClient.cancelQueries({ queryKey: getFolderItemsQueryKey });
 
   const previousFolderItems = queryClient.getQueryData<FolderItemsGet>(
@@ -133,4 +133,4 @@ const optimisticallyUpdateFolderItems = async (
   });
 
   return previousFolderItems;
-};
+}

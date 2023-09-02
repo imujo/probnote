@@ -1,4 +1,3 @@
-import env from "@/config/env.config";
 import {
   FolderItemDelete,
   FolderItemsGet,
@@ -7,6 +6,7 @@ import {
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { FolderId } from "../../utils/types.global";
+import env from "@/config/env.config";
 
 export const getFolderItems = async (parentFolderId: FolderId) => {
   const response = await fetch(

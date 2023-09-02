@@ -1,22 +1,22 @@
 "use client";
+
+import React from "react";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { cn } from "utils/cn";
+import { ErrorResponse } from "@probnote/backend/src/globalTypes";
+import TableContent from "./TableContent";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "utils/cn";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { useMemo } from "react";
-import TableContent from "./TableContent";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

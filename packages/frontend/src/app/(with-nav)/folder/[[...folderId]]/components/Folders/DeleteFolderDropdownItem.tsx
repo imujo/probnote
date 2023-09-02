@@ -1,7 +1,17 @@
 "use client";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
+import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import { DialogClose } from "@radix-ui/react-dialog";
 import { Trash } from "lucide-react";
-import { Dispatch, FC, SetStateAction, useCallback, useState } from "react";
+import useDeleteFolderItem from "api/folderItem/hooks/useDeleteFolderItem";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { FolderId } from "../../../../../../utils/types.global";
 import {
   Dialog,
@@ -12,11 +22,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { ButtonLoading } from "@/components/ButtonLoading";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import ButtonLoading from "@/components/ButtonLoading";
 import ErrorPill from "@/components/ErrorPill";
-import useDeleteFolderItem from "api/folderItem/hooks/useDeleteFolderItem";
 
 interface DeleteFolderDropdownItemProps {
   folderItemId: FolderId;
@@ -29,24 +36,22 @@ const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
 }) => {
   const currentFolderId = useFolderIdFromParams();
 
-  if (!currentFolderId) {
-    // TODO navigate to 404
-    return;
-  }
-
   const [dialogOpen, setDialogOpen] = useState(false);
-  if (folderItemId === "base") throw new Error("Cannote delete base folder");
 
   const onSuccess = useCallback(() => {
     setDialogOpen(false);
     setDropdownOpen(false);
-  }, []);
+  }, [setDialogOpen, setDropdownOpen]);
 
   const {
     mutate: deleteFolder,
     isLoading,
     error,
-  } = useDeleteFolderItem(folderItemId, currentFolderId, onSuccess);
+  } = useDeleteFolderItem(
+    folderItemId as number, // cannot be base
+    currentFolderId as FolderId, // cannot be undefined
+    onSuccess,
+  );
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -73,7 +78,7 @@ const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
           {!!error && <ErrorPill>{error.message}</ErrorPill>}
 
           <DialogClose asChild>
-            <Button variant={"secondary"} disabled={isLoading}>
+            <Button variant="secondary" disabled={isLoading}>
               Cancel
             </Button>
           </DialogClose>

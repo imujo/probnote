@@ -1,7 +1,8 @@
 "use client";
-import { FC } from "react";
-import BreadcrumbItem from "./BreadcrumbItem";
+
+import React, { FC } from "react";
 import { cn } from "utils/cn";
+import BreadcrumbItem from "./BreadcrumbItem";
 import useBreadcrumbs from "../../../../../../api/breadcrumbs/hooks/useGetBreadcrumbs";
 import BreadcrumbSkeleton from "./BreadcrumbSkeleton";
 import { FolderId } from "../../../../../../utils/types.global";
@@ -29,7 +30,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
     <ul className={cn("flex text-xs font-light", className)}>
       <BreadcrumbItem
         key="base"
-        href={`/folder/base`}
+        href="/folder/base"
         last={breadcrumbs.length === 0}
       >
         Home

@@ -57,12 +57,12 @@ const put = async (
     const folderItemId = parseInt(req.params.folderItemId, 10);
     const body = req.body;
 
-    const folderItem = await putFolderItem(folderItemId, body);
+    const { id } = await putFolderItem(folderItemId, body);
 
     res.status(200).json({
-      message: messages.putSuccess("Folder item", folderItemId),
+      message: messages.putSuccess("Folder item", id),
       data: {
-        folderItemId: folderItem.id,
+        folderItemId: id,
       },
     });
   } catch (error) {
