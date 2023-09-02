@@ -88,7 +88,7 @@ export default function useRenameFolderItem(
       }
 
       toast({
-        title: "An error occured tying to rename folders",
+        title: "An error occured tying to rename folder item",
         description: err.message,
         variant: "destructive",
       });
@@ -98,7 +98,7 @@ export default function useRenameFolderItem(
       queryClient.invalidateQueries(getPinnedFoldersQueryKey);
       closeDialog();
       toast({
-        title: "Successfully renamed folder",
+        title: "Successfully renamed folder item",
         description: data.message,
       });
     },

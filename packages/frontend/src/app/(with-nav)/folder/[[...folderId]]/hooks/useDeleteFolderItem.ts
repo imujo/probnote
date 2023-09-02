@@ -64,7 +64,7 @@ export default function useDeleteFolderItem(
       }
 
       toast({
-        title: "An error occured tying to delete folders",
+        title: "An error occured tying to delete folder item",
         description: err.message,
         variant: "destructive",
       });
@@ -74,7 +74,7 @@ export default function useDeleteFolderItem(
       queryClient.invalidateQueries(getPinnedFoldersQueryKey);
       closeDialog();
       toast({
-        title: "Successfully deleted folder",
+        title: "Successfully deleted folder item",
         description: data.message,
       });
     },

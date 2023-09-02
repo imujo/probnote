@@ -34,7 +34,7 @@ const get = async (
     if (!folderItems) {
       const message = parentFolderId
         ? messages.notFoundWithId("Items from folder", parentFolderId)
-        : messages.notFound("Base folder");
+        : messages.notFound("Base folder items");
 
       throw new CustomError(message, 404);
     }
@@ -81,7 +81,7 @@ const del = async (
     const folderItem = await deleteFolderItem(folderItemId);
 
     res.status(200).json({
-      message: messages.deleteSuccess("Folder", folderItemId),
+      message: messages.deleteSuccess("Folder item", folderItemId),
       data: {
         folderItemId: folderItem.id,
       },

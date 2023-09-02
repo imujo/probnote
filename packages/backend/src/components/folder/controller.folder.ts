@@ -65,7 +65,7 @@ const getParents = async (
 
     if (!parentFolders) {
       throw new CustomError(
-        messages.notFoundWithId("Items from folder", folderId),
+        messages.notFoundWithId("Parent folders of folder", folderId),
         404
       );
     }
