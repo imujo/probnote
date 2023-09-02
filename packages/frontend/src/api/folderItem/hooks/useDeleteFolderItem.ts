@@ -18,7 +18,7 @@ import { deleteFolderItem } from "api/folderItem/folderItem.api";
 export default function useDeleteFolderItem(
   folderItemId: number,
   parentFolderId: FolderId,
-  closeDialog: () => void,
+  onSuccess?: () => void,
 ) {
   const queryClient = useQueryClient();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
@@ -49,7 +49,6 @@ export default function useDeleteFolderItem(
       return { previousFolderItems, previousPinnedFolders };
     },
     onError: (err, _, context) => {
-      // TODO toast error
       if (context?.previousFolderItems) {
         queryClient.setQueryData(
           getFolderItemsQueryKey,
@@ -72,11 +71,11 @@ export default function useDeleteFolderItem(
     onSuccess: (data) => {
       queryClient.invalidateQueries(getFolderItemsQueryKey);
       queryClient.invalidateQueries(getPinnedFoldersQueryKey);
-      closeDialog();
       toast({
         title: "Successfully deleted folder item",
         description: data.message,
       });
+      if (onSuccess) onSuccess();
     },
   });
 

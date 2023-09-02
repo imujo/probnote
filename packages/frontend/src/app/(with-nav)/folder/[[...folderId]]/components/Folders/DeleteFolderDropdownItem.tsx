@@ -1,7 +1,7 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Trash } from "lucide-react";
-import { FC, useCallback, useState } from "react";
+import { Dispatch, FC, SetStateAction, useCallback, useState } from "react";
 import { FolderId } from "../../../../../../utils/types.global";
 import {
   Dialog,
@@ -19,11 +19,13 @@ import ErrorPill from "@/components/ErrorPill";
 import useDeleteFolderItem from "api/folderItem/hooks/useDeleteFolderItem";
 
 interface DeleteFolderDropdownItemProps {
-  folderId: FolderId;
+  folderItemId: FolderId;
+  setDropdownOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
-  folderId,
+  folderItemId,
+  setDropdownOpen,
 }) => {
   const currentFolderId = useFolderIdFromParams();
 
@@ -32,26 +34,27 @@ const DeleteFolderDropdownItem: FC<DeleteFolderDropdownItemProps> = ({
     return;
   }
 
-  const [open, setOpen] = useState(false);
-  if (folderId === "base") throw new Error("Cannote delete base folder");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  if (folderItemId === "base") throw new Error("Cannote delete base folder");
 
-  const closeDialog = useCallback(() => {
-    setOpen(false);
+  const onSuccess = useCallback(() => {
+    setDialogOpen(false);
+    setDropdownOpen(false);
   }, []);
 
   const {
     mutate: deleteFolder,
     isLoading,
     error,
-  } = useDeleteFolderItem(folderId, currentFolderId, closeDialog);
+  } = useDeleteFolderItem(folderItemId, currentFolderId, onSuccess);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger className="w-full">
         <DropdownMenuItem
           onSelect={(e) => {
             e.preventDefault();
-            setOpen(true);
+            setDialogOpen(true);
           }}
           onClick={(e) => e.stopPropagation()}
           className="cursor-pointer text-red-600 focus:text-red-600"

@@ -5,47 +5,27 @@ import {
   useQueryClient,
 } from "react-query";
 import queryKeys from "utils/queryKeys";
-import { FolderId } from "../../../../../../types.global";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
 import {
   FolderItemsGet,
   FolderItemPut,
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { putFolderItem } from "api/folderItem/folderItem.api";
-
-const validaiton = z.object({
-  newLabel: z.string().min(4).max(30),
-});
-
-type Validation = z.infer<typeof validaiton>;
+import { FolderId } from "utils/types.global";
 
 export default function useRenameFolderItem(
   folderItemId: number,
   parentFolderId: FolderId,
-  closeDialog: () => void,
+  onSuccess?: () => void,
 ) {
-  const form = useForm<Validation>({
-    resolver: zodResolver(validaiton),
-    defaultValues: {
-      newLabel: "",
-    },
-  });
-
-  const onSubmit = async (data: Validation) => {
-    await mutate(data.newLabel);
-  };
-
   const queryClient = useQueryClient();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const { toast } = useToast();
 
-  const { mutate, error, isLoading } = useMutation<
+  const mutation = useMutation<
     FolderItemPut,
     ErrorResponse,
     string,
@@ -96,15 +76,16 @@ export default function useRenameFolderItem(
     onSuccess: (data) => {
       queryClient.invalidateQueries(getFolderItemsQueryKey);
       queryClient.invalidateQueries(getPinnedFoldersQueryKey);
-      closeDialog();
       toast({
         title: "Successfully renamed folder item",
         description: data.message,
       });
+
+      if (onSuccess) onSuccess();
     },
   });
 
-  return { mutate, error, isLoading, form, onSubmit };
+  return mutation;
 }
 
 const optimisticallyUpdateFolderItems = async (

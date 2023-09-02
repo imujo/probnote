@@ -1,7 +1,7 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Pen } from "lucide-react";
-import { FC, useCallback, useState } from "react";
+import { Dispatch, FC, SetStateAction, useCallback, useState } from "react";
 import { FolderId } from "../../../../../../utils/types.global";
 import {
   Dialog,
@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ButtonLoading } from "@/components/ButtonLoading";
-import { useParams } from "next/navigation";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
 import {
   Form,
@@ -27,16 +26,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ErrorPill from "@/components/ErrorPill";
-import useRenameFolderItem from "api/folderItem/hooks/useRenameFolderItem";
+import useRenameFolderItemDropdownItem from "../../hooks/useRenameFolderItemDropdownItem";
 
 interface RenameFolderDropdownItemProps {
-  folderId: FolderId;
+  folderItemId: FolderId;
   currentLabel?: string;
+  setDropdownOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
-  folderId,
+  folderItemId,
   currentLabel,
+  setDropdownOpen,
 }) => {
   const currentFolderId = useFolderIdFromParams();
 
@@ -45,26 +46,27 @@ const RenameFolderDropdownItem: FC<RenameFolderDropdownItemProps> = ({
     return;
   }
 
-  const [open, setOpen] = useState(false);
-  if (folderId === "base") return <div>Cannot rename base folder</div>;
+  const [dialogOpen, setDialogOpen] = useState(false);
+  if (folderItemId === "base") throw new Error("Cannot rename base folder");
 
-  const closeDialog = useCallback(() => {
-    setOpen(false);
+  const onSuccess = useCallback(() => {
+    setDialogOpen(false);
+    setDropdownOpen(false);
   }, []);
 
-  const { isLoading, error, form, onSubmit } = useRenameFolderItem(
-    folderId,
+  const { isLoading, error, form, onSubmit } = useRenameFolderItemDropdownItem(
+    folderItemId,
     currentFolderId,
-    closeDialog,
+    onSuccess,
   );
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger className="w-full">
         <DropdownMenuItem
           onSelect={(e) => {
             e.preventDefault();
-            setOpen(true);
+            setDialogOpen(true);
           }}
           onClick={(e) => e.stopPropagation()}
           className="cursor-pointer"

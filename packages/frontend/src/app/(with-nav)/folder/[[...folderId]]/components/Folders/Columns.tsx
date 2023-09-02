@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
@@ -13,9 +12,10 @@ import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
 import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
 import moment from "moment";
 import PinFolderDropdownItem from "./PinFolderDropdownItem";
-import { FolderGetItems } from "@probnote/backend/src/components/folder/types.folder";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
+import { useState } from "react";
 
-export const columns: ColumnDef<FolderGetItems["data"][0]>[] = [
+export const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
   {
     accessorKey: "label",
     header: "Label",
@@ -72,8 +72,10 @@ export const columns: ColumnDef<FolderGetItems["data"][0]>[] = [
       const label = row.original.label;
       const folderItemId = row.original.id;
 
+      const [dropdownOpen, setDropdownOpen] = useState(false);
+
       return (
-        <DropdownMenu>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -89,10 +91,14 @@ export const columns: ColumnDef<FolderGetItems["data"][0]>[] = [
               />
             ) : null}
             <RenameFolderDropdownItem
-              folderId={folderItemId}
+              folderItemId={folderItemId}
               currentLabel={label}
+              setDropdownOpen={setDropdownOpen}
             />
-            <DeleteFolderDropdownItem folderId={folderItemId} />
+            <DeleteFolderDropdownItem
+              folderItemId={folderItemId}
+              setDropdownOpen={setDropdownOpen}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       );
