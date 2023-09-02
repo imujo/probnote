@@ -17,25 +17,17 @@ import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/type
 import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
 
-const validaiton = z.object({
-  label: z.string().min(4).max(30),
-});
-
-type Validation = z.infer<typeof validaiton>;
-
-export default function usePostFolder(parentFolderId: FolderId) {
+export default function usePostFolder(
+  parentFolderId: FolderId,
+  onSuccess?: () => void,
+) {
   const router = useRouter();
-  const form = useForm<Validation>({
-    resolver: zodResolver(validaiton),
-    defaultValues: {
-      label: "",
-    },
-  });
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
 
-  const { mutate, error, isLoading } = useMutation<
+  const mutation = useMutation<
     FolderPost,
     ErrorResponse,
     string,
@@ -55,12 +47,12 @@ export default function usePostFolder(parentFolderId: FolderId) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(getFolderItemsQueryKey);
-      closeDialog();
       router.push(`/folder/${data.data.folderId}`);
       toast({
         title: "Successfully created folder",
         description: data.message,
       });
+      if (onSuccess) onSuccess();
     },
     onError: (err, _, context) => {
       if (context?.previousFolderItems) {
@@ -77,26 +69,7 @@ export default function usePostFolder(parentFolderId: FolderId) {
     },
   });
 
-  const onSubmit = async (data: Validation) => {
-    await mutate(data.label);
-  };
-
-  const [open, setOpen] = useState(false);
-
-  const closeDialog = () => {
-    setOpen(false);
-  };
-
-  return {
-    form,
-    mutate,
-    error,
-    isLoading,
-    onSubmit,
-    dialogOpen: open,
-    closeDialog,
-    setDialogOpen: setOpen,
-  };
+  return mutation;
 }
 
 async function optimisticallyUpdateFolderItems(

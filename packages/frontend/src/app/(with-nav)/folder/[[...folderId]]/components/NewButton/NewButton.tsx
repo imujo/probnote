@@ -1,7 +1,6 @@
 "use client";
 
 import React, { FC } from "react";
-import usePostFolder from "api/folder/hooks/usePostFolder";
 import { Folder, LucidePlus } from "lucide-react";
 import ButtonWithIcon from "@/components/ButtonWithIcon";
 import {
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import NewButtonItem from "./NewButtonItem";
 import { FolderId } from "../../../../../../utils/types.global";
+import usePostFolderButton from "../../hooks/usePostFolderButton";
 
 interface NewButtonProps {
   folderId: FolderId;
@@ -18,7 +18,7 @@ interface NewButtonProps {
 
 const NewButton: FC<NewButtonProps> = ({ folderId }) => {
   const { form, onSubmit, isLoading, dialogOpen, error, setDialogOpen } =
-    usePostFolder(folderId);
+    usePostFolderButton(folderId);
 
   return (
     <DropdownMenu>
