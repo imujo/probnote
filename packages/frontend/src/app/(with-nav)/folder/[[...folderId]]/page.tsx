@@ -2,16 +2,21 @@
 
 import React from "react";
 import useFolderIdFromParams from "hooks/useFolderIdFromParams";
-import useFolders from "../../../../api/folderItem/hooks/useGetFolderItems";
 import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
 import columns from "./components/Folders/Columns";
 import NewButton from "./components/NewButton/NewButton";
 import { DataTable } from "./components/Folders/DataTable";
+import useGetFolderItems from "../../../../api/folderItem/hooks/useGetFolderItems";
+import { notFound } from "next/navigation";
 
 function FolderPage() {
   const folderId = useFolderIdFromParams();
 
-  const { data, error, isLoading } = useFolders(folderId);
+  const { data, error, isLoading } = useGetFolderItems(folderId);
+
+  if (error?.status === 404) {
+    notFound();
+  }
 
   return (
     <div className="flex h-full flex-col">

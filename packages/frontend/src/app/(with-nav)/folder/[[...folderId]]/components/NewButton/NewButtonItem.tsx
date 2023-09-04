@@ -5,7 +5,6 @@ import {
   SubmitHandler,
   UseFormReturn,
 } from "react-hook-form";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { LucideIcon } from "lucide-react";
 import ButtonLoading from "@/components/ButtonLoading";
@@ -31,6 +30,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import ResponseError from "utils/ResponseError";
 
 interface NewButtonItemProps<T extends FieldValues> {
   form: UseFormReturn<T, any, undefined>;
@@ -43,7 +43,7 @@ interface NewButtonItemProps<T extends FieldValues> {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isLoading: boolean;
-  error: ErrorResponse | null;
+  error: ResponseError | null;
 }
 
 function NewButtonItem<T extends FieldValues>({

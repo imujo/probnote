@@ -1,18 +1,18 @@
 import { FolderGetParents } from "@probnote/backend/src/components/folder/types.folder";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { getBreadcrumbs } from "api/breadcrumbs/breadcrumbs.api";
 import { QueryKey, useQuery } from "react-query";
 import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
 import queryKeys from "utils/queryKeys";
 import { useAuth } from "@clerk/nextjs";
+import ResponseError from "utils/ResponseError";
 
 export default function useGetBreadcrumbs(folderId: FolderId) {
   const { toast } = useToast();
   const getBreadcrumbsQueryKey = queryKeys.getBreadcrumbs(folderId);
   const { getToken } = useAuth();
 
-  return useQuery<FolderGetParents, ErrorResponse, FolderGetParents, QueryKey>({
+  return useQuery<FolderGetParents, ResponseError, FolderGetParents, QueryKey>({
     queryKey: getBreadcrumbsQueryKey,
     queryFn: () => {
       if (folderId === "base") {

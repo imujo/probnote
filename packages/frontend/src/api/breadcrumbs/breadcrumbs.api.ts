@@ -2,6 +2,7 @@ import { FolderGetParents } from "@probnote/backend/src/components/folder/types.
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import env from "../../config/env.config";
 import { GetToken } from "@clerk/types";
+import ResponseError from "utils/ResponseError";
 
 // eslint-disable-next-line  import/prefer-default-export
 export const getBreadcrumbs = async (
@@ -16,11 +17,12 @@ export const getBreadcrumbs = async (
     },
   );
 
-  const data = (await response.json()) as FolderGetParents;
+  const responseJson = await response.json();
+  const data = responseJson as FolderGetParents;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
-    throw new Error(error.message);
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;

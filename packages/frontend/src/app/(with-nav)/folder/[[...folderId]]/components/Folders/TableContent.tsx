@@ -4,11 +4,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { ColumnDef, Table, flexRender } from "@tanstack/react-table";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { TableCell, TableRow, TableRowCenter } from "@/components/ui/table";
+import ResponseError from "utils/ResponseError";
 
 interface TableContentProps<TData> {
-  error: ErrorResponse | null;
+  error: ResponseError | null;
   isLoading: boolean;
   table: Table<TData>;
   columns: ColumnDef<TData, any>[];

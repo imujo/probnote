@@ -7,6 +7,7 @@ import {
 } from "@probnote/backend/src/components/folder/types.folder";
 import env from "@/config/env.config";
 import { GetToken } from "@clerk/types";
+import ResponseError from "utils/ResponseError";
 
 export const getPinnedFolders = async (getAuthToken: GetToken) => {
   const response = await fetch(
@@ -17,11 +18,12 @@ export const getPinnedFolders = async (getAuthToken: GetToken) => {
     },
   );
 
-  const data = (await response.json()) as FolderGetPinned;
+  const responseJson = await response.json();
+  const data = responseJson as FolderGetPinned;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
-    throw new Error(error.message);
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;
@@ -47,11 +49,12 @@ export const postFolder = async (
     cache: "no-store",
   });
 
-  const data = (await response.json()) as FolderPost;
+  const responseJson = await response.json();
+  const data = responseJson as FolderPost;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
-    throw new Error(error.message);
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;
@@ -73,11 +76,12 @@ export const putFolder = async (
     cache: "no-store",
   });
 
-  const data = (await response.json()) as FolderPut;
+  const responseJson = await response.json();
+  const data = responseJson as FolderPut;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
-    throw new Error(error.message);
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;

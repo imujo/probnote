@@ -1,5 +1,4 @@
 import { FolderPost } from "@probnote/backend/src/components/folder/types.folder";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { postFolder } from "api/folder/folder.api";
 import { useRouter } from "next/navigation";
 import {
@@ -13,6 +12,7 @@ import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/type
 import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
 import { useAuth } from "@clerk/nextjs";
+import ResponseError from "utils/ResponseError";
 
 export default function usePostFolder(
   parentFolderId: FolderId,
@@ -27,7 +27,7 @@ export default function usePostFolder(
 
   const mutation = useMutation<
     FolderPost,
-    ErrorResponse,
+    ResponseError,
     string,
     {
       previousFolderItems: FolderItemsGet | undefined;

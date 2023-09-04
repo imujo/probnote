@@ -8,6 +8,7 @@ import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { FolderId } from "../../utils/types.global";
 import env from "@/config/env.config";
 import { GetToken } from "@clerk/types";
+import ResponseError from "utils/ResponseError";
 
 export const getFolderItems = async (
   parentFolderId: FolderId,
@@ -20,12 +21,13 @@ export const getFolderItems = async (
       headers: { Authorization: `Bearer ${await getAuthToken()}` },
     },
   );
-  const data = (await response.json()) as FolderItemsGet;
+  const responseJson = await response.json();
+  const data = responseJson as FolderItemsGet;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
+    const error = responseJson as ErrorResponse;
 
-    throw new Error(error.message);
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;
@@ -48,11 +50,12 @@ export const deleteFolderItem = async (
     },
   );
 
-  const data = (await response.json()) as FolderItemDelete;
+  const responseJson = await response.json();
+  const data = responseJson as FolderItemDelete;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
-    throw new Error(error.message);
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;
@@ -77,11 +80,12 @@ export const putFolderItem = async (
     },
   );
 
-  const data = (await response.json()) as FolderItemPut;
+  const responseJson = await response.json();
+  const data = responseJson as FolderItemPut;
 
   if (!response.ok) {
-    const error = data as ErrorResponse;
-    throw new Error(error.message);
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
   }
 
   return data;

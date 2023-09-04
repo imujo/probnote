@@ -8,7 +8,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { cn } from "utils/cn";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import TableContent from "./TableContent";
 import {
   Table,
@@ -17,12 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import ResponseError from "utils/ResponseError";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
   isLoading: boolean;
-  error: ErrorResponse | null;
+  error: ResponseError | null;
   className?: string;
 }
 

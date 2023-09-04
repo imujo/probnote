@@ -9,27 +9,68 @@ export const getFolderItems = async (
   userId: string,
   sort: Sort
 ) => {
-  const folderItems = await prisma.folderItem.findMany({
-    where: {
-      parentFolderId,
-      userId,
-    },
-    select: {
-      id: true,
-      label: true,
-      createdAt: true,
-      updatedAt: true,
-      Folder: {
-        select: {
-          id: true,
-          pinned: true,
+  let folderItems:
+    | {
+        id: number;
+        label: string;
+        createdAt: Date;
+        updatedAt: Date;
+        Folder: {
+          id: number;
+          pinned: boolean;
+        } | null;
+      }[]
+    | null;
+  if (parentFolderId === null) {
+    folderItems = await prisma.folderItem.findMany({
+      where: {
+        parentFolderId,
+        userId,
+      },
+      select: {
+        id: true,
+        label: true,
+        createdAt: true,
+        updatedAt: true,
+        Folder: {
+          select: {
+            id: true,
+            pinned: true,
+          },
         },
       },
-    },
-    orderBy: {
-      [sort.sortBy]: sort.sortOrder,
-    },
-  });
+      orderBy: {
+        [sort.sortBy]: sort.sortOrder,
+      },
+    });
+  } else {
+    const temp = await prisma.folder.findFirst({
+      where: {
+        id: parentFolderId,
+        FolderItem: {
+          userId,
+        },
+      },
+      select: {
+        Children: {
+          select: {
+            id: true,
+            label: true,
+            createdAt: true,
+            updatedAt: true,
+            Folder: {
+              select: {
+                id: true,
+                pinned: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    folderItems = temp?.Children || null;
+  }
 
   return folderItems;
 };

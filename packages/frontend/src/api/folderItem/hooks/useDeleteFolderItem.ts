@@ -6,7 +6,6 @@ import {
 } from "react-query";
 import { deleteFolderItem } from "api/folderItem/folderItem.api";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import queryKeys from "utils/queryKeys";
 import {
   FolderItemDelete,
@@ -15,6 +14,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
 import { useAuth } from "@clerk/nextjs";
+import ResponseError from "utils/ResponseError";
 
 export default function useDeleteFolderItem(
   folderItemId: number,
@@ -29,7 +29,7 @@ export default function useDeleteFolderItem(
 
   const mutation = useMutation<
     FolderItemDelete,
-    ErrorResponse,
+    ResponseError,
     void,
     {
       previousFolderItems: FolderItemsGet | undefined;

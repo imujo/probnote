@@ -6,7 +6,6 @@ import {
 } from "react-query";
 import queryKeys from "utils/queryKeys";
 import { FolderGetPinned } from "@probnote/backend/src/components/folder/types.folder";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { FolderId } from "utils/types.global";
 import {
   FolderItemsGet,
@@ -15,6 +14,7 @@ import {
 import { putFolderItem } from "api/folderItem/folderItem.api";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@clerk/nextjs";
+import ResponseError from "utils/ResponseError";
 
 export default function useRenameFolderItem(
   folderItemId: number,
@@ -29,7 +29,7 @@ export default function useRenameFolderItem(
 
   const mutation = useMutation<
     FolderItemPut,
-    ErrorResponse,
+    ResponseError,
     string,
     {
       previousFolders: FolderItemsGet | undefined;

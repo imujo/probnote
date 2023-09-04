@@ -2,7 +2,6 @@ import {
   FolderGetPinned,
   FolderPut,
 } from "@probnote/backend/src/components/folder/types.folder";
-import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { putFolder } from "api/folder/folder.api";
 import {
   QueryClient,
@@ -15,6 +14,7 @@ import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/type
 import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@clerk/nextjs";
+import ResponseError from "utils/ResponseError";
 
 export type PinFolderProps = {
   pinStatus: boolean;
@@ -33,7 +33,7 @@ export default function usePinFolder(
 
   return useMutation<
     FolderPut,
-    ErrorResponse,
+    ResponseError,
     PinFolderProps,
     {
       prevPinnedFolders: FolderGetPinned | undefined;
