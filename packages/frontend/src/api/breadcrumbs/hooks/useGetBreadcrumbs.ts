@@ -5,10 +5,12 @@ import { QueryKey, useQuery } from "react-query";
 import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
 import queryKeys from "utils/queryKeys";
+import { useAuth } from "@clerk/nextjs";
 
 export default function useGetBreadcrumbs(folderId: FolderId) {
   const { toast } = useToast();
   const getBreadcrumbsQueryKey = queryKeys.getBreadcrumbs(folderId);
+  const { getToken } = useAuth();
 
   return useQuery<FolderGetParents, ErrorResponse, FolderGetParents, QueryKey>({
     queryKey: getBreadcrumbsQueryKey,
@@ -22,7 +24,7 @@ export default function useGetBreadcrumbs(folderId: FolderId) {
           },
         };
       }
-      return getBreadcrumbs(folderId);
+      return getBreadcrumbs(folderId, getToken);
     },
     select: (data) => {
       const breadcrumbs = [...data.data.parentFolders];
