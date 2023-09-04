@@ -14,6 +14,7 @@ import {
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { putFolderItem } from "api/folderItem/folderItem.api";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/nextjs";
 
 export default function useRenameFolderItem(
   folderItemId: number,
@@ -24,6 +25,7 @@ export default function useRenameFolderItem(
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const { toast } = useToast();
+  const { getToken } = useAuth();
 
   const mutation = useMutation<
     FolderItemPut,
@@ -35,7 +37,7 @@ export default function useRenameFolderItem(
     }
   >({
     mutationFn: async (newLabel: string) =>
-      putFolderItem(folderItemId, { label: newLabel }),
+      putFolderItem(folderItemId, { label: newLabel }, getToken),
     onMutate: async (newLabel) => {
       const previousFolders = await optimisticallyUpdateFolderItems(
         queryClient,

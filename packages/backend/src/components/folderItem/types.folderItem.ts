@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { Response } from "express";
-import RequestBuilder from "../../utils/requestResponseBuilders";
+import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
 import { SuccessResponse, SortSchema } from "../../globalTypes";
 import messages from "../../messages";
+import { RequireAuthProp } from "@clerk/clerk-sdk-node";
 
 // GET FOLDER ITEM
 
@@ -18,10 +19,11 @@ export const folderItemsGetSchema = {
   query: SortSchema,
 };
 
-const folderItemsGetBuilder = new RequestBuilder(folderItemsGetSchema);
-export type FolderItemsGetRequest = ReturnType<
-  typeof folderItemsGetBuilder.getRequestType
+const folderItemsGetBuilder = new AuthRequestBuilder(folderItemsGetSchema);
+export type FolderItemsGetRequest = RequireAuthProp<
+  ReturnType<typeof folderItemsGetBuilder.getRequestType>
 >;
+
 export type FolderItemsGet = SuccessResponse<
   {
     id: number;
@@ -64,7 +66,7 @@ export const folderItemPutSchema = {
 };
 
 export type FolderItemPutBody = z.infer<(typeof folderItemPutSchema)["body"]>;
-const folderItemPutBuilder = new RequestBuilder(folderItemPutSchema);
+const folderItemPutBuilder = new AuthRequestBuilder(folderItemPutSchema);
 export type FolderItemPutRequest = ReturnType<
   typeof folderItemPutBuilder.getRequestType
 >;
@@ -86,7 +88,7 @@ export const folderItemDeleteSchema = {
   }),
 };
 
-const folderItemDeleteBuilder = new RequestBuilder(folderItemDeleteSchema);
+const folderItemDeleteBuilder = new AuthRequestBuilder(folderItemDeleteSchema);
 export type FolderItemDeleteRequest = ReturnType<
   typeof folderItemDeleteBuilder.getRequestType
 >;

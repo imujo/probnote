@@ -1,3 +1,4 @@
+import { RequireAuthProp } from "@clerk/clerk-sdk-node";
 import { Request } from "express";
 import { ZodTypeAny, TypeOf, z } from "zod";
 
@@ -19,6 +20,20 @@ export default class RequestBuilder<Schema extends ZodSchemaShape> {
     type Type = TypeOf<typeof zodObject>;
     type Req = Request<Type["params"], {}, Type["body"], Type["query"]>;
     return {} as Req;
+  }
+}
+
+export class AuthRequestBuilder<
+  Schema extends ZodSchemaShape,
+> extends RequestBuilder<Schema> {
+  constructor(schema: Schema) {
+    super(schema);
+  }
+
+  getRequestType() {
+    const req = super.getRequestType();
+    type Req = typeof req;
+    return {} as RequireAuthProp<Req>;
   }
 }
 

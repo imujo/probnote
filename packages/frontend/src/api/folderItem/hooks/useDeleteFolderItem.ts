@@ -14,6 +14,7 @@ import {
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
+import { useAuth } from "@clerk/nextjs";
 
 export default function useDeleteFolderItem(
   folderItemId: number,
@@ -24,6 +25,7 @@ export default function useDeleteFolderItem(
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const { toast } = useToast();
+  const { getToken } = useAuth();
 
   const mutation = useMutation<
     FolderItemDelete,
@@ -34,7 +36,7 @@ export default function useDeleteFolderItem(
       previousPinnedFolders: FolderGetPinned | undefined;
     }
   >({
-    mutationFn: () => deleteFolderItem(folderItemId),
+    mutationFn: () => deleteFolderItem(folderItemId, getToken),
     onMutate: async () => {
       const previousFolderItems = await optimisticallyUpdateFolderItems(
         queryClient,

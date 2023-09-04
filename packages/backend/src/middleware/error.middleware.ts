@@ -14,7 +14,7 @@ export default function errorMiddleware(
   let message = "Ooops, something went wrong with the server";
   let status = 500;
 
-  console.log(err);
+  console.log(err.message);
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code[0] === "2") status = 400;
@@ -27,7 +27,9 @@ export default function errorMiddleware(
   } else if (err instanceof CustomError) {
     status = err.status;
     message = err.message;
+  } else if (err.message === "Unauthenticated") {
+    status = 401;
+    message = err.message;
   }
-
   res.status(status).json({ message });
 }

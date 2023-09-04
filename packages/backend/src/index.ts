@@ -5,6 +5,13 @@ import env from "./config/envConfig";
 import folderRoutes from "./components/folder/routes.folder";
 import folderItemRoutes from "./components/folderItem/routes.folderItem";
 import errorMiddleware from "./middleware/error.middleware";
+import { StrictAuthProp } from "@clerk/clerk-sdk-node";
+
+declare global {
+  namespace Express {
+    interface Request extends StrictAuthProp {}
+  }
+}
 
 const app = express();
 const port = env.PORT;

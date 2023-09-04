@@ -5,14 +5,16 @@ import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/type
 import { getFolderItems } from "api/folderItem/folderItem.api";
 import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
+import { useAuth } from "@clerk/nextjs";
 
 export default function useGetFolderItems(parentFolderId: FolderId) {
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const { toast } = useToast();
+  const { getToken } = useAuth();
 
   return useQuery<FolderItemsGet, ErrorResponse>({
     queryKey: getFolderItemsQueryKey,
-    queryFn: () => getFolderItems(parentFolderId),
+    queryFn: () => getFolderItems(parentFolderId, getToken),
     onError: (err) => {
       toast({
         title: "An error occured tying to fetch folder items",
