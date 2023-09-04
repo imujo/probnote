@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FolderId } from "../../../../../../utils/types.global";
 import NewFolderButton from "./NewFolderButton";
+import NewExerciseNoteButton from "./NewExerciseNoteButton";
 
 interface NewButtonProps {
   folderId: FolderId;
@@ -21,9 +22,9 @@ const NewButton: FC<NewButtonProps> = ({ folderId }) => {
       <DropdownMenuTrigger asChild>
         <ButtonWithIcon Icon={LucidePlus}>New</ButtonWithIcon>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end">
         <NewFolderButton />
-        {/* <NewButtonItem /> */}
+        <NewExerciseNoteButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );

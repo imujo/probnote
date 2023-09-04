@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import { File, Folder, MoreVertical } from "lucide-react";
-import DeleteFolderDropdownItem from "./DeleteFolderDropdownItem";
-import RenameFolderDropdownItem from "./RenameFolderDropdownItem";
+import DeleteFolderItemDropdownItem from "./DeleteFolderItemDropdownItem";
+import RenameFolderItemDropdownItem from "./RenameFolderItemDropdownItem";
 import PinFolderDropdownItem from "./PinFolderDropdownItem";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FolderItem } from "utils/types.global";
 
 const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
   {
@@ -69,10 +70,20 @@ const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
     header: "",
     size: 100,
     cell: ({ row }) => {
-      const label = row.original.label;
-      const folderItemId = row.original.id;
+      const original = row.original;
+      const { label, id: folderItemId, Folder, Note } = original;
 
       const [dropdownOpen, setDropdownOpen] = useState(false);
+
+      let folderItemType: keyof typeof FolderItem;
+
+      if (Folder) {
+        folderItemType = "FOLDER";
+      } else if (Note && Note.ExerciseNote) {
+        folderItemType = "EXERCISE_NOTE";
+      } else {
+        folderItemType = "REGULAR_NOTE";
+      }
 
       return (
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
@@ -90,14 +101,16 @@ const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
                 label={label}
               />
             ) : null}
-            <RenameFolderDropdownItem
+            <RenameFolderItemDropdownItem
               folderItemId={folderItemId}
               currentLabel={label}
               setDropdownOpen={setDropdownOpen}
+              folderItemType={folderItemType}
             />
-            <DeleteFolderDropdownItem
+            <DeleteFolderItemDropdownItem
               folderItemId={folderItemId}
               setDropdownOpen={setDropdownOpen}
+              folderItemType={folderItemType}
             />
           </DropdownMenuContent>
         </DropdownMenu>

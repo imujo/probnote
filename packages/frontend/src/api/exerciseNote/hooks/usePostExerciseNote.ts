@@ -1,61 +1,54 @@
-import { FolderPost } from "@probnote/backend/src/components/folder/types.folder";
-import { postFolder } from "api/folder/folder.api";
-import { useRouter } from "next/navigation";
 import {
   QueryClient,
   QueryKey,
   useMutation,
   useQueryClient,
 } from "react-query";
-import queryKeys from "utils/queryKeys";
-import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { useToast } from "@/components/ui/use-toast";
-import { FolderId } from "../../../utils/types.global";
+import { FolderId } from "utils/types.global";
+import { postExerciseNote } from "../exerciseNote.api";
 import { useAuth } from "@clerk/nextjs";
+import { ExerciseNotePost } from "@probnote/backend/src/components/exerciseNote/types.exerciseNote";
 import ResponseError from "utils/ResponseError";
+import { useToast } from "@/components/ui/use-toast";
+import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
+import queryKeys from "utils/queryKeys";
 
-export default function usePostFolder(
+export default function usePostExerciseNote(
   parentFolderId: FolderId,
   onSuccess?: () => void,
 ) {
-  const router = useRouter();
-
+  const { getToken } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
-  const { getToken } = useAuth();
 
-  const mutation = useMutation<
-    FolderPost,
+  return useMutation<
+    ExerciseNotePost,
     ResponseError,
     string,
     {
       previousFolderItems: FolderItemsGet | undefined;
     }
   >({
-    mutationFn: (label) =>
-      postFolder(
-        label,
-        parentFolderId === "base" ? null : parentFolderId,
-        getToken,
-      ),
-    onMutate: async (label) => {
+    mutationFn: (label: string) =>
+      postExerciseNote(label, parentFolderId, getToken),
+
+    onMutate: async (newLabel) => {
       const previousFolderItems = await optimisticallyUpdateFolderItems(
         queryClient,
         getFolderItemsQueryKey,
-        label,
+        newLabel,
       );
 
       return { previousFolderItems };
     },
-    onSuccess: async (data) => {
-      queryClient.invalidateQueries(getFolderItemsQueryKey);
-
-      router.push(`/folder/${data.data.folderId}`);
+    onSuccess: (data) => {
       toast({
-        title: "Successfully created folder",
+        title: "Successfully created exercise note",
         description: data.message,
       });
+
+      queryClient.invalidateQueries(getFolderItemsQueryKey);
 
       if (onSuccess) onSuccess();
     },
@@ -68,14 +61,12 @@ export default function usePostFolder(
       }
 
       toast({
-        title: "An error occured tying to create a folder",
+        title: "An error occured tying to create exercise note",
         description: err.message,
         variant: "destructive",
       });
     },
   });
-
-  return mutation;
 }
 
 async function optimisticallyUpdateFolderItems(

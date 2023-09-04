@@ -34,6 +34,14 @@ export type FolderItemsGet = SuccessResponse<
       id: number;
       pinned: boolean;
     } | null;
+    Note: {
+      ExerciseNote: {
+        id: number;
+      } | null;
+      RegularNote: {
+        id: number;
+      } | null;
+    } | null;
   }[]
 >;
 export type FolderItemsGetResponse = Response<FolderItemsGet>;

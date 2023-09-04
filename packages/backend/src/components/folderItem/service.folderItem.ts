@@ -19,8 +19,17 @@ export const getFolderItems = async (
           id: number;
           pinned: boolean;
         } | null;
+        Note: {
+          ExerciseNote: {
+            id: number;
+          } | null;
+          RegularNote: {
+            id: number;
+          } | null;
+        } | null;
       }[]
     | null;
+
   if (parentFolderId === null) {
     folderItems = await prisma.folderItem.findMany({
       where: {
@@ -36,6 +45,20 @@ export const getFolderItems = async (
           select: {
             id: true,
             pinned: true,
+          },
+        },
+        Note: {
+          select: {
+            ExerciseNote: {
+              select: {
+                id: true,
+              },
+            },
+            RegularNote: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
       },
@@ -62,6 +85,20 @@ export const getFolderItems = async (
               select: {
                 id: true,
                 pinned: true,
+              },
+            },
+            Note: {
+              select: {
+                ExerciseNote: {
+                  select: {
+                    id: true,
+                  },
+                },
+                RegularNote: {
+                  select: {
+                    id: true,
+                  },
+                },
               },
             },
           },

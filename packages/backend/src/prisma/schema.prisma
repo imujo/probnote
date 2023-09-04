@@ -35,7 +35,7 @@ model Folder {
 model Note {
   id           Int           @id @default(autoincrement())
   folderItemId Int           @unique
-  FolderItem   FolderItem    @relation(fields: [folderItemId], references: [id])
+  FolderItem   FolderItem    @relation(fields: [folderItemId], references: [id], onDelete: Cascade)
   ExerciseNote ExerciseNote?
   RegularNote  RegularNote?
 }
@@ -43,14 +43,14 @@ model Note {
 model ExerciseNote {
   id      Int       @id @default(autoincrement())
   noteId  Int       @unique
-  Note    Note      @relation(fields: [noteId], references: [id])
+  Note    Note      @relation(fields: [noteId], references: [id], onDelete: Cascade)
   Problem Problem[]
 }
 
 model RegularNote {
   id     Int   @id @default(autoincrement())
   noteId Int   @unique
-  Note   Note  @relation(fields: [noteId], references: [id])
+  Note   Note  @relation(fields: [noteId], references: [id], onDelete: Cascade)
   canvas Json?
 }
 
@@ -63,5 +63,5 @@ model Problem {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  ExerciseNote ExerciseNote @relation(fields: [exerciseNoteId], references: [id])
+  ExerciseNote ExerciseNote @relation(fields: [exerciseNoteId], references: [id], onDelete: Cascade)
 }

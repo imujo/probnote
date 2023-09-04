@@ -45,7 +45,10 @@ function NewButtonItem<T extends FieldValues>({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger className="w-full">
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onSelect={(e) => e.preventDefault()}
+        >
           <MenuItemIcon className="mr-2 h-4 w-4" />
           <span>{menuItemLabel}</span>
         </DropdownMenuItem>
