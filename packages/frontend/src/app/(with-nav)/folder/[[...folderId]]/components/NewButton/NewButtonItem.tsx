@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  FieldValues,
-  Path,
-  SubmitHandler,
-  UseFormReturn,
-} from "react-hook-form";
+import React, { ReactNode } from "react";
+import { FieldValues } from "react-hook-form";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { LucideIcon } from "lucide-react";
 import ButtonLoading from "@/components/ButtonLoading";
@@ -20,44 +15,32 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import ResponseError from "utils/ResponseError";
 
 interface NewButtonItemProps<T extends FieldValues> {
-  form: UseFormReturn<T, any, undefined>;
   menuItemLabel: string;
   MenuItemIcon: LucideIcon;
   dialogTitle: string;
   dialogDescription: string;
-  formName: keyof T;
-  onSubmit: SubmitHandler<T>;
+  onSubmit: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isLoading: boolean;
   error: ResponseError | null;
+  children: ReactNode;
 }
 
 function NewButtonItem<T extends FieldValues>({
-  form,
   MenuItemIcon,
   menuItemLabel,
   dialogTitle,
   dialogDescription,
-  formName,
-  onSubmit,
   open,
   onOpenChange,
   isLoading,
   error,
+  children,
+  onSubmit,
 }: NewButtonItemProps<T>) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -72,26 +55,7 @@ function NewButtonItem<T extends FieldValues>({
           <DialogTitle>{dialogTitle} </DialogTitle>
           <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form className="my-3" onSubmit={(e) => e.preventDefault()}>
-            <FormField
-              control={form.control}
-              name={formName as Path<T>}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="label">Label</FormLabel>
-                  <FormControl>
-                    <Input id="label" placeholder="Calculus 101" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is the name of your new folder
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
+        {children}
         <DialogFooter className="items-center">
           {error ? <ErrorPill>{error.message}</ErrorPill> : null}
           <DialogClose asChild>
@@ -103,7 +67,7 @@ function NewButtonItem<T extends FieldValues>({
           {isLoading ? (
             <ButtonLoading />
           ) : (
-            <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+            <Button onClick={onSubmit}>Save</Button>
           )}
         </DialogFooter>
       </DialogContent>

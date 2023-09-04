@@ -23,6 +23,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
   return (
     <>
       <Input
+        readOnly
         value={""}
         type="text"
         onClick={() => setCommandDialogOpen(true)}

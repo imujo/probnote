@@ -11,7 +11,7 @@ const validaiton = z.object({
 
 type Validation = z.infer<typeof validaiton>;
 
-export default function usePostFolderButton(parentFolderId: FolderId) {
+export default function useNewFolderButton(parentFolderId: FolderId) {
   const form = useForm<Validation>({
     resolver: zodResolver(validaiton),
     defaultValues: {
@@ -29,9 +29,9 @@ export default function usePostFolderButton(parentFolderId: FolderId) {
     closeDialog,
   );
 
-  const onSubmit = (data: Validation) => {
+  const onSubmit = form.handleSubmit((data) => {
     mutate(data.label);
-  };
+  });
 
   return {
     form,

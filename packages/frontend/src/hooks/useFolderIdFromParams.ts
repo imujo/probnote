@@ -1,4 +1,4 @@
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { FolderId } from "../utils/types.global";
 
 export default function useFolderIdFromParams() {
@@ -6,7 +6,7 @@ export default function useFolderIdFromParams() {
   const tempFolderId = params.folderId[0];
 
   if (Number.isNaN(parseInt(tempFolderId, 10)) && tempFolderId !== "base")
-    throw new Error("Folder id is not number or base");
+    notFound();
 
   return tempFolderId as FolderId;
 }
