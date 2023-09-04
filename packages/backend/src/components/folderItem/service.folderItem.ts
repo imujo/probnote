@@ -6,11 +6,13 @@ const prisma = new PrismaClient();
 
 export const getFolderItems = async (
   parentFolderId: number | null,
+  userId: string,
   sort: Sort
 ) => {
   const folderItems = await prisma.folderItem.findMany({
     where: {
       parentFolderId,
+      userId,
     },
     select: {
       id: true,
@@ -34,11 +36,13 @@ export const getFolderItems = async (
 
 export const putFolderItem = async (
   folderItemId: number,
-  body: FolderItemPutBody
+  body: FolderItemPutBody,
+  userId: string
 ) => {
   const folderItem = await prisma.folderItem.update({
     where: {
       id: folderItemId,
+      userId,
     },
     data: body,
   });
@@ -46,10 +50,14 @@ export const putFolderItem = async (
   return folderItem;
 };
 
-export const deleteFolderItem = async (folderItemId: number) => {
+export const deleteFolderItem = async (
+  folderItemId: number,
+  userId: string
+) => {
   const folderItem = await prisma.folderItem.delete({
     where: {
       id: folderItemId,
+      userId,
     },
   });
 

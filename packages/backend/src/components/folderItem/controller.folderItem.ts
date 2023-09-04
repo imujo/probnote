@@ -28,8 +28,9 @@ const get = async (
       sortBy,
       sortOrder,
     };
+    const { userId } = req.auth;
 
-    const folderItems = await getFolderItems(parentFolderId, sort);
+    const folderItems = await getFolderItems(parentFolderId, userId, sort);
 
     if (!folderItems) {
       const message = parentFolderId
@@ -56,8 +57,9 @@ const put = async (
   try {
     const folderItemId = parseInt(req.params.folderItemId, 10);
     const body = req.body;
+    const { userId } = req.auth;
 
-    const { id } = await putFolderItem(folderItemId, body);
+    const { id } = await putFolderItem(folderItemId, body, userId);
 
     res.status(200).json({
       message: messages.putSuccess("Folder item", id),
@@ -77,8 +79,9 @@ const del = async (
 ) => {
   try {
     const folderItemId = parseInt(req.params.folderItemId, 10);
+    const { userId } = req.auth;
 
-    const folderItem = await deleteFolderItem(folderItemId);
+    const folderItem = await deleteFolderItem(folderItemId, userId);
 
     res.status(200).json({
       message: messages.deleteSuccess("Folder item", folderItemId),
