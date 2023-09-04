@@ -5,6 +5,7 @@ export const getFolderItems = (parentFolderId: FolderId) => [
   "get",
   parentFolderId,
 ];
+export const searchFolderItems = (query: string) => ["folder", "search", query];
 export const getBreadcrumbs = (folderId: FolderId) => [
   "breadcrumbs",
   "get",
@@ -16,4 +17,5 @@ export default {
   getFolderItems,
   getPinnedFolders,
   getBreadcrumbs,
+  searchFolderItems,
 };

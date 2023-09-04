@@ -3,6 +3,7 @@ import {
   FolderItemsGet,
   FolderItemPut,
   FolderItemPutBody,
+  FolderItemsSearch,
 } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import { FolderId } from "../../utils/types.global";
@@ -23,6 +24,29 @@ export const getFolderItems = async (
   );
   const responseJson = await response.json();
   const data = responseJson as FolderItemsGet;
+
+  if (!response.ok) {
+    const error = responseJson as ErrorResponse;
+
+    throw new ResponseError(error.message, response.status);
+  }
+
+  return data;
+};
+
+export const getFolderItemsSearch = async (
+  query: string,
+  getAuthToken: GetToken,
+) => {
+  const response = await fetch(
+    `${env.NEXT_PUBLIC_SERVER}/folderItem/search?query=${query}`,
+    {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${await getAuthToken()}` },
+    },
+  );
+  const responseJson = await response.json();
+  const data = responseJson as FolderItemsSearch;
 
   if (!response.ok) {
     const error = responseJson as ErrorResponse;

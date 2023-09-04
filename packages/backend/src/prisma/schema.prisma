@@ -18,6 +18,8 @@ model FolderItem {
 
   parentFolderId Int?
   ParentFolder   Folder? @relation(name: "parent", fields: [parentFolderId], references: [id], onDelete: Cascade)
+
+  @@index([label, userId])
 }
 
 model Folder {

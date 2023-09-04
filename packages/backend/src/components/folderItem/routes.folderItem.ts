@@ -6,6 +6,7 @@ import {
   folderItemDeleteSchema,
   folderItemsGetSchema,
   folderItemPutSchema,
+  folderItemsSearchSchema,
 } from "./types.folderItem";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
@@ -13,6 +14,11 @@ const router = Router();
 
 router.use(ClerkExpressRequireAuth());
 
+router.get(
+  "/search",
+  validate(folderItemsSearchSchema),
+  folderItemController.getSearch
+);
 router.get(
   "/:parentFolderId",
   validate(folderItemsGetSchema),

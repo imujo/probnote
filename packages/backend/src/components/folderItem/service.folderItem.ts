@@ -104,3 +104,30 @@ export const deleteFolderItem = async (
 
   return folderItem;
 };
+
+export const searchFolderItem = async (query: string, userId: string) => {
+  const folderItems = prisma.folderItem.findMany({
+    where: {
+      label: {
+        contains: query,
+        mode: "insensitive",
+      },
+      userId: userId,
+    },
+    select: {
+      id: true,
+      label: true,
+      createdAt: true,
+      updatedAt: true,
+      Folder: {
+        select: {
+          id: true,
+          pinned: true,
+        },
+      },
+    },
+    take: 5,
+  });
+
+  return folderItems;
+};

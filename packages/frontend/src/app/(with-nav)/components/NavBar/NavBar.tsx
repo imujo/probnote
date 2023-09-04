@@ -4,6 +4,7 @@ import { LucideSearch } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import { Input } from "../../../../components/ui/input";
 import ButtonIcon from "@/components/ButtonIcon";
+import SearchBar from "./SearchBar";
 
 interface NavBarProps {}
 
@@ -14,7 +15,7 @@ const NavBar: FC<NavBarProps> = () => {
         Probnote
       </Link>
       <div className="flex w-full max-w-sm items-center space-x-2">
-        <Input type="text" placeholder="Search folders and notes" />
+        <SearchBar />
         <ButtonIcon Icon={LucideSearch} />
       </div>
       <ul>

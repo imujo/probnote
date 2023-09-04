@@ -38,6 +38,35 @@ export type FolderItemsGet = SuccessResponse<
 >;
 export type FolderItemsGetResponse = Response<FolderItemsGet>;
 
+// GET FOLDER SEARCH
+
+export const folderItemsSearchSchema = {
+  query: z.object({
+    query: z.string({ required_error: messages.required("Query") }),
+  }),
+};
+
+const folderItemsSearchBuilder = new AuthRequestBuilder(
+  folderItemsSearchSchema
+);
+export type FolderItemsSearchRequest = RequireAuthProp<
+  ReturnType<typeof folderItemsSearchBuilder.getRequestType>
+>;
+
+export type FolderItemsSearch = SuccessResponse<
+  {
+    id: number;
+    label: string;
+    createdAt: Date;
+    updatedAt: Date;
+    Folder: {
+      id: number;
+      pinned: boolean;
+    } | null;
+  }[]
+>;
+export type FolderItemsSearchResponse = Response<FolderItemsSearch>;
+
 // PUT FOLDER ITEM
 
 export const folderItemPutSchema = {

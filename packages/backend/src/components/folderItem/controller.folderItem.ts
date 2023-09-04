@@ -6,6 +6,7 @@ import {
   deleteFolderItem,
   getFolderItems,
   putFolderItem,
+  searchFolderItem,
 } from "./service.folderItem";
 import {
   FolderItemDeleteRequest,
@@ -14,6 +15,8 @@ import {
   FolderItemsGetResponse,
   FolderItemPutRequest,
   FolderItemPutResposne,
+  FolderItemsSearchRequest,
+  FolderItemsSearchResponse,
 } from "./types.folderItem";
 
 const get = async (
@@ -39,6 +42,25 @@ const get = async (
 
       throw new CustomError(message, 404);
     }
+
+    res.status(200).json({
+      message: messages.getSuccess("Folder items"),
+      data: folderItems,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getSearch = async (
+  req: FolderItemsSearchRequest,
+  res: FolderItemsSearchResponse,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.auth;
+
+    const folderItems = await searchFolderItem(req.query.query, userId);
 
     res.status(200).json({
       message: messages.getSuccess("Folder items"),
@@ -96,6 +118,7 @@ const del = async (
 
 export default {
   get,
+  getSearch,
   put,
   del,
 };
