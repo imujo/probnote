@@ -12,6 +12,7 @@ import queryKeys from "utils/queryKeys";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
+import { useAuth } from "@clerk/nextjs";
 
 export default function usePostFolder(
   parentFolderId: FolderId,
@@ -22,6 +23,7 @@ export default function usePostFolder(
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
+  const { getToken } = useAuth();
 
   const mutation = useMutation<
     FolderPost,
@@ -32,7 +34,11 @@ export default function usePostFolder(
     }
   >({
     mutationFn: (label) =>
-      postFolder(label, parentFolderId === "base" ? null : parentFolderId),
+      postFolder(
+        label,
+        parentFolderId === "base" ? null : parentFolderId,
+        getToken,
+      ),
     onMutate: async (label) => {
       const previousFolderItems = await optimisticallyUpdateFolderItems(
         queryClient,

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Response } from "express";
-import RequestBuilder from "../../utils/requestResponseBuilders";
+import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
 import { SuccessResponse, SortSchema } from "../../globalTypes";
 import messages from "../../messages";
 
@@ -16,7 +16,7 @@ export const folderGetParentsSchema = {
   }),
 };
 
-const folderGetParentsBuilder = new RequestBuilder(folderGetParentsSchema);
+const folderGetParentsBuilder = new AuthRequestBuilder(folderGetParentsSchema);
 export type FolderGetParentsRequest = ReturnType<
   typeof folderGetParentsBuilder.getRequestType
 >;
@@ -47,7 +47,7 @@ export const folderPostSchema = {
   }),
 };
 
-const folderPostBuilder = new RequestBuilder(folderPostSchema);
+const folderPostBuilder = new AuthRequestBuilder(folderPostSchema);
 export type FolderPostRequest = ReturnType<
   typeof folderPostBuilder.getRequestType
 >;
@@ -77,7 +77,7 @@ export const folderPutSchema = {
 };
 
 export type FolderPutBody = z.infer<(typeof folderPutSchema)["body"]>;
-const folderPutBuilder = new RequestBuilder(folderPutSchema);
+const folderPutBuilder = new AuthRequestBuilder(folderPutSchema);
 export type FolderPutRequest = ReturnType<
   typeof folderPutBuilder.getRequestType
 >;
@@ -93,7 +93,7 @@ export const folderGetPinnedSchema = {
   query: SortSchema,
 };
 
-const folderGetPinnedBuilder = new RequestBuilder(folderGetPinnedSchema);
+const folderGetPinnedBuilder = new AuthRequestBuilder(folderGetPinnedSchema);
 export type FolderGetPinnedRequest = ReturnType<
   typeof folderGetPinnedBuilder.getRequestType
 >;

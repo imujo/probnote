@@ -14,6 +14,7 @@ import queryKeys from "utils/queryKeys";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { FolderId } from "../../../utils/types.global";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/nextjs";
 
 export type PinFolderProps = {
   pinStatus: boolean;
@@ -28,6 +29,7 @@ export default function usePinFolder(
   const getPinnedFoldersQueryKey = queryKeys.getPinnedFolders();
   const getFolderItemsQueryKey = queryKeys.getFolderItems(parentFolderId);
   const { toast } = useToast();
+  const { getToken } = useAuth();
 
   return useMutation<
     FolderPut,
@@ -39,7 +41,7 @@ export default function usePinFolder(
     }
   >({
     mutationFn: ({ pinStatus }: PinFolderProps) =>
-      putFolder(folderId, { pinned: pinStatus }),
+      putFolder(folderId, { pinned: pinStatus }, getToken),
     onMutate: async (data) => {
       const prevPinnedFolders = await optimisticallyUpdatePinnedFolders(
         queryClient,

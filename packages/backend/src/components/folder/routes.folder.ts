@@ -7,8 +7,11 @@ import {
   folderPostSchema,
   folderPutSchema,
 } from "./types.folder";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
 const router = Router();
+
+router.use(ClerkExpressRequireAuth());
 
 router.get(
   "/pinned",
