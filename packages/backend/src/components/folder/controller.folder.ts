@@ -30,8 +30,9 @@ const getPinned = async (
       sortBy,
       sortOrder,
     };
+    const { userId } = req.auth;
 
-    const pinnedFoldersData = await getPinnedFolders(sort);
+    const pinnedFoldersData = await getPinnedFolders(userId, sort);
     const pinnedFolders = pinnedFoldersData.map((pinnedFolderData) => ({
       folderItemId: pinnedFolderData.FolderItem.id,
       folderId: pinnedFolderData.id,
@@ -58,8 +59,9 @@ const getParents = async (
 ) => {
   try {
     const folderId = parseInt(req.params.folderId, 10);
+    const { userId } = req.auth;
 
-    const parentFolders = await getParentFolders(folderId);
+    const parentFolders = await getParentFolders(folderId, userId);
 
     if (!parentFolders) {
       throw new CustomError(
@@ -84,8 +86,9 @@ const post = async (
 ) => {
   try {
     const { label, parentFolderId } = req.body;
+    const { userId } = req.auth;
 
-    const folder = await postFolder(label, parentFolderId);
+    const folder = await postFolder(label, parentFolderId, userId);
 
     if (folder.Folder === null) {
       throw new CustomError(
@@ -113,8 +116,9 @@ const put = async (
   try {
     const folderId = parseInt(req.params.folderId, 10);
     const body = req.body;
+    const { userId } = req.auth;
 
-    const { id } = await putFolder(folderId, body);
+    const { id } = await putFolder(folderId, body, userId);
 
     res.status(200).json({
       message: messages.putSuccess("Folder", id),

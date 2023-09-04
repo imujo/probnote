@@ -4,10 +4,13 @@ import { FolderPutBody } from "./types.folder";
 
 const prisma = new PrismaClient();
 
-export const getPinnedFolders = async (sort: Sort) => {
+export const getPinnedFolders = async (userId: string, sort: Sort) => {
   const pinnedFolders = await prisma.folder.findMany({
     where: {
       pinned: true,
+      FolderItem: {
+        userId,
+      },
     },
     select: {
       id: true,
@@ -26,7 +29,7 @@ export const getPinnedFolders = async (sort: Sort) => {
   return pinnedFolders;
 };
 
-export const getParentFolders = async (folderId: number) => {
+export const getParentFolders = async (folderId: number, userId: string) => {
   const MAX = 3;
   let currentFolderId = folderId;
   const parentFolders: {
@@ -39,6 +42,9 @@ export const getParentFolders = async (folderId: number) => {
     const currentFolder = await prisma.folder.findFirst({
       where: {
         id: currentFolderId,
+        FolderItem: {
+          userId,
+        },
       },
       select: {
         id: true,
@@ -81,11 +87,13 @@ export const getParentFolders = async (folderId: number) => {
 
 export const postFolder = async (
   label: string,
-  parentFolderId: number | null
+  parentFolderId: number | null,
+  userId: string
 ) => {
   const folder = await prisma.folderItem.create({
     data: {
       label,
+      userId,
       parentFolderId,
       Folder: {
         create: {
@@ -106,12 +114,19 @@ export const postFolder = async (
   return folder;
 };
 
-export const putFolder = async (folderId: number, body: FolderPutBody) => {
+export const putFolder = async (
+  folderId: number,
+  body: FolderPutBody,
+  userId: string
+) => {
   const pinStatusChanged = body.pinned !== undefined;
 
   const folder = await prisma.folder.update({
     where: {
       id: folderId,
+      FolderItem: {
+        userId,
+      },
     },
     data: {
       pinned: body.pinned,
