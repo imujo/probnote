@@ -2,9 +2,10 @@ import { FC, useMemo } from "react";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
 import ButtonIcon from "@/components/ButtonIcon";
-import { Check, Loader2, X } from "lucide-react";
-import { UploadState } from "api/problem/hooks/useAll";
+import { Check, Info, Loader2, X } from "lucide-react";
 import { cn } from "utils/cn";
+import { UploadState } from "utils/upload";
+import { Button } from "@/components/ui/button";
 
 interface FileComponentProps {
   fileName: string;
@@ -55,9 +56,21 @@ const FileComponent: FC<FileComponentProps> = ({
         />
       )}
       {state === "POSTING_PROBLEMS" || state === "GET_UPLOAD_URLS" ? (
-        <Loader2 className=" h-4 w-4" />
+        <Loader2 className=" spin h-4 w-4 animate-spin" />
       ) : null}
       {state === "DONE" && <Check className=" h-4 w-4 text-green-700" />}
+      {state === "ERROR" && (
+        <div>
+          {" "}
+          <div className="flex gap-1 text-red-500">
+            <Info className="h-3 w-3" />
+            <span>Error</span>
+          </div>
+          {/* <Button size={"sm"} variant="secondary">
+            Retry
+          </Button> */}
+        </div>
+      )}
     </div>
   );
 };

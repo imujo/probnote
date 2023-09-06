@@ -1,67 +1,24 @@
 import { getProblemUploadUrls, postProblems } from "../problem.api";
 import { useAuth } from "@clerk/nextjs";
-import useUploadProblemImages, { uploadFile } from "./useUploadProblemImages";
 import { useEffect, useState } from "react";
-import { SignedUploadUrl } from "@probnote/backend/src/utils/upload";
-import useGetProblemUploadUrls from "./useGetProblemUploadUrls";
 import { useToast } from "@/components/ui/use-toast";
-
-type InitiateUploadProps = {
-  fileData: FileData[] | null;
-  onSuccess?: (updatedFileData: FileData[]) => void;
-  onError?: (error: Error) => void;
-};
-
-type SetProblemUploadUrlsProps = {
-  fileData: FileData[];
-  signedUploadUrls: { [key: string]: SignedUploadUrl };
-  onSuccess?: (updatedFileData: FileData[]) => void;
-  onError?: (error: Error) => void;
-};
+import {
+  FileData,
+  onInitiateUpload,
+  setFileStateDone,
+  setProblemUploadUrls,
+  uploadFiles,
+} from "utils/upload";
+import useExerciseNoteId from "hooks/useExerciseNoteId";
 
 export default function useAll() {
   const { toast } = useToast();
-  const { mutate: getProblemUploadUrls } = useGetProblemUploadUrls(
-    (fileData, signedUploadUrls) => {
-      setProblemUploadUrls({
-        fileData,
-        signedUploadUrls,
-        onSuccess: (fileData) => {
-          uploadFiles(fileData);
-        },
-      });
-    },
-  );
-
-  const { mutate: uploadFiles } = useUploadProblemImages({
-    onFileError: (error) => {
-      toast({
-        title: "An error occured uploading a file",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-    onFileProgress: (fileData, index, progress) => {
-      const updatedFileData = [...fileData];
-      updatedFileData[index].progress = progress;
-      setFileData(updatedFileData);
-    },
-    onFileSuccess: (fileData, index) => {
-      const updatedFileData = [...fileData];
-      updatedFileData[index].state = "POSTING_PROBLEMS";
-      setFileData(updatedFileData);
-    },
-    onSuccess: (fileData) => {
-      toast({
-        title: "Successfully uploaded files",
-        description: "All files are uploaded",
-      });
-    },
-  });
+  const { getToken } = useAuth();
+  const exerciseNoteId = useExerciseNoteId();
 
   const [fileData, setFileData] = useState<FileData[] | null>(null);
+
   const removeFile = (index: number) => {
-    console.log("remove", index, "from", fileData);
     if (!fileData) throw new Error("No files selected");
 
     const updatedFileData = [...fileData];
@@ -80,69 +37,41 @@ export default function useAll() {
     setFileData((prev) => [...(prev || []), ...updatedFileData]);
   };
 
-  const onInitiateUpload = ({
-    onError,
-    onSuccess,
-    fileData,
-  }: InitiateUploadProps) => {
+  const upload = async (initialFileData: FileData[] | null) => {
     try {
-      if (!fileData) throw new Error("No files selected");
-      const updatedFileData = [...fileData];
+      if (!initialFileData) throw new Error("No files selected");
 
-      fileData.forEach((_, index) => {
-        updatedFileData[index].state = "GET_UPLOAD_URLS";
-      });
+      let fileData = [...initialFileData];
 
-      setFileData(updatedFileData);
-      if (onSuccess) onSuccess(updatedFileData);
+      fileData = onInitiateUpload(fileData, setFileData);
+
+      const { data: problemUrls } = await getProblemUploadUrls(
+        fileData.map(({ file }) => file.name),
+        getToken,
+      );
+
+      fileData = setProblemUploadUrls(fileData, problemUrls, setFileData);
+
+      fileData = await uploadFiles(fileData, setFileData);
+
+      await postProblems(
+        fileData.map((fileDatum) => {
+          if (!fileDatum.fileKey)
+            throw new Error("Not add files have a file key");
+          return fileDatum.fileKey;
+        }),
+        exerciseNoteId,
+        getToken,
+      );
+
+      fileData = setFileStateDone(fileData, setFileData);
     } catch (error) {
-      if (error instanceof Error) {
-        if (onError) {
-          onError(error);
-          return;
-        } else throw error;
-      }
-    }
-  };
-
-  const setProblemUploadUrls = ({
-    fileData,
-    signedUploadUrls,
-    onSuccess,
-    onError,
-  }: SetProblemUploadUrlsProps) => {
-    try {
-      const updatedFileData = [...fileData];
-
-      fileData.forEach((fileDatum, index) => {
-        const signedUrlData = signedUploadUrls[fileDatum.file.name];
-        if (!signedUrlData) throw new Error("Server didnt return all files");
-
-        updatedFileData[index].fileKey = signedUrlData.fileKey;
-        updatedFileData[index].signedUploadUrl = signedUrlData.signedUploadUrl;
-        updatedFileData[index].state = "UPLOADING";
+      toast({
+        title: "An error occuerd trying to upload images",
+        description: error instanceof Error ? error.message : undefined,
+        variant: "destructive",
       });
-
-      setFileData(updatedFileData);
-
-      if (onSuccess) onSuccess(updatedFileData);
-    } catch (error) {
-      if (error instanceof Error) {
-        if (onError) {
-          onError(error);
-          return;
-        } else throw error;
-      }
     }
-  };
-
-  const upload = async (fileData: FileData[] | null) => {
-    onInitiateUpload({
-      fileData,
-      onSuccess: async (fileData) => {
-        getProblemUploadUrls(fileData);
-      },
-    });
   };
 
   useEffect(() => {
@@ -151,31 +80,3 @@ export default function useAll() {
 
   return { fileData, onInputChange, upload, removeFile };
 }
-
-export type UploadState =
-  | "INITIAL"
-  | "GET_UPLOAD_URLS"
-  | "UPLOADING"
-  | "POSTING_PROBLEMS"
-  | "DONE";
-
-// export type UploadData = {
-//   [key: string]: {
-//     state: UploadState;
-//     file: File;
-//     fileKey?: string;
-//     signedUploadUrl?: string;
-//   };
-// };
-
-export type Progress = {
-  [key: string]: number;
-};
-
-export type FileData = {
-  file: File;
-  state: UploadState;
-  fileKey?: string;
-  signedUploadUrl?: string;
-  progress?: number;
-};

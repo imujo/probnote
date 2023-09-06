@@ -57,8 +57,6 @@ export const getProblemUploadUrls = async (
   const responseJson = await response.json();
   const data = responseJson as ProblemGetUploadUrls;
 
-  console.log(data);
-
   if (!response.ok) {
     const error = responseJson as ErrorResponse;
     throw new ResponseError(error.message, response.status);
