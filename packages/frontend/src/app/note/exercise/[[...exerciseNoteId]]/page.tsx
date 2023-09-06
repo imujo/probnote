@@ -1,12 +1,7 @@
 "use client";
 
-import useExerciseNoteId from "hooks/useExerciseNoteId";
 import { ChangeEvent, FC } from "react";
-import { Button } from "@/components/ui/button";
-import useGetUploadUrls from "api/problem/hooks/usePostProblems";
-import { Progress } from "@/components/ui/progress";
-import useUploadProblems from "../../../../api/problem/hooks/useUploadProblemImages";
-import AddProblemsButton from "./components/addProblems/AddProblemsButton";
+import AddProblemsButton from "./components/addProblems/AddProblemsModal";
 
 interface ExerciseNotePageProps {}
 

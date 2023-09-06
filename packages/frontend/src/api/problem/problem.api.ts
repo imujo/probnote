@@ -1,5 +1,6 @@
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import {
+  CloudflareObjectsDelete,
   ProblemGetUploadUrls,
   ProblemPost,
 } from "@probnote/backend/src/components/problem/types.problem";
@@ -56,6 +57,36 @@ export const getProblemUploadUrls = async (
 
   const responseJson = await response.json();
   const data = responseJson as ProblemGetUploadUrls;
+
+  if (!response.ok) {
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
+  }
+
+  return data;
+};
+
+export const deleteCloudflareFiles = async (
+  filekeys: string[],
+  getAuthToken: GetToken,
+) => {
+  const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/problem/files`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${await getAuthToken()}`,
+    },
+    body: JSON.stringify({
+      filekeys: filekeys,
+    }),
+    cache: "no-store",
+  });
+
+  const responseJson = await response.json();
+  const data = responseJson as CloudflareObjectsDelete;
+
+  console.log(data);
 
   if (!response.ok) {
     const error = responseJson as ErrorResponse;

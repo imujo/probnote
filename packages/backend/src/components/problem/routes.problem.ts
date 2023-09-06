@@ -2,6 +2,7 @@ import { Router } from "express";
 import validate from "../../middleware/validate";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import {
+  cloudflareObjectsDeleteSchema,
   problemGetUploadUrlsSchema,
   problemsPostSchema,
 } from "./types.problem";
@@ -16,6 +17,12 @@ router.post(
   "/uploadUrls",
   validate(problemGetUploadUrlsSchema),
   problemController.getUploadUrls
+);
+
+router.delete(
+  "/files",
+  validate(cloudflareObjectsDeleteSchema),
+  problemController.deleteCloudflareObject
 );
 
 export default router;

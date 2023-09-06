@@ -4,14 +4,14 @@ import { Progress } from "@/components/ui/progress";
 import ButtonIcon from "@/components/ButtonIcon";
 import { Check, Info, Loader2, X } from "lucide-react";
 import { cn } from "utils/cn";
-import { UploadState } from "utils/upload";
+import { FileDataState } from "utils/upload";
 import { Button } from "@/components/ui/button";
 
 interface FileComponentProps {
   fileName: string;
   file: File;
   progress?: number;
-  state: UploadState;
+  state: FileDataState;
   removeFile: (index: number) => void;
   index: number;
 }
@@ -38,7 +38,7 @@ const FileComponent: FC<FileComponentProps> = ({
   );
 
   return (
-    <div className="flex gap-2 border-b-[1px] border-zinc-200 py-2 ">
+    <div className="flex gap-2 border-b-[1px] border-zinc-200 py-2 pr-4 ">
       {imageComponent}
       <div className="flex flex-1 flex-col justify-evenly">
         <span className="text-sm">{fileName}</span>
@@ -47,28 +47,23 @@ const FileComponent: FC<FileComponentProps> = ({
           className={cn("h-2", state !== "UPLOADING" && "opacity-0")}
         />
       </div>
-      {state === "INITIAL" && (
-        <ButtonIcon
-          Icon={X}
-          onClick={() => removeFile(index)}
-          variant="ghost"
-          className="mr-4 hover:bg-transparent [&_svg]:text-zinc-400 hover:[&_svg]:text-zinc-600"
-        />
-      )}
+      {state === "INITIAL" ||
+        (state === "ERROR" && (
+          <ButtonIcon
+            Icon={X}
+            onClick={() => removeFile(index)}
+            variant="ghost"
+            className=" hover:bg-transparent [&_svg]:text-zinc-400 hover:[&_svg]:text-zinc-600"
+          />
+        ))}
       {state === "POSTING_PROBLEMS" || state === "GET_UPLOAD_URLS" ? (
         <Loader2 className=" spin h-4 w-4 animate-spin" />
       ) : null}
       {state === "DONE" && <Check className=" h-4 w-4 text-green-700" />}
       {state === "ERROR" && (
-        <div>
-          {" "}
-          <div className="flex gap-1 text-red-500">
-            <Info className="h-3 w-3" />
-            <span>Error</span>
-          </div>
-          {/* <Button size={"sm"} variant="secondary">
-            Retry
-          </Button> */}
+        <div className="flex gap-1 text-red-500">
+          <Info className="h-3 w-3" />
+          <span>Error</span>
         </div>
       )}
     </div>

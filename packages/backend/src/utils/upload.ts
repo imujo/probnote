@@ -1,6 +1,10 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import CloudFlareClient from "../config/cloudflare.config";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  Delete,
+  DeleteObjectsCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import env from "../config/env.config";
 
 const EXPIERS_IN = 3600;
@@ -29,6 +33,19 @@ export const generateSingedUploadUrl = async (
     signedUploadUrl: url,
     fileKey,
   };
+};
+
+export const deleteCloudflareObjects = async (fileKeys: string[]) => {
+  return await CloudFlareClient.send(
+    new DeleteObjectsCommand({
+      Bucket: env.CLOUDFLARE_BUCKET_NAME,
+      Delete: {
+        Objects: fileKeys.map((fileKey) => ({
+          Key: fileKey,
+        })),
+      },
+    })
+  );
 };
 
 export const generateMultipleSignedUploadUrls = async (filenames: string[]) => {

@@ -54,3 +54,25 @@ export type ProblemGetUploadUrls = SuccessResponse<{
   [key: string]: SignedUploadUrl;
 }>;
 export type ProblemGetUploadUrlsResposne = Response<ProblemGetUploadUrls>;
+
+// DELETE CLOUDFLARE OBJECTS
+
+export const cloudflareObjectsDeleteSchema = {
+  body: z.object({
+    filekeys: z.array(
+      z.string({
+        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
+        required_error: messages.required("ProblemFileKey"),
+      })
+    ),
+  }),
+};
+
+const cloudflareObjectsDeleteBuilder = new AuthRequestBuilder(
+  cloudflareObjectsDeleteSchema
+);
+export type CloudflareObjectsDeleteRequest = ReturnType<
+  typeof cloudflareObjectsDeleteBuilder.getRequestType
+>;
+export type CloudflareObjectsDelete = SuccessResponse<{}>;
+export type CloudflareObjectsDeleteResposne = Response<CloudflareObjectsDelete>;
