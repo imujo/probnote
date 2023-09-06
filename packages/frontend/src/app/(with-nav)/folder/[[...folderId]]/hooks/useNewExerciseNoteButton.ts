@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FolderId } from "utils/types.global";
 import usePostExerciseNote from "api/exerciseNote/hooks/usePostExerciseNote";
+import { useRouter } from "next/navigation";
 
 const validaiton = z.object({
   label: z.string().min(4).max(30),
@@ -20,13 +21,13 @@ export default function useNewExerciseNoteButton(parentFolderId: FolderId) {
   });
   const [open, setOpen] = useState(false);
 
-  const closeDialog = () => {
+  const onSuccess = () => {
     setOpen(false);
   };
 
   const { mutate, error, isLoading } = usePostExerciseNote(
     parentFolderId,
-    closeDialog,
+    onSuccess,
   );
 
   const onSubmit = form.handleSubmit((data) => {
@@ -40,7 +41,6 @@ export default function useNewExerciseNoteButton(parentFolderId: FolderId) {
     isLoading,
     onSubmit,
     dialogOpen: open,
-    closeDialog,
     setDialogOpen: setOpen,
   };
 }

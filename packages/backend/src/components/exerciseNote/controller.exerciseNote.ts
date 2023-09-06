@@ -18,7 +18,7 @@ const post = async (
     const exerciseNote = await postExerciseNote(label, parentFolderId, userId);
 
     res.status(200).json({
-      message: messages.getSuccess("Pinned folders"),
+      message: messages.getSuccess("Exercise note"),
       data: {
         exerciseNoteId: exerciseNote.id,
       },

@@ -1,0 +1,56 @@
+import { z } from "zod";
+import { Response } from "express";
+import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
+import { SuccessResponse } from "../../globalTypes";
+import messages from "../../messages";
+import { SignedUploadUrl } from "../../utils/upload";
+
+// POST PROBLEMS
+
+export const problemsPostSchema = {
+  body: z.object({
+    problemFileKeys: z.array(
+      z.string({
+        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
+        required_error: messages.required("ProblemFileKey"),
+      })
+    ),
+    exerciseNoteId: z.number({
+      invalid_type_error: messages.invalidType("ExerciseNoteId", "number"),
+      required_error: messages.required("ExerciseNoteId"),
+    }),
+  }),
+};
+
+const problemsPostBuilder = new AuthRequestBuilder(problemsPostSchema);
+export type ProblemPostRequest = ReturnType<
+  typeof problemsPostBuilder.getRequestType
+>;
+export type ProblemPost = SuccessResponse<{
+  count: number;
+}>;
+export type ProblemPostResposne = Response<ProblemPost>;
+
+// GET PROBLEM UPLOAD URLS
+
+export const problemGetUploadUrlsSchema = {
+  body: z.object({
+    filenames: z.array(
+      z.string({
+        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
+        required_error: messages.required("ProblemFileKey"),
+      })
+    ),
+  }),
+};
+
+const problemGetUploadUrlsBuilder = new AuthRequestBuilder(
+  problemGetUploadUrlsSchema
+);
+export type ProblemGetUploadUrlsRequest = ReturnType<
+  typeof problemGetUploadUrlsBuilder.getRequestType
+>;
+export type ProblemGetUploadUrls = SuccessResponse<{
+  [key: string]: SignedUploadUrl;
+}>;
+export type ProblemGetUploadUrlsResposne = Response<ProblemGetUploadUrls>;
