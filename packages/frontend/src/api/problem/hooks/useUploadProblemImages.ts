@@ -9,6 +9,18 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { getProblemUploadUrls } from "../problem.api";
 import { useToast } from "@/components/ui/use-toast";
+import { FileData } from "./useAll";
+
+export type UploadFilesProps = {
+  fileData: FileData[];
+  onFileSuccess?: (fileData: FileData[], index: number) => void;
+  onFileProgress?: (
+    fileData: FileData[],
+    index: number,
+    progress: number,
+  ) => void;
+  onFileError?: (error: Error) => void;
+};
 
 type UploadFileProps = {
   url: string;
@@ -59,58 +71,64 @@ export const uploadFile = async ({
   });
 };
 
-// const onSuccess = async (
-//   data: ProblemPost,
-//   files: File[],
-//   setFileUploadProgress: Dispatch<
-//     SetStateAction<{
-//       [key: string]: number;
-//     } | null>
-//   >,
-// ) => {
-//   const signedUploadUrls = data.data.signedUploadUrls;
+const uploadFiles = async ({
+  fileData,
+  onFileError,
+  onFileSuccess,
+  onFileProgress,
+}: UploadFilesProps) => {
+  const promises = fileData.map(({ file, signedUploadUrl }, index) => {
+    if (!signedUploadUrl)
+      throw new Error(
+        `File with name ${file.name} does not have a pre-signed upload URL`,
+      );
 
-//   const promises = files.map((file) => {
-//     return uploadFile(
-//       signedUploadUrls[file.name].signedUploadUrl,
-//       file,
-//       setFileUploadProgress,
-//     );
-//   });
+    return uploadFile({
+      url: signedUploadUrl,
+      file,
+      onProgress: (progress) =>
+        onFileProgress && onFileProgress(fileData, index, progress),
+      onSuccess: () => onFileSuccess && onFileSuccess(fileData, index),
+      onError: onFileError,
+    });
+  });
 
-//   return await Promise.all(promises);
-// };
+  await Promise.all(promises);
+};
 
-// export default function useUploadProblemImages(onSuccess?: () => void) {
-//   const { toast } = useToast();
-//   return useMutation({
-//     mutationFn: ({
-//       problemUrls,
-//       files,
-//     }: {
-//       problemUrls: ProblemGetUploadUrls;
-//       files: File[];
-//     }) => {
-//       const signedUploadUrls = problemUrls.data;
+type UseUploadProblemImagesProps = {
+  onFileError: (error: Error) => void;
+  onFileSuccess: (fileData: FileData[], index: number) => void;
+  onFileProgress: (
+    fileData: FileData[],
+    index: number,
+    progress: number,
+  ) => void;
+  onSuccess: (fileData: FileData[]) => void;
+};
 
-//       const promises = files.map((file) => {
-//         return uploadFile(signedUploadUrls[file.name].signedUploadUrl, file);
-//       });
+export default function useUploadProblemImages({
+  onFileSuccess,
+  onFileError,
+  onFileProgress,
+  onSuccess,
+}: UseUploadProblemImagesProps) {
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: (fileData: FileData[]) =>
+      uploadFiles({ fileData, onFileSuccess, onFileError, onFileProgress }),
+    onSuccess: async (data, fileData) => {
+      toast({
+        title: "Successfully uploaded ",
+      });
 
-//       return Promise.all(promises);
-//     },
-//     onSuccess: async (data) => {
-//       toast({
-//         title: "Successfully uploaded ",
-//       });
-
-//       if (onSuccess) onSuccess();
-//     },
-//     onError: (err) => {
-//       toast({
-//         title: "An error occured tying upload",
-//         variant: "destructive",
-//       });
-//     },
-//   });
-// }
+      if (onSuccess) onSuccess(fileData);
+    },
+    onError: (err) => {
+      toast({
+        title: "An error occured tying upload",
+        variant: "destructive",
+      });
+    },
+  });
+}
