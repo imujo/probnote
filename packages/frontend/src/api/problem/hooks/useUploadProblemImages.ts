@@ -15,7 +15,7 @@ type UploadFileProps = {
   file: File;
   onProgress?: (progress: number) => void;
   onSuccess?: () => void;
-  onError?: () => void;
+  onError?: (error: Error) => void;
 };
 
 export const uploadFile = async ({
@@ -43,13 +43,14 @@ export const uploadFile = async ({
         if (onSuccess) onSuccess();
         resolve();
       } else {
-        if (onError) onError();
+        if (onError) onError(new Error("File upload failed"));
         reject(new Error("File upload failed"));
       }
     };
 
     xhr.onerror = () => {
-      if (onError) onError();
+      if (onError)
+        onError(new Error("Network error occurred while uploading the file."));
       reject(new Error("Network error occurred while uploading the file."));
     };
 

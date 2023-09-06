@@ -2,22 +2,55 @@ import { getProblemUploadUrls, postProblems } from "../problem.api";
 import { useAuth } from "@clerk/nextjs";
 import { uploadFile } from "./useUploadProblemImages";
 import { useEffect, useState } from "react";
+import { SignedUploadUrl } from "@probnote/backend/src/utils/upload";
+
+type InitiateUploadProps = {
+  fileData: FileData[] | null;
+  onSuccess?: (updatedFileData: FileData[]) => void;
+  onError?: (error: Error) => void;
+};
+
+type UploadFilesProps = {
+  fileData: FileData[];
+  onSuccess?: (updatedFileData: FileData[]) => void;
+  onError?: (error: Error) => void;
+};
+
+type SetProblemUploadUrlsProps = {
+  fileData: FileData[];
+  signedUploadUrls: { [key: string]: SignedUploadUrl };
+  onSuccess?: (updatedFileData: FileData[]) => void;
+  onError?: (error: Error) => void;
+};
 
 export default function useAll() {
   const { getToken } = useAuth();
 
   const [fileData, setFileData] = useState<FileData[] | null>(null);
 
-  const onInitiateUpload = () => {
-    if (!fileData) throw new Error("No files selected");
+  const onInitiateUpload = ({
+    onError,
+    onSuccess,
+    fileData,
+  }: InitiateUploadProps) => {
+    try {
+      if (!fileData) throw new Error("No files selected");
+      const updatedFileData = [...fileData];
 
-    const updatedFileData = [...fileData];
+      fileData.forEach((_, index) => {
+        updatedFileData[index].state = "GET_UPLOAD_URLS";
+      });
 
-    fileData.forEach((fileDatum, index) => {
-      updatedFileData[index].state = "GET_UPLOAD_URLS";
-    });
-
-    setFileData(updatedFileData);
+      setFileData(updatedFileData);
+      if (onSuccess) onSuccess(updatedFileData);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (onError) {
+          onError(error);
+          return;
+        } else throw error;
+      }
+    }
   };
 
   const removeFile = (index: number) => {
@@ -40,62 +73,102 @@ export default function useAll() {
     setFileData((prev) => [...(prev || []), ...updatedFileData]);
   };
 
-  const upload = async () => {
-    if (!fileData) return;
+  const setProblemUploadUrls = ({
+    fileData,
+    signedUploadUrls,
+    onSuccess,
+    onError,
+  }: SetProblemUploadUrlsProps) => {
+    try {
+      const updatedFileData = [...fileData];
 
-    console.log("upload init");
+      fileData.forEach((fileDatum, index) => {
+        const signedUrlData = signedUploadUrls[fileDatum.file.name];
+        if (!signedUrlData) throw new Error("Server didnt return all files");
 
-    onInitiateUpload();
+        updatedFileData[index].fileKey = signedUrlData.fileKey;
+        updatedFileData[index].signedUploadUrl = signedUrlData.signedUploadUrl;
+        updatedFileData[index].state = "UPLOADING";
+      });
 
-    const { data: signedUploadUrls } = await getProblemUploadUrls(
-      fileData.map((fileDatum) => fileDatum.file.name),
-      getToken,
-    );
+      setFileData(updatedFileData);
 
-    console.log("got urls");
+      if (onSuccess) onSuccess(updatedFileData);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (onError) {
+          onError(error);
+          return;
+        } else throw error;
+      }
+    }
+  };
 
-    const updatedFileData = [...fileData];
+  const uploadFiles = async ({
+    fileData,
+    onError,
+    onSuccess,
+  }: UploadFilesProps) => {
+    try {
+      const updatedFileData = [...fileData];
+      const promises = fileData.map(({ file, signedUploadUrl }, index) => {
+        if (!signedUploadUrl)
+          throw new Error(
+            `File with name ${file.name} does not have a pre-signed upload URL`,
+          );
 
-    fileData.forEach((fileDatum, index) => {
-      const signedUrlData = signedUploadUrls[fileDatum.file.name];
-      if (!signedUrlData) throw new Error("Server didnt return all files");
+        return uploadFile({
+          url: signedUploadUrl,
+          file,
+          onProgress: (progress) => {
+            const updatedFileData = [...fileData];
+            updatedFileData[index].progress = progress;
+            setFileData(updatedFileData);
+          },
+          onSuccess: () => {
+            updatedFileData[index].state = "POSTING_PROBLEMS";
+            setFileData(updatedFileData);
+          },
+          onError,
+        });
+      });
 
-      updatedFileData[index].fileKey = signedUrlData.fileKey;
-      updatedFileData[index].signedUploadUrl = signedUrlData.signedUploadUrl;
-      updatedFileData[index].state = "UPLOADING";
-    });
+      await Promise.all(promises);
 
-    setFileData(updatedFileData);
+      if (onSuccess) onSuccess(updatedFileData);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (onError) {
+          onError(error);
+          return;
+        } else throw error;
+      }
+    }
+  };
 
-    console.log("set urls");
-
-    console.log("upload start");
-
-    const promises = updatedFileData.map(({ file, signedUploadUrl }, index) => {
-      if (!signedUploadUrl)
-        throw new Error(
-          `File with name ${file.name} does not have a pre-signed upload URL`,
+  const upload = async (fileData: FileData[] | null) => {
+    onInitiateUpload({
+      fileData,
+      onSuccess: async (fileData) => {
+        const { data: signedUploadUrls } = await getProblemUploadUrls(
+          fileData.map((fileDatum) => fileDatum.file.name),
+          getToken,
         );
 
-      return uploadFile({
-        url: signedUploadUrl,
-        file,
-        onProgress: (progress) => {
-          const updatedFileData = [...fileData];
-          updatedFileData[index].progress = progress;
-          setFileData(updatedFileData);
-        },
-        onSuccess: () => {
-          console.log("upload end");
-
-          const updatedFileData = [...fileData];
-          updatedFileData[index].state = "POSTING_PROBLEMS";
-          setFileData(updatedFileData);
-        },
-      });
+        setProblemUploadUrls({
+          fileData,
+          signedUploadUrls,
+          onSuccess: (fileData) => {
+            uploadFiles({
+              fileData,
+              onSuccess: () => {
+                console.log("DONE");
+              },
+            });
+          },
+        });
+      },
     });
-
-    await Promise.all(promises);
   };
 
   useEffect(() => {

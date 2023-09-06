@@ -111,7 +111,7 @@ const AddProblemsButton: FC<AddProblemsButtonProps> = ({}) => {
           ) : (
             <Button onClick={onUploadFile}>Save</Button>
             )} */}
-          <Button onClick={upload}>Save</Button>
+          <Button onClick={() => upload(fileData)}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
