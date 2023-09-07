@@ -47,15 +47,14 @@ const FileComponent: FC<FileComponentProps> = ({
           className={cn("h-2", state !== "UPLOADING" && "opacity-0")}
         />
       </div>
-      {state === "INITIAL" ||
-        (state === "ERROR" && (
-          <ButtonIcon
-            Icon={X}
-            onClick={() => removeFile(index)}
-            variant="ghost"
-            className=" hover:bg-transparent [&_svg]:text-zinc-400 hover:[&_svg]:text-zinc-600"
-          />
-        ))}
+      {(state === "INITIAL" || state === "ERROR") && (
+        <ButtonIcon
+          Icon={X}
+          onClick={() => removeFile(index)}
+          variant="ghost"
+          className=" hover:bg-transparent [&_svg]:text-zinc-400 hover:[&_svg]:text-zinc-600"
+        />
+      )}
       {state === "POSTING_PROBLEMS" || state === "GET_UPLOAD_URLS" ? (
         <Loader2 className=" spin h-4 w-4 animate-spin" />
       ) : null}

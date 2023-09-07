@@ -1,10 +1,5 @@
-import {
-  deleteCloudflareFiles,
-  getProblemUploadUrls,
-  postProblems,
-} from "../problem.api";
 import { useAuth } from "@clerk/nextjs";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   FileData,
@@ -27,6 +22,7 @@ export default function usePostProblems() {
   const [fileData, setFileData] = useState<FileData[] | null>(null);
   const [doneFileData, setDoneFileData] = useState<FileData[] | null>(null);
   const [uploadState, setUploadState] = useState<UploadState>("INITIAL");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const removeFile = (index: number) => {
     if (!fileData) throw new Error("No files selected");
@@ -155,6 +151,22 @@ export default function usePostProblems() {
     [uploadState, fileData],
   );
 
+  const reset = () => {
+    setFileData(null);
+    setDoneFileData(null);
+    setUploadState("INITIAL");
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    reset();
+  };
+
+  const setModalOpenState = (open: boolean) => {
+    if (!open) closeModal();
+    else setModalOpen(true);
+  };
+
   return {
     fileData: allFileData,
     upload,
@@ -164,5 +176,8 @@ export default function usePostProblems() {
     dropzoneDisabled,
     closeDisabled,
     uploadDisabled,
+    modalOpen,
+    setModalOpen: setModalOpenState,
+    closeModal,
   };
 }

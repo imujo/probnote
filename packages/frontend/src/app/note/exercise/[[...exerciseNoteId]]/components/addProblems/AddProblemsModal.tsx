@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,13 +9,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DialogClose } from "@radix-ui/react-dialog";
 import { Plus } from "lucide-react";
 import ButtonWithIcon from "@/components/ButtonWithIcon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import usePostProblems from "api/problem/hooks/usePostProblems";
 import FileComponent from "./FileComponent";
 import { cn } from "utils/cn";
+import ButtonLoading from "@/components/ButtonLoading";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AddProblemsModalProps {
   // open: boolean;
@@ -32,9 +38,9 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
     dropzoneDisabled,
     closeDisabled,
     uploadDisabled,
+    modalOpen,
+    setModalOpen,
   } = usePostProblems();
-
-  const [open, setOpen] = useState(false);
 
   const {
     getRootProps,
@@ -45,18 +51,23 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
   } = dropzone;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>
         <ButtonWithIcon Icon={Plus}>Add Problems</ButtonWithIcon>
       </DialogTrigger>
       <DialogContent
         onEscapeKeyDown={(e) => {
-          if (closeDisabled) e.preventDefault();
+          if (closeDisabled) return e.preventDefault();
+          setModalOpen(false);
         }}
         onPointerDownOutside={(e) => {
-          if (closeDisabled) e.preventDefault();
+          if (closeDisabled) return e.preventDefault();
+          setModalOpen(false);
         }}
-        closeButtonDisabled={closeDisabled}
+        onCloseButton={(e) => {
+          if (closeDisabled) return e.preventDefault();
+          setModalOpen(false);
+        }}
       >
         <DialogHeader>
           <DialogTitle>Add Problems to Exercise Note</DialogTitle>
@@ -76,7 +87,7 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
           {isDragReject && <p>Some files will be rejected</p>}
           {!isDragActive && <p>Drop or click to select</p>}
         </div>
-        <ScrollArea className="mt-4 h-52">
+        <ScrollArea className="mt-4 max-h-52">
           {fileData?.map(({ file, progress, state }, i) => {
             return (
               <FileComponent
@@ -92,19 +103,43 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
           })}
         </ScrollArea>
         <DialogFooter className="items-center">
-          <DialogClose asChild disabled={closeDisabled}>
-            <Button variant="secondary">Close</Button>
-          </DialogClose>
+          <Button
+            onClick={() => setModalOpen(false)}
+            disabled={closeDisabled}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
 
           {/* {isLoading ? (
             <ButtonLoading />
           ) : (
             <Button onClick={onUploadFile}>Save</Button>
             )} */}
-          <Button onClick={upload} disabled={uploadDisabled}>
-            {uploadState !== "ERROR" ? "Upload" : null}
-            {uploadState === "ERROR" ? "Retry upload" : null}
-          </Button>
+          {uploadState === "INITIAL" && (
+            <Button disabled={uploadDisabled} onClick={upload}>
+              Upload
+            </Button>
+          )}
+          {uploadState === "ERROR" && (
+            <TooltipProvider>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger asChild>
+                  <Button onClick={upload}>Retry upload</Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Remove files with errors or retry uploading them</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
+          {uploadState === "LOADING" && (
+            <ButtonLoading>Uploading</ButtonLoading>
+          )}
+          {uploadState === "DONE" && (
+            <Button onClick={() => setModalOpen(false)}>Save</Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
