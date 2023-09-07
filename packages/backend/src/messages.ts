@@ -13,6 +13,8 @@ const putSuccess = (entityName: string, id: number) =>
   `${entityName} with id ${id} updated successfully`;
 const deleteSuccess = (entityName: string, id: number) =>
   `${entityName} with ${id} deleted successfully`;
+const deleteMultipleSuccess = (entityName: string, count: number) =>
+  `${entityName} (${count}) deleted successfully`;
 const invalidSortOrder = `Invalid sort order: Please use 'asc' for ascending or 'desc' for descending order.`;
 
 export default {
@@ -25,4 +27,5 @@ export default {
   putSuccess,
   deleteSuccess,
   invalidSortOrder,
+  deleteMultipleSuccess,
 };

@@ -7,8 +7,10 @@ import {
   ProblemPostResposne,
   CloudflareObjectsDeleteRequest,
   CloudflareObjectsDeleteResposne,
+  ProblemsDeleteByFileKeysRequest,
+  ProblemsDeleteByFileKeysResposne,
 } from "./types.problem";
-import { postProblems } from "./service.problem";
+import { deleteProblemsByFileKeys, postProblems } from "./service.problem";
 import {
   deleteCloudflareObjects,
   generateMultipleSignedUploadUrls,
@@ -27,6 +29,33 @@ const postMultiple = async (
 
     res.status(200).json({
       message: messages.postSuccess("Problems"),
+      data: {
+        count: problems.count,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteMultipleByFileKeys = async (
+  req: ProblemsDeleteByFileKeysRequest,
+  res: ProblemsDeleteByFileKeysResposne,
+  next: NextFunction
+) => {
+  try {
+    const { problemFileKeys } = req.body;
+    const { userId } = req.auth;
+
+    const problems = await deleteProblemsByFileKeys(problemFileKeys, userId);
+
+    const cloudflareResponse = await deleteCloudflareObjects(problemFileKeys);
+
+    if (cloudflareResponse.Errors !== undefined)
+      throw new CustomError("Could note delete all files from Cloudflare", 500);
+
+    res.status(200).json({
+      message: messages.deleteMultipleSuccess("Problems", problems.count),
       data: {
         count: problems.count,
       },
@@ -86,4 +115,5 @@ export default {
   postMultiple,
   getUploadUrls,
   deleteCloudflareObject,
+  deleteMultipleByFileKeys,
 };

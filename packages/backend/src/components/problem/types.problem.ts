@@ -31,6 +31,31 @@ export type ProblemPost = SuccessResponse<{
 }>;
 export type ProblemPostResposne = Response<ProblemPost>;
 
+// DELETE PROBLEMS BY FILEKEYS
+
+export const problemsDeleteByFileKeysSchema = {
+  body: z.object({
+    problemFileKeys: z.array(
+      z.string({
+        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
+        required_error: messages.required("ProblemFileKey"),
+      })
+    ),
+  }),
+};
+
+const problemsDeleteByFileKeysBuilder = new AuthRequestBuilder(
+  problemsDeleteByFileKeysSchema
+);
+export type ProblemsDeleteByFileKeysRequest = ReturnType<
+  typeof problemsDeleteByFileKeysBuilder.getRequestType
+>;
+export type ProblemsDeleteByFileKeys = SuccessResponse<{
+  count: number;
+}>;
+export type ProblemsDeleteByFileKeysResposne =
+  Response<ProblemsDeleteByFileKeys>;
+
 // GET PROBLEM UPLOAD URLS
 
 export const problemGetUploadUrlsSchema = {

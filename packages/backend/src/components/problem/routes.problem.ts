@@ -4,6 +4,7 @@ import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import {
   cloudflareObjectsDeleteSchema,
   problemGetUploadUrlsSchema,
+  problemsDeleteByFileKeysSchema,
   problemsPostSchema,
 } from "./types.problem";
 import problemController from "./controller.problem";
@@ -17,6 +18,11 @@ router.post(
   "/uploadUrls",
   validate(problemGetUploadUrlsSchema),
   problemController.getUploadUrls
+);
+router.delete(
+  "/byFileKeys",
+  validate(problemsDeleteByFileKeysSchema),
+  problemController.deleteMultipleByFileKeys
 );
 
 router.delete(

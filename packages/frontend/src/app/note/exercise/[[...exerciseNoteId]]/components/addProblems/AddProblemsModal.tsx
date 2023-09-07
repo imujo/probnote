@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import useDeleteProblemsByFileKeys from "api/problem/hooks/useDeleteProblemsByFileKeys";
 
 interface AddProblemsModalProps {
   // open: boolean;
@@ -50,6 +51,8 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
     isDragAccept,
     dropzoneError,
   } = dropzone;
+
+  const { mutate: deleteProblems } = useDeleteProblemsByFileKeys();
 
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
@@ -117,19 +120,32 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
           })}
         </ScrollArea>
         <DialogFooter className="items-center">
-          <Button
-            onClick={() => setModalOpen(false)}
-            disabled={closeDisabled}
-            variant="secondary"
-          >
-            Cancel
-          </Button>
-
-          {/* {isLoading ? (
-            <ButtonLoading />
-          ) : (
-            <Button onClick={onUploadFile}>Save</Button>
-            )} */}
+          {uploadState !== "DONE" && (
+            <Button
+              onClick={async () => setModalOpen(false)}
+              disabled={closeDisabled}
+              variant="secondary"
+            >
+              Cancel
+            </Button>
+          )}
+          {uploadState === "DONE" && (
+            <Button
+              onClick={() => {
+                deleteProblems(
+                  fileData.map((fileDatum) => {
+                    if (!fileDatum.fileKey)
+                      throw new Error("File with no filekey");
+                    return fileDatum.fileKey;
+                  }),
+                );
+                setModalOpen(false);
+              }}
+              variant="secondary"
+            >
+              Cancel and delete
+            </Button>
+          )}
           {uploadState === "INITIAL" && (
             <Button disabled={uploadDisabled} onClick={upload}>
               Upload

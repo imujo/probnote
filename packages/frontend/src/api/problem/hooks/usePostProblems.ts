@@ -140,10 +140,7 @@ export default function usePostProblems() {
     [fileData, doneFileData],
   );
 
-  const closeDisabled = useMemo(
-    () => uploadState === "LOADING" || uploadState === "ERROR",
-    [uploadState],
-  );
+  const closeDisabled = useMemo(() => uploadState !== "INITIAL", [uploadState]);
 
   const uploadDisabled = useMemo(
     () =>

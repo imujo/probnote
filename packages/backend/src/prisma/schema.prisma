@@ -57,7 +57,7 @@ model RegularNote {
 model Problem {
   id              Int      @id @default(autoincrement())
   exerciseNoteId  Int
-  problemFileKey  String
+  problemFileKey  String   @unique
   solutionFileKey String?
   canvas          Json?
   createdAt       DateTime @default(now())
