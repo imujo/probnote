@@ -53,6 +53,7 @@ export default function usePostProblems() {
   const { mutate: delProblems } = useDeleteProblemsByFileKeys();
 
   const deleteProblems = () => {
+    if (doneFileData.length === 0) return;
     delProblems(
       doneFileData.map((fileDatum) => {
         if (!fileDatum.fileKey) throw new Error("File with no filekey");

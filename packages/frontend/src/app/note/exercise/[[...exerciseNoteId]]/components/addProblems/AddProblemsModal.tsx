@@ -128,18 +128,17 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
               Cancel
             </Button>
           )}
-          {uploadState === "DONE" ||
-            (uploadState === "ERROR" && (
-              <Button
-                onClick={() => {
-                  deleteProblems();
-                  setModalOpen(false);
-                }}
-                variant="secondary"
-              >
-                Cancel and delete
-              </Button>
-            ))}
+          {(uploadState === "DONE" || uploadState === "ERROR") && (
+            <Button
+              onClick={() => {
+                deleteProblems();
+                setModalOpen(false);
+              }}
+              variant="secondary"
+            >
+              Cancel and delete
+            </Button>
+          )}
           {uploadState === "INITIAL" && (
             <Button disabled={uploadDisabled} onClick={upload}>
               Upload

@@ -9,16 +9,23 @@ import {
 interface TooltipItemProps {
   children: ReactNode;
   tooltipText: string;
+  disabled?: boolean;
 }
 
-const TooltipItem: FC<TooltipItemProps> = ({ children, tooltipText }) => {
+const TooltipItem: FC<TooltipItemProps> = ({
+  children,
+  tooltipText,
+  disabled,
+}) => {
   return (
     <TooltipProvider>
       <Tooltip delayDuration={100}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent>
-          <p>{tooltipText}</p>
-        </TooltipContent>
+        {!disabled && (
+          <TooltipContent>
+            <p>{tooltipText}</p>
+          </TooltipContent>
+        )}
       </Tooltip>
     </TooltipProvider>
   );

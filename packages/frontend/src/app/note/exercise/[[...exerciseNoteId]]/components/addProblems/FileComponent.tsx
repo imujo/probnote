@@ -45,19 +45,21 @@ const FileComponent: FC<FileComponentProps> = ({
     >
       {imageComponent}
       <div className="flex h-full flex-1 flex-col justify-evenly ">
-        <span
-          className={cn(
-            "flex items-center gap-2 text-sm",
-            state === "ERROR" ? "text-red-500" : null,
-          )}
+        <TooltipItem
+          disabled={state !== "ERROR"}
+          tooltipText="Could not upload this file. Please remove it or retry upload."
         >
-          <span>{fileName}</span>
-          {state === "ERROR" && (
-            <TooltipItem tooltipText="Could not upload this file. Please remove it or retry upload.">
-              <Info className="h-[14px] w-[14px] " />
-            </TooltipItem>
-          )}
-        </span>
+          <div
+            className={cn(
+              "flex items-center gap-2 text-sm",
+              state === "ERROR" ? " cursor-default text-red-500" : null,
+            )}
+          >
+            <span>{fileName}</span>
+            {state === "ERROR" && <Info className="h-[14px] w-[14px] " />}
+          </div>
+        </TooltipItem>
+
         <Progress
           value={progress || 0}
           className={cn("h-2", state !== "UPLOADING" && "opacity-0")}
