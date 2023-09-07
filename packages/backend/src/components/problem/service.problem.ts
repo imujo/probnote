@@ -3,13 +3,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const postProblems = async (
-  problemFileKeys: string[],
+  fileKeys: string[],
   exerciseNoteId: number
 ) => {
   const problems = await prisma.problem.createMany({
-    data: problemFileKeys.map((problemFileKey) => ({
+    data: fileKeys.map((fileKey) => ({
       exerciseNoteId,
-      problemFileKey: problemFileKey,
+      problemFileKey: fileKey,
     })),
   });
 
@@ -17,13 +17,13 @@ export const postProblems = async (
 };
 
 export const deleteProblemsByFileKeys = async (
-  problemFileKeys: string[],
+  fileKeys: string[],
   userId: string
 ) => {
   const problems = await prisma.problem.deleteMany({
     where: {
       problemFileKey: {
-        in: problemFileKeys,
+        in: fileKeys,
       },
       AND: {
         ExerciseNote: {

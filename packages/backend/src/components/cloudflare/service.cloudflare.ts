@@ -10,11 +10,11 @@ export type SignedUploadUrl = {
 };
 
 export const generateSingedUploadUrl = async (
-  filename: string,
+  fileName: string,
   uniqeString?: string
 ) => {
   const unique = uniqeString || new Date().getTime().toString();
-  const fileKey = unique + filename;
+  const fileKey = unique + fileName;
 
   const url = await getSignedUrl(
     CloudFlareClient,
@@ -44,14 +44,14 @@ export const deleteCloudflareObjects = async (fileKeys: string[]) => {
   );
 };
 
-export const generateMultipleSignedUploadUrls = async (filenames: string[]) => {
+export const generateMultipleSignedUploadUrls = async (fileNames: string[]) => {
   let data: { [key: string]: SignedUploadUrl } | null = null;
   const date = new Date().getTime();
 
-  for (let i = 0; i < filenames.length; i++) {
-    const filename = filenames[i];
+  for (let i = 0; i < fileNames.length; i++) {
+    const fileName = fileNames[i];
     if (!data) data = {};
-    data[filename] = await generateSingedUploadUrl(filename, `${date + i}`);
+    data[fileName] = await generateSingedUploadUrl(fileName, `${date + i}`);
   }
 
   return data;

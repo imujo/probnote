@@ -1,6 +1,7 @@
-import { useAuth } from "@clerk/nextjs";
-import { useMemo, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/nextjs";
+import useExerciseNoteId from "hooks/useExerciseNoteId";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   FileData,
   UploadState,
@@ -11,56 +12,23 @@ import {
   setProblemUploadUrls,
   uploadFiles,
 } from "utils/upload";
-import useExerciseNoteId from "hooks/useExerciseNoteId";
-import { useDropzone } from "react-dropzone";
-import useDeleteProblemsByFileKeys from "./useDeleteProblemsByFileKeys";
 
-const MAX_FILE_SIZE = 3 * 1024 * 1024;
+type UsePostProblemsProps = {
+  fileData: FileData[];
+  setFileData: Dispatch<SetStateAction<FileData[]>>;
+  setDoneFileData: Dispatch<SetStateAction<FileData[]>>;
+  setUploadState: Dispatch<SetStateAction<UploadState>>;
+};
 
-export default function usePostProblems() {
-  const { toast } = useToast();
+export default function usePostProblems({
+  fileData,
+  setFileData,
+  setDoneFileData,
+  setUploadState,
+}: UsePostProblemsProps) {
   const { getToken } = useAuth();
   const exerciseNoteId = useExerciseNoteId();
-
-  const [fileData, setFileData] = useState<FileData[]>([]);
-  const [doneFileData, setDoneFileData] = useState<FileData[]>([]);
-  const [uploadState, setUploadState] = useState<UploadState>("INITIAL");
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const removeFile = (index: number) => {
-    if (!fileData) throw new Error("No files selected");
-
-    const updatedFileData = [...fileData];
-    updatedFileData.splice(index, 1);
-
-    if (uploadState === "ERROR" && updatedFileData.length === 0)
-      if (doneFileData.length === 0) setUploadState("INITIAL");
-      else setUploadState("DONE");
-
-    setFileData(updatedFileData);
-  };
-
-  const onInputChange = (acceptedFiles: File[]) => {
-    const fileList = Array.from(acceptedFiles);
-    const updatedFileData: FileData[] = fileList.map((file) => ({
-      file: file,
-      state: "INITIAL",
-    }));
-
-    setFileData((prev) => [...(prev || []), ...updatedFileData]);
-  };
-
-  const { mutate: delProblems } = useDeleteProblemsByFileKeys();
-
-  const deleteProblems = () => {
-    if (doneFileData.length === 0) return;
-    delProblems(
-      doneFileData.map((fileDatum) => {
-        if (!fileDatum.fileKey) throw new Error("File with no filekey");
-        return fileDatum.fileKey;
-      }),
-    );
-  };
+  const { toast } = useToast();
 
   const upload = async () => {
     try {
@@ -117,86 +85,5 @@ export default function usePostProblems() {
     }
   };
 
-  const dropzoneDisabled = useMemo(
-    () => uploadState !== "INITIAL",
-    [uploadState],
-  );
-
-  const dropzone = useDropzone({
-    onDrop: onInputChange,
-    disabled: dropzoneDisabled,
-    accept: {
-      "image/png": [".png", ".jpg"],
-      "image/jpeg": [".jpeg", ".png"],
-    },
-    maxFiles: 30,
-    minSize: 0,
-    maxSize: MAX_FILE_SIZE,
-    validator: (file) => {
-      if (fileData.map(({ file }) => file.name).includes(file.name)) {
-        toast({
-          title: "Could not add file",
-          description: `File with name ${file.name} is already added`,
-          variant: "destructive",
-        });
-
-        return {
-          code: "duplicate",
-          message: `The file you provided is already added`,
-        };
-      }
-      return null;
-    },
-  });
-
-  const allFileData = useMemo(
-    () => [...fileData, ...doneFileData],
-    [fileData, doneFileData],
-  );
-
-  const closeDisabled = useMemo(() => uploadState !== "INITIAL", [uploadState]);
-
-  const uploadDisabled = useMemo(
-    () =>
-      fileData.length === 0 ||
-      uploadState === "LOADING" ||
-      uploadState === "DONE",
-    [uploadState, fileData],
-  );
-
-  const reset = () => {
-    setFileData([]);
-    setDoneFileData([]);
-    setUploadState("INITIAL");
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setTimeout(() => reset(), 300);
-  };
-
-  const setModalOpenState = (open: boolean) => {
-    if (!open) closeModal();
-    else setModalOpen(true);
-  };
-
-  const dropzoneError = useMemo(
-    () => dropzone.fileRejections[0]?.errors[0].message,
-    [dropzone.fileRejections],
-  );
-
-  return {
-    fileData: allFileData,
-    upload,
-    removeFile,
-    dropzone: { ...dropzone, dropzoneError },
-    uploadState,
-    dropzoneDisabled,
-    closeDisabled,
-    uploadDisabled,
-    modalOpen,
-    setModalOpen: setModalOpenState,
-    closeModal,
-    deleteProblems,
-  };
+  return upload;
 }

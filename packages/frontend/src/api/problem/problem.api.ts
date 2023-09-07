@@ -8,7 +8,7 @@ import { GetToken } from "@clerk/types";
 import ResponseError from "utils/ResponseError";
 
 export const postProblems = async (
-  problemFileKeys: string[],
+  fileKeys: string[],
   exerciseNoteId: number,
   getAuthToken: GetToken,
 ) => {
@@ -20,7 +20,7 @@ export const postProblems = async (
       Authorization: `Bearer ${await getAuthToken()}`,
     },
     body: JSON.stringify({
-      problemFileKeys,
+      fileKeys,
       exerciseNoteId,
     }),
     cache: "no-store",
@@ -38,7 +38,7 @@ export const postProblems = async (
 };
 
 export const deleteProblemsByFileKeys = async (
-  problemFileKeys: string[],
+  fileKeys: string[],
   getAuthToken: GetToken,
 ) => {
   const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/problem/byFileKeys`, {
@@ -49,7 +49,7 @@ export const deleteProblemsByFileKeys = async (
       Authorization: `Bearer ${await getAuthToken()}`,
     },
     body: JSON.stringify({
-      problemFileKeys,
+      fileKeys,
     }),
     cache: "no-store",
   });

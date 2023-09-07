@@ -16,9 +16,9 @@ const postMultiple = async (
   next: NextFunction
 ) => {
   try {
-    const { exerciseNoteId, problemFileKeys } = req.body;
+    const { exerciseNoteId, fileKeys } = req.body;
 
-    const problems = await postProblems(problemFileKeys, exerciseNoteId);
+    const problems = await postProblems(fileKeys, exerciseNoteId);
 
     res.status(200).json({
       message: messages.postSuccess("Problems"),
@@ -37,12 +37,12 @@ const deleteMultipleByFileKeys = async (
   next: NextFunction
 ) => {
   try {
-    const { problemFileKeys } = req.body;
+    const { fileKeys } = req.body;
     const { userId } = req.auth;
 
-    const problems = await deleteProblemsByFileKeys(problemFileKeys, userId);
+    const problems = await deleteProblemsByFileKeys(fileKeys, userId);
 
-    const cloudflareResponse = await deleteCloudflareObjects(problemFileKeys);
+    const cloudflareResponse = await deleteCloudflareObjects(fileKeys);
 
     if (cloudflareResponse.Errors !== undefined)
       throw new CustomError("Could note delete all files from Cloudflare", 500);

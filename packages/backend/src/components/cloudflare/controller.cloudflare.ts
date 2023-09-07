@@ -17,10 +17,10 @@ const getUploadUrls = async (
   next: NextFunction
 ) => {
   try {
-    const { filenames } = req.body;
+    const { fileNames } = req.body;
 
     const problemsSignedUrls =
-      await generateMultipleSignedUploadUrls(filenames);
+      await generateMultipleSignedUploadUrls(fileNames);
 
     if (!problemsSignedUrls) {
       throw new CustomError("Could not generate signed upload URLs", 500);
@@ -41,9 +41,9 @@ const deleteObjects = async (
   next: NextFunction
 ) => {
   try {
-    const { filekeys } = req.body;
+    const { fileKeys } = req.body;
 
-    const response = await deleteCloudflareObjects(filekeys);
+    const response = await deleteCloudflareObjects(fileKeys);
 
     if (response.Errors !== undefined)
       throw new CustomError("Could note delete all files from Cloudflare", 500);

@@ -8,7 +8,7 @@ import {
 } from "@probnote/backend/src/components/cloudflare/types.cloudflare";
 
 export const getUploadUrls = async (
-  filenames: string[],
+  fileNames: string[],
   getAuthToken: GetToken,
 ) => {
   const response = await fetch(
@@ -21,7 +21,7 @@ export const getUploadUrls = async (
         Authorization: `Bearer ${await getAuthToken()}`,
       },
       body: JSON.stringify({
-        filenames,
+        fileNames,
       }),
       cache: "no-store",
     },
@@ -39,7 +39,7 @@ export const getUploadUrls = async (
 };
 
 export const deleteCloudflareFiles = async (
-  filekeys: string[],
+  fileKeys: string[],
   getAuthToken: GetToken,
 ) => {
   const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/cloudflare/files`, {
@@ -50,7 +50,7 @@ export const deleteCloudflareFiles = async (
       Authorization: `Bearer ${await getAuthToken()}`,
     },
     body: JSON.stringify({
-      filekeys: filekeys,
+      fileKeys: fileKeys,
     }),
     cache: "no-store",
   });
