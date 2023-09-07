@@ -1,11 +1,7 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import CloudFlareClient from "../config/cloudflare.config";
-import {
-  Delete,
-  DeleteObjectsCommand,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
-import env from "../config/env.config";
+import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import CloudFlareClient from "../../config/cloudflare.config";
+import env from "../../config/env.config";
 
 const EXPIERS_IN = 3600;
 export type SignedUploadUrl = {

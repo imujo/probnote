@@ -1,10 +1,10 @@
 import { GetToken } from "@clerk/types";
-import { SignedUploadUrl } from "@probnote/backend/src/utils/upload";
+import { SignedUploadUrl } from "@probnote/backend/src/components/cloudflare/service.cloudflare";
 import {
   deleteCloudflareFiles,
-  getProblemUploadUrls,
-  postProblems,
-} from "api/problem/problem.api";
+  getUploadUrls,
+} from "api/cloudflare/cloudflare.api";
+import { postProblems } from "api/problem/problem.api";
 import { Dispatch, SetStateAction } from "react";
 
 export type FileDataState =
@@ -168,7 +168,7 @@ export const getProblemUploadUrlsOrError = async (
   setUploadState: Dispatch<SetStateAction<UploadState>>,
 ) => {
   try {
-    return await getProblemUploadUrls(
+    return await getUploadUrls(
       fileData.map(({ file }) => file.name),
       getToken,
     );

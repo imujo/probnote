@@ -1,33 +1,34 @@
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
-import {
-  ProblemPost,
-  ProblemsDeleteByFileKeys,
-} from "@probnote/backend/src/components/problem/types.problem";
 import env from "@/config/env.config";
 import { GetToken } from "@clerk/types";
 import ResponseError from "utils/ResponseError";
+import {
+  CloudflareDeleteObjects,
+  CloudflareGetUploadUrls,
+} from "@probnote/backend/src/components/cloudflare/types.cloudflare";
 
-export const postProblems = async (
-  problemFileKeys: string[],
-  exerciseNoteId: number,
+export const getUploadUrls = async (
+  filenames: string[],
   getAuthToken: GetToken,
 ) => {
-  const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/problem`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${await getAuthToken()}`,
+  const response = await fetch(
+    `${env.NEXT_PUBLIC_SERVER}/cloudflare/uploadUrls`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await getAuthToken()}`,
+      },
+      body: JSON.stringify({
+        filenames,
+      }),
+      cache: "no-store",
     },
-    body: JSON.stringify({
-      problemFileKeys,
-      exerciseNoteId,
-    }),
-    cache: "no-store",
-  });
+  );
 
   const responseJson = await response.json();
-  const data = responseJson as ProblemPost;
+  const data = responseJson as CloudflareGetUploadUrls;
 
   if (!response.ok) {
     const error = responseJson as ErrorResponse;
@@ -37,11 +38,11 @@ export const postProblems = async (
   return data;
 };
 
-export const deleteProblemsByFileKeys = async (
-  problemFileKeys: string[],
+export const deleteCloudflareFiles = async (
+  filekeys: string[],
   getAuthToken: GetToken,
 ) => {
-  const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/problem/byFileKeys`, {
+  const response = await fetch(`${env.NEXT_PUBLIC_SERVER}/cloudflare/files`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -49,13 +50,15 @@ export const deleteProblemsByFileKeys = async (
       Authorization: `Bearer ${await getAuthToken()}`,
     },
     body: JSON.stringify({
-      problemFileKeys,
+      filekeys: filekeys,
     }),
     cache: "no-store",
   });
 
   const responseJson = await response.json();
-  const data = responseJson as ProblemsDeleteByFileKeys;
+  const data = responseJson as CloudflareDeleteObjects;
+
+  console.log(data);
 
   if (!response.ok) {
     const error = responseJson as ErrorResponse;

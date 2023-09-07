@@ -1,21 +1,14 @@
 import { NextFunction } from "express";
 import messages from "../../messages";
 import {
-  ProblemGetUploadUrlsRequest,
-  ProblemGetUploadUrlsResposne,
   ProblemPostRequest,
   ProblemPostResposne,
-  CloudflareObjectsDeleteRequest,
-  CloudflareObjectsDeleteResposne,
   ProblemsDeleteByFileKeysRequest,
   ProblemsDeleteByFileKeysResposne,
 } from "./types.problem";
 import { deleteProblemsByFileKeys, postProblems } from "./service.problem";
-import {
-  deleteCloudflareObjects,
-  generateMultipleSignedUploadUrls,
-} from "../../utils/upload";
 import CustomError from "../../utils/CustomError";
+import { deleteCloudflareObjects } from "../cloudflare/service.cloudflare";
 
 const postMultiple = async (
   req: ProblemPostRequest,
@@ -65,55 +58,7 @@ const deleteMultipleByFileKeys = async (
   }
 };
 
-const getUploadUrls = async (
-  req: ProblemGetUploadUrlsRequest,
-  res: ProblemGetUploadUrlsResposne,
-  next: NextFunction
-) => {
-  try {
-    const { filenames } = req.body;
-
-    const problemsSignedUrls =
-      await generateMultipleSignedUploadUrls(filenames);
-
-    if (!problemsSignedUrls) {
-      throw new CustomError("Could not generate signed upload URLs", 500);
-    }
-
-    res.status(200).json({
-      message: messages.getSuccess("Signed upload URLs"),
-      data: problemsSignedUrls,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const deleteCloudflareObject = async (
-  req: CloudflareObjectsDeleteRequest,
-  res: CloudflareObjectsDeleteResposne,
-  next: NextFunction
-) => {
-  try {
-    const { filekeys } = req.body;
-
-    const response = await deleteCloudflareObjects(filekeys);
-
-    if (response.Errors !== undefined)
-      throw new CustomError("Could note delete all files from Cloudflare", 500);
-
-    res.status(200).json({
-      message: messages.getSuccess("Signed upload URLs"),
-      data: {},
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 export default {
   postMultiple,
-  getUploadUrls,
-  deleteCloudflareObject,
   deleteMultipleByFileKeys,
 };

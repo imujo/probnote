@@ -3,7 +3,6 @@ import { Response } from "express";
 import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
 import { SuccessResponse } from "../../globalTypes";
 import messages from "../../messages";
-import { SignedUploadUrl } from "../../utils/upload";
 
 // POST PROBLEMS
 
@@ -57,49 +56,3 @@ export type ProblemsDeleteByFileKeys = SuccessResponse<{
 }>;
 export type ProblemsDeleteByFileKeysResposne =
   Response<ProblemsDeleteByFileKeys>;
-
-// GET PROBLEM UPLOAD URLS
-
-export const problemGetUploadUrlsSchema = {
-  body: z.object({
-    filenames: z.array(
-      z.string({
-        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
-        required_error: messages.required("ProblemFileKey"),
-      })
-    ),
-  }),
-};
-
-const problemGetUploadUrlsBuilder = new AuthRequestBuilder(
-  problemGetUploadUrlsSchema
-);
-export type ProblemGetUploadUrlsRequest = ReturnType<
-  typeof problemGetUploadUrlsBuilder.getRequestType
->;
-export type ProblemGetUploadUrls = SuccessResponse<{
-  [key: string]: SignedUploadUrl;
-}>;
-export type ProblemGetUploadUrlsResposne = Response<ProblemGetUploadUrls>;
-
-// DELETE CLOUDFLARE OBJECTS
-
-export const cloudflareObjectsDeleteSchema = {
-  body: z.object({
-    filekeys: z.array(
-      z.string({
-        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
-        required_error: messages.required("ProblemFileKey"),
-      })
-    ),
-  }),
-};
-
-const cloudflareObjectsDeleteBuilder = new AuthRequestBuilder(
-  cloudflareObjectsDeleteSchema
-);
-export type CloudflareObjectsDeleteRequest = ReturnType<
-  typeof cloudflareObjectsDeleteBuilder.getRequestType
->;
-export type CloudflareObjectsDelete = SuccessResponse<{}>;
-export type CloudflareObjectsDeleteResposne = Response<CloudflareObjectsDelete>;
