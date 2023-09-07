@@ -33,7 +33,8 @@ export default function usePostProblems() {
     updatedFileData.splice(index, 1);
 
     if (uploadState === "ERROR" && updatedFileData.length === 0)
-      setUploadState("DONE");
+      if (doneFileData.length === 0) setUploadState("INITIAL");
+      else setUploadState("DONE");
 
     setFileData(updatedFileData);
   };

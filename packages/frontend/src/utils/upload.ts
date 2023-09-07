@@ -85,9 +85,9 @@ export const uploadFiles = async (
         `File with name ${file.name} does not have a pre-signed upload URL`,
       );
 
-    const url = signedUploadUrl;
-    // const url =
-    //   index !== 0 ? signedUploadUrl || "test" : signedUploadUrl + "dasfs";
+    // const url = signedUploadUrl;
+    const url =
+      index !== 0 ? signedUploadUrl || "test" : signedUploadUrl + "dasfs";
 
     return uploadFile({
       url,
