@@ -9,10 +9,12 @@ import messages from "../../messages";
 export const problemsPostSchema = {
   body: z.object({
     problemFileKeys: z.array(
-      z.string({
-        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
-        required_error: messages.required("ProblemFileKey"),
-      })
+      z
+        .string({
+          invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
+          required_error: messages.required("ProblemFileKey"),
+        })
+        .min(1, messages.arrayMinLength("problemfilekeys"))
     ),
     exerciseNoteId: z.number({
       invalid_type_error: messages.invalidType("ExerciseNoteId", "number"),
@@ -41,7 +43,7 @@ export const problemsDeleteByFileKeysSchema = {
           required_error: messages.required("ProblemFileKey"),
         })
       )
-      .min(1, "At least one problem file key is required"),
+      .min(1, messages.arrayMinLength("problemFileKeys")),
   }),
 };
 

@@ -15,6 +15,8 @@ const deleteSuccess = (entityName: string, id: number) =>
   `${entityName} with ${id} deleted successfully`;
 const deleteMultipleSuccess = (entityName: string, count: number) =>
   `${entityName} (${count}) deleted successfully`;
+const arrayMinLength = (entityName: string) =>
+  `At least one ${entityName} is required`;
 const invalidSortOrder = `Invalid sort order: Please use 'asc' for ascending or 'desc' for descending order.`;
 
 export default {
@@ -28,4 +30,5 @@ export default {
   deleteSuccess,
   invalidSortOrder,
   deleteMultipleSuccess,
+  arrayMinLength,
 };

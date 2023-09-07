@@ -1,7 +1,6 @@
 import { Router } from "express";
 import validate from "../../middleware/validate";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
-
 import cloudflareController from "./controller.cloudflare";
 import {
   cloudflareDeleteObjectsSchema,

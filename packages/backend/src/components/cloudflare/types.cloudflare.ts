@@ -9,12 +9,14 @@ import { SignedUploadUrl } from "./service.cloudflare";
 
 export const cloudflareGetUploadUrlsSchema = {
   body: z.object({
-    filenames: z.array(
-      z.string({
-        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
-        required_error: messages.required("ProblemFileKey"),
-      })
-    ),
+    filenames: z
+      .array(
+        z.string({
+          invalid_type_error: messages.invalidType("Filenames", "string"),
+          required_error: messages.required("Filenames"),
+        })
+      )
+      .min(1, messages.arrayMinLength("filenames")),
   }),
 };
 
@@ -34,10 +36,12 @@ export type CloudflareGetUploadUrlsResposne = Response<CloudflareGetUploadUrls>;
 export const cloudflareDeleteObjectsSchema = {
   body: z.object({
     filekeys: z.array(
-      z.string({
-        invalid_type_error: messages.invalidType("filekeys", "string"),
-        required_error: messages.required("filekeys"),
-      })
+      z
+        .string({
+          invalid_type_error: messages.invalidType("filekeys", "string"),
+          required_error: messages.required("filekeys"),
+        })
+        .min(1, messages.arrayMinLength("filekeys"))
     ),
   }),
 };
