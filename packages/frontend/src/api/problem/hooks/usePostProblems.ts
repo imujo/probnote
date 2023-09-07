@@ -156,7 +156,7 @@ export default function usePostProblems() {
 
   const closeModal = () => {
     setModalOpen(false);
-    reset();
+    setTimeout(() => reset(), 300);
   };
 
   const setModalOpenState = (open: boolean) => {

@@ -73,20 +73,27 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
           <DialogTitle>Add Problems to Exercise Note</DialogTitle>
           <DialogDescription>Upload images to add problems</DialogDescription>
         </DialogHeader>
-        <div
-          {...getRootProps()}
-          className={cn(
-            "flex h-40 cursor-pointer items-center justify-center rounded-xl border-[1px] border-dashed border-primary/50 p-4 text-zinc-500",
-            dropzoneDisabled
-              ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
-              : null,
-          )}
-        >
-          <input disabled={isDragReject} {...getInputProps()} />
-          {isDragAccept && <p>Drop Files</p>}
-          {isDragReject && <p>Some files will be rejected</p>}
-          {!isDragActive && <p>Drop or click to select</p>}
-        </div>
+        {uploadState === "INITIAL" && (
+          <div
+            {...getRootProps()}
+            className={cn(
+              "flex h-40 cursor-pointer items-center justify-center rounded-xl border-[1px] border-dashed border-primary/50 p-4 text-zinc-500",
+              dropzoneDisabled
+                ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
+                : null,
+            )}
+          >
+            <input disabled={isDragReject} {...getInputProps()} />
+            {isDragAccept && <p>Drop Files</p>}
+            {isDragReject && <p>Some files will be rejected</p>}
+            {!isDragActive && fileData.length === 0 && (
+              <p>Drop or click to select</p>
+            )}
+            {!isDragActive && fileData.length !== 0 && (
+              <p>Drop or click to select more</p>
+            )}
+          </div>
+        )}
         <ScrollArea className="mt-4 max-h-52">
           {fileData?.map(({ file, progress, state }, i) => {
             return (
