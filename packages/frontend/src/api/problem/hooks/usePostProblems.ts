@@ -19,8 +19,8 @@ export default function usePostProblems() {
   const { getToken } = useAuth();
   const exerciseNoteId = useExerciseNoteId();
 
-  const [fileData, setFileData] = useState<FileData[] | null>(null);
-  const [doneFileData, setDoneFileData] = useState<FileData[] | null>(null);
+  const [fileData, setFileData] = useState<FileData[]>([]);
+  const [doneFileData, setDoneFileData] = useState<FileData[]>([]);
   const [uploadState, setUploadState] = useState<UploadState>("INITIAL");
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -48,7 +48,7 @@ export default function usePostProblems() {
 
   const upload = async () => {
     try {
-      if (!fileData) throw new Error("No files selected");
+      if (fileData.length === 0) throw new Error("No files selected");
       let updatedFileData = [...fileData];
 
       setUploadState("LOADING");
@@ -114,7 +114,7 @@ export default function usePostProblems() {
       "image/jpeg": [".jpeg", ".png"],
     },
     validator: (file) => {
-      if (fileData?.map(({ file }) => file.name).includes(file.name)) {
+      if (fileData.map(({ file }) => file.name).includes(file.name)) {
         toast({
           title: "Could not add file",
           description: `File with name ${file.name} is already added`,
@@ -130,12 +130,10 @@ export default function usePostProblems() {
     },
   });
 
-  const allFileData = useMemo(() => {
-    const fileDataList = fileData === null ? [] : fileData;
-    const doneFileDataList = doneFileData === null ? [] : doneFileData;
-
-    return [...fileDataList, ...doneFileDataList];
-  }, [fileData, doneFileData]);
+  const allFileData = useMemo(
+    () => [...fileData, ...doneFileData],
+    [fileData, doneFileData],
+  );
 
   const closeDisabled = useMemo(
     () => uploadState === "LOADING" || uploadState === "ERROR",
@@ -144,7 +142,6 @@ export default function usePostProblems() {
 
   const uploadDisabled = useMemo(
     () =>
-      fileData === null ||
       fileData.length === 0 ||
       uploadState === "LOADING" ||
       uploadState === "DONE",
@@ -152,8 +149,8 @@ export default function usePostProblems() {
   );
 
   const reset = () => {
-    setFileData(null);
-    setDoneFileData(null);
+    setFileData([]);
+    setDoneFileData([]);
     setUploadState("INITIAL");
   };
 

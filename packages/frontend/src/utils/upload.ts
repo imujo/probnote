@@ -76,7 +76,7 @@ export const uploadFile = async ({
 
 export const uploadFiles = async (
   fileData: FileData[],
-  setFileData: Dispatch<SetStateAction<FileData[] | null>>,
+  setFileData: Dispatch<SetStateAction<FileData[]>>,
   setUploadState: Dispatch<SetStateAction<UploadState>>,
 ) => {
   const promises = fileData.map(({ file, signedUploadUrl }, index) => {
@@ -85,9 +85,9 @@ export const uploadFiles = async (
         `File with name ${file.name} does not have a pre-signed upload URL`,
       );
 
-    // const url = signedUploadUrl;
-    const url =
-      index !== 0 ? signedUploadUrl || "test" : signedUploadUrl + "dasfs";
+    const url = signedUploadUrl;
+    // const url =
+    //   index !== 0 ? signedUploadUrl || "test" : signedUploadUrl + "dasfs";
 
     return uploadFile({
       url,
@@ -122,7 +122,7 @@ export const uploadFiles = async (
 export const setProblemUploadUrls = (
   fileData: FileData[],
   signedUploadUrls: { [key: string]: SignedUploadUrl },
-  setFileData: Dispatch<SetStateAction<FileData[] | null>>,
+  setFileData: Dispatch<SetStateAction<FileData[]>>,
 ) => {
   const updatedFileData = [...fileData];
 
@@ -142,8 +142,8 @@ export const setProblemUploadUrls = (
 
 export const setFileStateDone = (
   fileData: FileData[],
-  setFileData: Dispatch<SetStateAction<FileData[] | null>>,
-  setDoneFileData: Dispatch<SetStateAction<FileData[] | null>>,
+  setFileData: Dispatch<SetStateAction<FileData[]>>,
+  setDoneFileData: Dispatch<SetStateAction<FileData[]>>,
   setUploadState: Dispatch<SetStateAction<UploadState>>,
 ) => {
   const errorFileData: FileData[] = fileData.filter(
@@ -164,7 +164,7 @@ export const setFileStateDone = (
 export const getProblemUploadUrlsOrError = async (
   fileData: FileData[],
   getToken: GetToken,
-  setFileData: Dispatch<SetStateAction<FileData[] | null>>,
+  setFileData: Dispatch<SetStateAction<FileData[]>>,
   setUploadState: Dispatch<SetStateAction<UploadState>>,
 ) => {
   try {
@@ -184,7 +184,7 @@ export const postProblemsOrDeleteUploads = async (
   fileData: FileData[],
   exerciseNoteId: number,
   getToken: GetToken,
-  setFileData: Dispatch<SetStateAction<FileData[] | null>>,
+  setFileData: Dispatch<SetStateAction<FileData[]>>,
   setUploadState: Dispatch<SetStateAction<UploadState>>,
 ) => {
   const fileDataToPost = fileData.filter(
@@ -206,7 +206,7 @@ export const postProblemsOrDeleteUploads = async (
 
 export const setFileDataState = (
   fileData: FileData[],
-  setFileData: Dispatch<SetStateAction<FileData[] | null>>,
+  setFileData: Dispatch<SetStateAction<FileData[]>>,
   state: FileDataState,
 ) => {
   const updatedFileData = [...fileData];
