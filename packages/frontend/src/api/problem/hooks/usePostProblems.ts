@@ -14,6 +14,8 @@ import {
 import useExerciseNoteId from "hooks/useExerciseNoteId";
 import { useDropzone } from "react-dropzone";
 
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
+
 export default function usePostProblems() {
   const { toast } = useToast();
   const { getToken } = useAuth();
@@ -113,6 +115,9 @@ export default function usePostProblems() {
       "image/png": [".png", ".jpg"],
       "image/jpeg": [".jpeg", ".png"],
     },
+    maxFiles: 30,
+    minSize: 0,
+    maxSize: MAX_FILE_SIZE,
     validator: (file) => {
       if (fileData.map(({ file }) => file.name).includes(file.name)) {
         toast({
@@ -164,11 +169,16 @@ export default function usePostProblems() {
     else setModalOpen(true);
   };
 
+  const dropzoneError = useMemo(
+    () => dropzone.fileRejections[0]?.errors[0].message,
+    [dropzone.fileRejections],
+  );
+
   return {
     fileData: allFileData,
     upload,
     removeFile,
-    dropzone,
+    dropzone: { ...dropzone, dropzoneError },
     uploadState,
     dropzoneDisabled,
     closeDisabled,
