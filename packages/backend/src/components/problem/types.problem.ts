@@ -35,12 +35,14 @@ export type ProblemPostResposne = Response<ProblemPost>;
 
 export const problemsDeleteByFileKeysSchema = {
   body: z.object({
-    problemFileKeys: z.array(
-      z.string({
-        invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
-        required_error: messages.required("ProblemFileKey"),
-      })
-    ),
+    problemFileKeys: z
+      .array(
+        z.string({
+          invalid_type_error: messages.invalidType("ProblemFileKey", "string"),
+          required_error: messages.required("ProblemFileKey"),
+        })
+      )
+      .min(1, "At least one problem file key is required"),
   }),
 };
 

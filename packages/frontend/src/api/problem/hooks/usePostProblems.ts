@@ -13,6 +13,7 @@ import {
 } from "utils/upload";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
 import { useDropzone } from "react-dropzone";
+import useDeleteProblemsByFileKeys from "./useDeleteProblemsByFileKeys";
 
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
 
@@ -47,6 +48,17 @@ export default function usePostProblems() {
     }));
 
     setFileData((prev) => [...(prev || []), ...updatedFileData]);
+  };
+
+  const { mutate: delProblems } = useDeleteProblemsByFileKeys();
+
+  const deleteProblems = () => {
+    delProblems(
+      doneFileData.map((fileDatum) => {
+        if (!fileDatum.fileKey) throw new Error("File with no filekey");
+        return fileDatum.fileKey;
+      }),
+    );
   };
 
   const upload = async () => {
@@ -184,5 +196,6 @@ export default function usePostProblems() {
     modalOpen,
     setModalOpen: setModalOpenState,
     closeModal,
+    deleteProblems,
   };
 }

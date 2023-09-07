@@ -41,6 +41,7 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
     uploadDisabled,
     modalOpen,
     setModalOpen,
+    deleteProblems,
   } = usePostProblems();
 
   const {
@@ -51,8 +52,6 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
     isDragAccept,
     dropzoneError,
   } = dropzone;
-
-  const { mutate: deleteProblems } = useDeleteProblemsByFileKeys();
 
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
@@ -120,7 +119,7 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
           })}
         </ScrollArea>
         <DialogFooter className="items-center">
-          {uploadState !== "DONE" && (
+          {uploadState !== "DONE" && uploadState !== "ERROR" && (
             <Button
               onClick={async () => setModalOpen(false)}
               disabled={closeDisabled}
@@ -129,23 +128,18 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({}) => {
               Cancel
             </Button>
           )}
-          {uploadState === "DONE" && (
-            <Button
-              onClick={() => {
-                deleteProblems(
-                  fileData.map((fileDatum) => {
-                    if (!fileDatum.fileKey)
-                      throw new Error("File with no filekey");
-                    return fileDatum.fileKey;
-                  }),
-                );
-                setModalOpen(false);
-              }}
-              variant="secondary"
-            >
-              Cancel and delete
-            </Button>
-          )}
+          {uploadState === "DONE" ||
+            (uploadState === "ERROR" && (
+              <Button
+                onClick={() => {
+                  deleteProblems();
+                  setModalOpen(false);
+                }}
+                variant="secondary"
+              >
+                Cancel and delete
+              </Button>
+            ))}
           {uploadState === "INITIAL" && (
             <Button disabled={uploadDisabled} onClick={upload}>
               Upload
