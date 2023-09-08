@@ -1,10 +1,11 @@
 "use client";
 
-import ButtonIcon from "@/components/ButtonIcon";
 import useProblemId from "hooks/useProblemId";
 import { Menu } from "lucide-react";
 import { FC, ReactNode, useState } from "react";
 import { cn } from "utils/cn";
+import ProblemPreview from "./components/problemPreview/ProblemPreview";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ExerciseNoteLayoutProps {
   children: ReactNode;
@@ -25,10 +26,25 @@ const ExerciseNoteLayout: FC<ExerciseNoteLayoutProps> = ({ children }) => {
       </button>
       <nav
         className={cn(
-          "fixed right-0 top-0 z-10 h-full w-64 border-l-[1px] border-zinc-200 px-4 py-3 transition-transform ",
+          "fixed right-0 top-0 z-10 h-full w-64 border-l-[1px]  border-zinc-200 pt-16 transition-transform ",
           !sideMenuOpen ? "translate-x-[100%]" : null,
         )}
-      ></nav>
+      >
+        <ScrollArea className="h-full px-4">
+          <ProblemPreview className="mb-6" state="opened" />
+          <ProblemPreview className="mb-6" state="opened" />
+          <ProblemPreview className="mb-6" state="selected" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+          <ProblemPreview className="mb-6" />
+        </ScrollArea>
+      </nav>
     </div>
   );
 };
