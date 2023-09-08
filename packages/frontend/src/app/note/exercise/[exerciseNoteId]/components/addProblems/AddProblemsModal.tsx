@@ -12,9 +12,9 @@ import { Plus } from "lucide-react";
 import ButtonWithIcon from "@/components/ButtonWithIcon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FileComponent from "./FileComponent";
-import useAddProblems from "@/app/note/exercise/[[...exerciseNoteId]]/hooks/useAddProblems";
 import Dropzone from "./Dropzone";
 import AddProblemsModalFooterButtons from "./AddProblemsModalFooter";
+import useAddProblems from "../../hooks/useAddProblems";
 
 interface AddProblemsModalProps {}
 

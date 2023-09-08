@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { Pen } from "lucide-react";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useFolderId from "hooks/useFolderId";
 import { DialogClose } from "@radix-ui/react-dialog";
 import useRenameFolderItemDropdownItem from "../../hooks/useRenameFolderItemDropdownItem";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -48,7 +48,7 @@ const RenameFolderDropdownItem: FC<RenameFolderItemDropdownItemProps> = ({
   setDropdownOpen,
   folderItemType,
 }) => {
-  const currentFolderId = useFolderIdFromParams();
+  const currentFolderId = useFolderId();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 

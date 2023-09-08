@@ -48,7 +48,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
               : "note";
 
             return (
-              <CommandItem>
+              <CommandItem key={"search-folderitem-" + folderItem.id}>
                 <Link
                   onClick={() => {
                     setCommandDialogOpen(false);

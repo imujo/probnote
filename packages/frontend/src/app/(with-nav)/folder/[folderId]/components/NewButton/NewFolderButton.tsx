@@ -1,5 +1,5 @@
 import React from "react";
-import { File, Folder } from "lucide-react";
+import { Folder } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -11,21 +11,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import NewButtonItem from "./NewButtonItem";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
-import useNewExerciseNoteButton from "../../hooks/useNewExerciseNoteButton";
+import useNewFolderButton from "../../hooks/useNewFolderButton";
+import useFolderId from "hooks/useFolderId";
 
-export default function NewExerciseNoteButton() {
-  const folderId = useFolderIdFromParams();
+export default function NewFolderButton() {
+  const folderId = useFolderId();
 
   const { form, onSubmit, isLoading, dialogOpen, error, setDialogOpen } =
-    useNewExerciseNoteButton(folderId);
+    useNewFolderButton(folderId);
 
   return (
     <NewButtonItem
-      menuItemLabel="Exercise Note"
-      MenuItemIcon={File}
-      dialogTitle="Create an Exercise Note"
-      dialogDescription="Add a label and create a new exercise note"
+      menuItemLabel="Folder"
+      MenuItemIcon={Folder}
+      dialogTitle="Create a Folder"
+      dialogDescription="Add a label and create a new folder"
       onSubmit={onSubmit}
       open={dialogOpen}
       onOpenChange={setDialogOpen}
@@ -44,7 +44,7 @@ export default function NewExerciseNoteButton() {
                   <Input id="label" placeholder="Calculus 101" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the name of your new exercise note
+                  This is the name of your new folder
                 </FormDescription>
                 <FormMessage />
               </FormItem>

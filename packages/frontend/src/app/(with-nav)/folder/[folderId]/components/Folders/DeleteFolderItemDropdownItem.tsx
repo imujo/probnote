@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useState,
 } from "react";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useFolderId from "hooks/useFolderId";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Trash } from "lucide-react";
 import useDeleteFolderItem from "api/folderItem/hooks/useDeleteFolderItem";
@@ -36,7 +36,7 @@ const DeleteFolderItemDropdownItem: FC<DeleteFolderItemDropdownItemProps> = ({
   setDropdownOpen,
   folderItemType,
 }) => {
-  const currentFolderId = useFolderIdFromParams();
+  const currentFolderId = useFolderId();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 

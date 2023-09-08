@@ -4,7 +4,7 @@ import { cn } from "utils/cn";
 import { cva } from "class-variance-authority";
 import { X } from "lucide-react";
 import Link from "next/link";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useFolderId from "hooks/useFolderId";
 import { FolderId } from "../../../../utils/types.global";
 import ButtonIcon from "@/components/ButtonIcon";
 
@@ -34,7 +34,7 @@ const SideNavItem: FC<SideNavItemProps> = ({
   children,
   folderId,
 }) => {
-  const currentFolderId = useFolderIdFromParams();
+  const currentFolderId = useFolderId();
 
   const { mutate: pinFolder, isLoading } = usePinFolder(
     folderId as number, // cannot be base

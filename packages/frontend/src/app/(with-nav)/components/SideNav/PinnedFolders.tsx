@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useFolderId from "hooks/useFolderId";
 import useGetPinned from "api/folder/hooks/useGetPinned";
 import SideNavItem from "./SideNavItem";
 import SideNavItemSkeleton from "./SideNavItemSkeleton";
@@ -10,7 +10,7 @@ interface PinnedFoldersProps {}
 const PinnedFolders: FC<PinnedFoldersProps> = () => {
   const { data, isLoading, isError, isSuccess, error } = useGetPinned();
 
-  const folderId = useFolderIdFromParams();
+  const folderId = useFolderId();
 
   if (!folderId) {
     // TODO 404

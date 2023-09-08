@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useFolderId from "hooks/useFolderId";
 import Breadcrumbs from "./components/Breadcrumb/Breadcrumbs";
 import columns from "./components/Folders/Columns";
 import NewButton from "./components/NewButton/NewButton";
@@ -10,7 +10,7 @@ import useGetFolderItems from "../../../../api/folderItem/hooks/useGetFolderItem
 import { notFound } from "next/navigation";
 
 function FolderPage() {
-  const folderId = useFolderIdFromParams();
+  const folderId = useFolderId();
 
   const { data, error, isLoading } = useGetFolderItems(folderId);
 

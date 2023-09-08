@@ -22,7 +22,7 @@ export default function RootLayout({
     <html className={inter.className} lang="en">
       <ClerkProvider>
         <Providers>
-          <body className="h-screen">
+          <body className="h-screen overflow-hidden">
             {children}
             <Toaster />
           </body>

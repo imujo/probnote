@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FC } from "react";
-import useFolderIdFromParams from "hooks/useFolderIdFromParams";
+import useFolderId from "hooks/useFolderId";
 import usePinFolder from "api/folder/hooks/usePinFolder";
 import { Pin, PinOff } from "lucide-react";
 import { FolderId } from "../../../../../../utils/types.global";
@@ -18,7 +18,7 @@ const PinFolderDropdownItem: FC<PinFolderDropdownItemProps> = ({
   pinned,
   label,
 }) => {
-  const currentFolderId = useFolderIdFromParams();
+  const currentFolderId = useFolderId();
 
   const { mutate: pinFolder } = usePinFolder(
     folderId as number, // cannot be base
