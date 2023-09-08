@@ -16,9 +16,11 @@ import Dropzone from "./Dropzone";
 import AddProblemsModalFooterButtons from "./AddProblemsModalFooter";
 import useAddProblems from "../../hooks/useAddProblems";
 
-interface AddProblemsModalProps {}
+interface AddProblemsModalProps {
+  triggerClassName?: string;
+}
 
-const AddProblemsModal: FC<AddProblemsModalProps> = () => {
+const AddProblemsModal: FC<AddProblemsModalProps> = ({ triggerClassName }) => {
   const {
     fileData,
     closeModalAndDelete,
@@ -34,7 +36,9 @@ const AddProblemsModal: FC<AddProblemsModalProps> = () => {
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>
-        <ButtonWithIcon Icon={Plus}>Add Problems</ButtonWithIcon>
+        <ButtonWithIcon className={triggerClassName} Icon={Plus}>
+          Add
+        </ButtonWithIcon>
       </DialogTrigger>
       <DialogContent
         onEscapeKeyDown={closeModalAndDelete}
