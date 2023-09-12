@@ -1,9 +1,9 @@
-import { notFound, useParams, useRouter } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 
-export default function useProblemId() {
+export default function useOptionalProblemId() {
   const params = useParams();
 
-  if (!params.problemId) notFound();
+  if (!params.problemId) return null;
 
   const tempProblemId = params.problemId[0];
 

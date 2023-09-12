@@ -1,7 +1,7 @@
 "use client";
 
 import useProblemId from "hooks/useProblemId";
-import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
+import { ChevronLeft, ChevronRight, Divide, Menu } from "lucide-react";
 import { FC, ReactNode, useState } from "react";
 import { cn } from "utils/cn";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,13 +9,14 @@ import ButtonIcon from "@/components/ButtonIcon";
 import AddProblemsModal from "./components/addProblems/AddProblemsModal";
 import ProblemPreviewList from "./components/problemPreview/ProblemPreviewList";
 import useGetProblemPreview from "./components/problemPreview/useGetProblemPreview";
+import useOptionalProblemId from "hooks/useOptionalProblemId";
 
 interface ExerciseNoteLayoutProps {
   children: ReactNode;
 }
 
 const ExerciseNoteLayout: FC<ExerciseNoteLayoutProps> = ({ children }) => {
-  const problemId = useProblemId();
+  const problemId = useOptionalProblemId();
   const [sideMenuOpen, setSideMenuOpen] = useState(true);
   const {
     query,
@@ -28,7 +29,13 @@ const ExerciseNoteLayout: FC<ExerciseNoteLayoutProps> = ({ children }) => {
 
   return (
     <div>
-      {problemId ? children : null}
+      {problemId ? (
+        children
+      ) : query.isLoading ? (
+        <div>Loading</div>
+      ) : (
+        <h3>Add problems</h3>
+      )}
       <button
         onClick={() => setSideMenuOpen((prev) => !prev)}
         className="fixed right-0 top-0 z-30 my-3 mr-4"

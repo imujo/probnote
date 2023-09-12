@@ -3,6 +3,30 @@ import { Response } from "express";
 import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
 import { SuccessResponse } from "../../globalTypes";
 import messages from "../../messages";
+import { Prisma } from "@prisma/client";
+
+// GET PROBLEM
+
+export const problemGetSchema = {
+  params: z.object({
+    problemId: z
+      .string({
+        required_error: messages.required("ExerciseNoteId"),
+      })
+      .regex(/^\d+$/, messages.invalidType("ExerciseNoteId", "number")),
+  }),
+};
+
+const problemGetBuilder = new AuthRequestBuilder(problemGetSchema);
+export type ProblemGetRequest = ReturnType<
+  typeof problemGetBuilder.getRequestType
+>;
+export type ProblemGet = SuccessResponse<{
+  id: number;
+  url: string;
+  canvas: Prisma.JsonValue;
+}>;
+export type ProblemGetResposne = Response<ProblemGet>;
 
 // GET PROBLEMS
 

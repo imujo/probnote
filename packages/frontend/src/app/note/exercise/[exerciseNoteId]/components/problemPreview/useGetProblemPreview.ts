@@ -7,7 +7,15 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 export default function useGetProblemPreview() {
   const problemId = useProblemId();
   const exerciseNoteId = useExerciseNoteId();
-  const query = useGetProblems();
+  const query = useGetProblems({
+    onSuccess: (data) => {
+      if (!problemId && data && data?.data.problems.length !== 0) {
+        router.push(
+          `/note/exercise/${exerciseNoteId}/problem/${data.data.problems[0].id}`,
+        );
+      }
+    },
+  });
   const router = useRouter();
   const problemListRef = useRef<null | HTMLDivElement>(null);
 
@@ -56,12 +64,6 @@ export default function useGetProblemPreview() {
       currentProblemIndex + 1 === data?.data.problems.length,
     [currentProblemIndex, data],
   );
-
-  if (!problemId && data && data?.data.problems.length !== 0) {
-    router.push(
-      `/note/exercise/${exerciseNoteId}/problem/${data.data.problems[0].id}`,
-    );
-  }
 
   const onClickNext = useCallback(() => {
     if (currentProblemIndex === null || !data) return;

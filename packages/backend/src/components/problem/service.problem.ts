@@ -2,6 +2,30 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+export const getProblem = async (problemId: number, userId: string) => {
+  const problems = await prisma.problem.findUnique({
+    where: {
+      id: problemId,
+      AND: {
+        ExerciseNote: {
+          Note: {
+            FolderItem: {
+              userId,
+            },
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      problemFileKey: true,
+      canvas: true,
+    },
+  });
+
+  return problems;
+};
+
 export const getProblems = async (exerciseNoteId: number, userId: string) => {
   const problems = await prisma.problem.findMany({
     where: {

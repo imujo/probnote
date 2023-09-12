@@ -1,6 +1,8 @@
 import { NextFunction } from "express";
 import messages from "../../messages";
 import {
+  ProblemGetRequest,
+  ProblemGetResposne,
   ProblemPostRequest,
   ProblemPostResposne,
   ProblemsDeleteByFileKeysRequest,
@@ -10,6 +12,7 @@ import {
 } from "./types.problem";
 import {
   deleteProblemsByFileKeys,
+  getProblem,
   getProblems,
   postProblems,
 } from "./service.problem";
@@ -18,6 +21,36 @@ import {
   deleteCloudflareObjects,
   generateSingedGetUrl,
 } from "../cloudflare/service.cloudflare";
+
+const get = async (
+  req: ProblemGetRequest,
+  res: ProblemGetResposne,
+  next: NextFunction
+) => {
+  try {
+    const problemId = parseInt(req.params.problemId);
+    const { userId } = req.auth;
+
+    const problem = await getProblem(problemId, userId);
+
+    if (!problem) throw new CustomError(messages.notFound("Problem"), 404);
+
+    const url = await generateSingedGetUrl(problem.problemFileKey).catch(() => {
+      throw new CustomError("Could not generate signed URL", 500);
+    });
+
+    res.status(200).json({
+      message: messages.getSuccess("Problem"),
+      data: {
+        id: problem.id,
+        canvas: problem.canvas,
+        url,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getMultiple = async (
   req: ProblemsGetRequest,
@@ -104,6 +137,7 @@ const deleteMultipleByFileKeys = async (
 };
 
 export default {
+  get,
   getMultiple,
   postMultiple,
   deleteMultipleByFileKeys,

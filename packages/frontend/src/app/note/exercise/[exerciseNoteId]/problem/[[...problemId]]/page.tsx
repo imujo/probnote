@@ -1,9 +1,12 @@
+import useProblemId from "hooks/useProblemId";
 import { FC } from "react";
 
-interface pageProps {}
+interface ProblemPageProps {}
 
-const page: FC<pageProps> = ({}) => {
-  return <div>page</div>;
+const ProblemPage: FC<ProblemPageProps> = ({}) => {
+  const problemId = useProblemId();
+
+  return <div>ProblemPage</div>;
 };
 
-export default page;
+export default ProblemPage;
