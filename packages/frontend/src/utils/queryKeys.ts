@@ -11,6 +11,11 @@ export const getBreadcrumbs = (folderId: FolderId) => [
   "get",
   folderId,
 ];
+export const getProblems = (exerciseNoteId: number) => [
+  "problems",
+  "get",
+  exerciseNoteId,
+];
 export const getPinnedFolders = () => ["folder", "get", "pinned"];
 
 export default {
@@ -18,4 +23,5 @@ export default {
   getPinnedFolders,
   getBreadcrumbs,
   searchFolderItems,
+  getProblems,
 };

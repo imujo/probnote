@@ -2,10 +2,39 @@ import { ErrorResponse } from "@probnote/backend/src/globalTypes";
 import {
   ProblemPost,
   ProblemsDeleteByFileKeys,
+  ProblemsGet,
 } from "@probnote/backend/src/components/problem/types.problem";
 import env from "@/config/env.config";
 import { GetToken } from "@clerk/types";
 import ResponseError from "utils/ResponseError";
+
+export const getProblems = async (
+  exerciseNoteId: number,
+  getAuthToken: GetToken,
+) => {
+  const response = await fetch(
+    `${env.NEXT_PUBLIC_SERVER}/problem/multiple/${exerciseNoteId}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await getAuthToken()}`,
+      },
+      cache: "no-store",
+    },
+  );
+
+  const responseJson = await response.json();
+  const data = responseJson as ProblemsGet;
+
+  if (!response.ok) {
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
+  }
+
+  return data;
+};
 
 export const postProblems = async (
   fileKeys: string[],

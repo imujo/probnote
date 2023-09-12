@@ -5,10 +5,55 @@ import {
   ProblemPostResposne,
   ProblemsDeleteByFileKeysRequest,
   ProblemsDeleteByFileKeysResposne,
+  ProblemsGetRequest,
+  ProblemsGetResposne,
 } from "./types.problem";
-import { deleteProblemsByFileKeys, postProblems } from "./service.problem";
+import {
+  deleteProblemsByFileKeys,
+  getProblems,
+  postProblems,
+} from "./service.problem";
 import CustomError from "../../utils/CustomError";
-import { deleteCloudflareObjects } from "../cloudflare/service.cloudflare";
+import {
+  deleteCloudflareObjects,
+  generateSingedGetUrl,
+} from "../cloudflare/service.cloudflare";
+
+const getMultiple = async (
+  req: ProblemsGetRequest,
+  res: ProblemsGetResposne,
+  next: NextFunction
+) => {
+  try {
+    const exerciseNoteId = parseInt(req.params.exerciseNoteId);
+    const { userId } = req.auth;
+
+    const problems = await getProblems(exerciseNoteId, userId);
+
+    const problemsWithGetUrls = await Promise.all(
+      problems.map(async (problem) => {
+        const url = await generateSingedGetUrl(problem.problemFileKey);
+
+        return {
+          id: problem.id,
+          url,
+          edited: problem.createdAt.getTime() !== problem.updatedAt.getTime(),
+        };
+      })
+    ).catch(() => {
+      throw new CustomError("Could not generate signed URLs", 500);
+    });
+
+    res.status(200).json({
+      message: messages.getSuccess("Problems"),
+      data: {
+        problems: problemsWithGetUrls,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const postMultiple = async (
   req: ProblemPostRequest,
@@ -59,6 +104,7 @@ const deleteMultipleByFileKeys = async (
 };
 
 export default {
+  getMultiple,
   postMultiple,
   deleteMultipleByFileKeys,
 };

@@ -1,7 +1,9 @@
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
+import { useQueryClient } from "react-query";
+import queryKeys from "utils/queryKeys";
 import {
   FileData,
   UploadState,
@@ -29,6 +31,8 @@ export default function usePostProblems({
   const { getToken } = useAuth();
   const exerciseNoteId = useExerciseNoteId();
   const { toast } = useToast();
+  const getProblemsQueryKey = queryKeys.getProblems(exerciseNoteId);
+  const queryClient = useQueryClient();
 
   const upload = async () => {
     try {
@@ -76,6 +80,8 @@ export default function usePostProblems({
         setDoneFileData,
         setUploadState,
       );
+
+      queryClient.invalidateQueries(getProblemsQueryKey);
     } catch (error) {
       toast({
         title: "An error occuerd trying to upload images",

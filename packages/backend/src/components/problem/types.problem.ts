@@ -4,6 +4,31 @@ import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
 import { SuccessResponse } from "../../globalTypes";
 import messages from "../../messages";
 
+// GET PROBLEMS
+
+export const problemsGetSchema = {
+  params: z.object({
+    exerciseNoteId: z
+      .string({
+        required_error: messages.required("ExerciseNoteId"),
+      })
+      .regex(/^\d+$/, messages.invalidType("ExerciseNoteId", "number")),
+  }),
+};
+
+const problemsGetBuilder = new AuthRequestBuilder(problemsGetSchema);
+export type ProblemsGetRequest = ReturnType<
+  typeof problemsGetBuilder.getRequestType
+>;
+export type ProblemsGet = SuccessResponse<{
+  problems: {
+    id: number;
+    url: string;
+    edited: boolean;
+  }[];
+}>;
+export type ProblemsGetResposne = Response<ProblemsGet>;
+
 // POST PROBLEMS
 
 export const problemsPostSchema = {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FileData, UploadState } from "utils/upload";
 import useDeleteProblemsByFileKeys from "../../../../../api/problem/hooks/useDeleteProblemsByFileKeys";
 import useProblemsDropzone from "./useProblemsDropzone";
@@ -9,6 +9,10 @@ export default function useAddProblems() {
   const [doneFileData, setDoneFileData] = useState<FileData[]>([]);
   const [uploadState, setUploadState] = useState<UploadState>("INITIAL");
   const [modalOpen, setModalOpen] = useState(false);
+
+  // useEffect(() => {
+  //   console.log(fileData);
+  // }, [fileData]);
 
   const { mutate: del } = useDeleteProblemsByFileKeys();
 

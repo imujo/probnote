@@ -58,8 +58,6 @@ export const deleteCloudflareFiles = async (
   const responseJson = await response.json();
   const data = responseJson as CloudflareDeleteObjects;
 
-  console.log(data);
-
   if (!response.ok) {
     const error = responseJson as ErrorResponse;
     throw new ResponseError(error.message, response.status);

@@ -1,5 +1,9 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectsCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import CloudFlareClient from "../../config/cloudflare.config";
 import env from "../../config/env.config";
 
@@ -7,6 +11,19 @@ const EXPIERS_IN = 3600;
 export type SignedUploadUrl = {
   signedUploadUrl: string;
   fileKey: string;
+};
+
+export const generateSingedGetUrl = async (fileKey: string) => {
+  const url = await getSignedUrl(
+    CloudFlareClient,
+    new GetObjectCommand({
+      Bucket: env.CLOUDFLARE_BUCKET_NAME,
+      Key: fileKey,
+    }),
+    { expiresIn: EXPIERS_IN + 10000 }
+  );
+
+  return url;
 };
 
 export const generateSingedUploadUrl = async (
@@ -21,6 +38,7 @@ export const generateSingedUploadUrl = async (
     new PutObjectCommand({
       Bucket: env.CLOUDFLARE_BUCKET_NAME,
       Key: fileKey,
+      ContentType: "image/jpeg",
     }),
     { expiresIn: EXPIERS_IN }
   );

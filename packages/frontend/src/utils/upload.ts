@@ -6,6 +6,7 @@ import {
 } from "api/cloudflare/cloudflare.api";
 import { postProblems } from "api/problem/problem.api";
 import { Dispatch, SetStateAction } from "react";
+import axios, { AxiosRequestConfig } from "axios";
 
 export type FileDataState =
   | "INITIAL"
@@ -40,38 +41,30 @@ export const uploadFile = async ({
   onSuccess,
   onError,
 }: UploadFileProps) => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  return new Promise<void>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const percentCompleted = Math.round((event.loaded / event.total) * 100);
+  return await axios({
+    method: "PUT",
+    url: url,
+    data: file,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress: (progressEvent) => {
+      if (progressEvent.total) {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded / progressEvent.total) * 100,
+        );
         if (onProgress) onProgress(percentCompleted);
       }
-    };
-
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        if (onSuccess) onSuccess();
-        resolve();
-      } else {
-        if (onError) onError(new Error("File upload failed"));
-        reject(new Error("File upload failed"));
-      }
-    };
-
-    xhr.onerror = () => {
+    },
+  })
+    // .then((res) => {
+    //   if (onSuccess) onSuccess();
+    // })
+    .catch((err) => {
+      console.log(err);
       if (onError)
         onError(new Error("Network error occurred while uploading the file."));
-      reject(new Error("Network error occurred while uploading the file."));
-    };
-
-    xhr.open("PUT", url, true);
-    xhr.send(formData);
-  });
+    });
 };
 
 export const uploadFiles = async (
@@ -85,9 +78,9 @@ export const uploadFiles = async (
         `File with name ${file.name} does not have a pre-signed upload URL`,
       );
 
-    // const url = signedUploadUrl;
-    const url =
-      index !== 0 ? signedUploadUrl || "test" : signedUploadUrl + "dasfs";
+    const url = signedUploadUrl;
+    // const url =
+    //   index !== 0 ? signedUploadUrl || "test" : signedUploadUrl + "dasfs";
 
     return uploadFile({
       url,
@@ -156,9 +149,8 @@ export const setFileStateDone = (
   setUploadState(errorFileData.length !== 0 ? "ERROR" : "DONE");
 
   setFileData(errorFileData);
-  setDoneFileData((prev) =>
-    prev === null ? [...successFileData] : [...prev, ...successFileData],
-  );
+
+  setDoneFileData((prev) => [...prev, ...successFileData]);
 };
 
 export const getProblemUploadUrlsOrError = async (
@@ -216,5 +208,6 @@ export const setFileDataState = (
   });
 
   setFileData(updatedFileData);
+
   return updatedFileData;
 };

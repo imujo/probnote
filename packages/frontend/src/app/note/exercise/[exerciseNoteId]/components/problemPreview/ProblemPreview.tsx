@@ -1,16 +1,18 @@
-import { FC } from "react";
+import { FC, MutableRefObject } from "react";
 import Image from "next/image";
 import { VariantProps, cva } from "class-variance-authority";
 import { cn } from "utils/cn";
+import useExerciseNoteId from "hooks/useExerciseNoteId";
+import Link from "next/link";
 
 const problemPreviewVariants = cva(
   " h-[100px] w-full rounded-lg  object-cover ",
   {
     variants: {
       state: {
-        default: "brightness-75 border-[1px] border-zinc-200",
+        default: "brightness-[0.6] border-[1px] border-zinc-200",
         selected: "border-4 border-primary",
-        opened: "border-[1px] border-zinc-200",
+        edited: "border-[1px] border-zinc-200",
       },
     },
     defaultVariants: {
@@ -21,19 +23,30 @@ const problemPreviewVariants = cva(
 
 interface ProblemPreviewProps
   extends VariantProps<typeof problemPreviewVariants> {
+  id: number;
+  url: string;
   className?: string;
+  exerciseNoteId: number;
 }
 
-const ProblemPreview: FC<ProblemPreviewProps> = ({ state, className }) => {
+const ProblemPreview: FC<ProblemPreviewProps> = ({
+  state,
+  url,
+  id,
+  className,
+  exerciseNoteId,
+}) => {
   return (
-    <Image
-      alt="problem_preview"
-      src={"/image.png"}
-      sizes="20vw"
-      width={500}
-      height={200}
-      className={cn(problemPreviewVariants({ state }), className)}
-    />
+    <Link href={`/note/exercise/${exerciseNoteId}/problem/${id}`}>
+      <Image
+        alt="problem_preview"
+        src={url}
+        sizes="20vw"
+        width={500}
+        height={200}
+        className={cn(problemPreviewVariants({ state }), className)}
+      />
+    </Link>
   );
 };
 
