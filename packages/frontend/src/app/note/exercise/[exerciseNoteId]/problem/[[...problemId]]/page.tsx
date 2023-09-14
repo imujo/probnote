@@ -1,8 +1,8 @@
 "use client";
+
+import React, { FC } from "react";
 import useGetProblem from "api/problem/hooks/useGetProblem";
 import useProblemId from "hooks/useProblemId";
-import Image from "next/image";
-import { FC } from "react";
 import ProblemImage from "./components/ProblemImage";
 
 interface ProblemPageProps {}
