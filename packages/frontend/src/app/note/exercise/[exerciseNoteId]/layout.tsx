@@ -44,7 +44,7 @@ const ExerciseNoteLayout: FC<ExerciseNoteLayoutProps> = ({ children }) => {
       </button>
       <nav
         className={cn(
-          "fixed right-0 top-0 z-10 flex h-full w-64 flex-col border-l-[1px]  border-zinc-200 pt-16 transition-transform ",
+          "fixed right-0 top-0 z-10 flex h-full w-64 flex-col border-l-[1px] border-zinc-200  bg-white pt-16 transition-transform ",
           !sideMenuOpen ? "translate-x-[100%]" : null,
         )}
       >
