@@ -4,7 +4,7 @@ import env from "../../config/env.config";
 import { GetToken } from "@clerk/types";
 import ResponseError from "utils/ResponseError";
 
-// eslint-disable-next-line  import/prefer-default-export
+ 
 export const getBreadcrumbs = async (
   folderId: number,
   getAuthToken: GetToken,

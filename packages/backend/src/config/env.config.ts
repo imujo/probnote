@@ -20,7 +20,7 @@ const envVariables = z.object({
   }),
 });
 
-// eslint-disable-next-line import/no-mutable-exports
+ 
 let env: z.infer<typeof envVariables>;
 
 try {
