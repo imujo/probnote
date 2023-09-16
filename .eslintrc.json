@@ -24,12 +24,11 @@
     "arrow-body-style": "off",
     "no-use-before-define": "off",
     "no-else-return": "off",
-
-    "prefer-destructuring": "off",
-    "@typescript-eslint/quotes": [
-      "error",
-      "double",
-      { "avoidEscape": true, "allowTemplateLiterals": true }
-    ]
+    "prefer-destructuring": "off"
+    // "@typescript-eslint/quotes": [
+    //   "error",
+    //   "double",
+    //   { "avoidEscape": true, "allowTemplateLiterals": true }
+    // ]
   }
 }
