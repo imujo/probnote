@@ -25,19 +25,32 @@ import useProblemId from "hooks/useProblemId";
 import { Button } from "@/components/ui/button";
 
 interface ExcalidrawCanvasProps {
-  setCanvasState: Dispatch<SetStateAction<ImportedDataState>>;
+  setCanvasState: Dispatch<
+    SetStateAction<{
+      elements: readonly ExcalidrawElement[];
+      appState: AppState;
+    }>
+  >;
+  excRef: React.RefObject<ExcalidrawImperativeAPI>;
 }
 
-const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({ setCanvasState }) => {
+//excalidrawRef.current.updateScene(sceneData)
+
+const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({
+  setCanvasState,
+  excRef,
+}) => {
   const Exc = useMemo(
     () => (
       <Excalidraw
-        onChange={(elements: readonly ExcalidrawElement[], state: AppState) =>
+        onChange={(elements, state) => {
+          console.log("change");
           setCanvasState({
             elements: elements,
             appState: state,
-          })
-        }
+          });
+        }}
+        ref={excRef}
       />
     ),
     [],
