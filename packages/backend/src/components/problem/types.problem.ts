@@ -3,7 +3,6 @@ import { Response } from "express";
 import { AuthRequestBuilder } from "../../utils/requestResponseBuilders";
 import { SuccessResponse } from "../../globalTypes";
 import messages from "../../messages";
-import { Prisma } from "@prisma/client";
 
 // GET PROBLEM
 
@@ -24,7 +23,7 @@ export type ProblemGetRequest = ReturnType<
 export type ProblemGet = SuccessResponse<{
   id: number;
   url: string;
-  canvas: Prisma.JsonValue;
+  canvas: string;
   parentFolderId: number | null;
 }>;
 export type ProblemGetResposne = Response<ProblemGet>;

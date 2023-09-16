@@ -47,7 +47,7 @@ const get = async (
       message: messages.getSuccess("Problem"),
       data: {
         id: problem.id,
-        canvas: problem.canvas,
+        canvas: JSON.stringify(problem.canvas),
         url,
         parentFolderId: problem.ExerciseNote.Note.FolderItem.parentFolderId,
       },

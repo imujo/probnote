@@ -22,7 +22,7 @@ export default function useGetProblem(
     onSuccess: (data) => {
       if (!data.data.canvas) return;
 
-      const objectValue = JSON.parse(JSON.stringify(data.data.canvas));
+      const objectValue = JSON.parse(data.data.canvas);
       if (
         typeof objectValue.elements !== "object" ||
         typeof objectValue.appState !== "object"
@@ -35,8 +35,7 @@ export default function useGetProblem(
         return;
       }
 
-      // @ts-expect-error
-      const canvas = data.data.canvas as CanvasState;
+      const canvas = objectValue as CanvasState;
 
       excRef.current?.updateScene({
         elements: canvas.elements,
