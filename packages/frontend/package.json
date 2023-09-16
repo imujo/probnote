@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.2",
+    "@excalidraw/excalidraw": "^0.15.3",
     "@hookform/resolvers": "^3.3.0",
     "@probnote/backend": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.4",
