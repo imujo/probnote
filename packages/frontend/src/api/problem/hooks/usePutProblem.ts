@@ -23,6 +23,7 @@ export default function usePutProblem(problemId: number) {
       toast({
         title: "Could not update problem",
         description: error.message,
+        variant: "destructive",
       });
     },
   });

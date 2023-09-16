@@ -40,8 +40,12 @@ function TableContent<TData>({
 
           if (original.Folder) {
             router.push(`/folder/${original.Folder.id}`);
+          } else if (original.Note && original.Note.ExerciseNote) {
+            router.push(
+              `/note/exercise/${original.Note.ExerciseNote.id}/problem/1`,
+            );
           } else {
-            alert("Folder items is not a folder");
+            alert("Folder item isnt a folder or an exercise note");
           }
         }}
         className="cursor-pointer"

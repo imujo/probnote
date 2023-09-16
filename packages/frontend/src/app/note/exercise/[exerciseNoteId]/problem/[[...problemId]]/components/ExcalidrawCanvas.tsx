@@ -34,8 +34,6 @@ interface ExcalidrawCanvasProps {
   excRef: React.RefObject<ExcalidrawImperativeAPI>;
 }
 
-//excalidrawRef.current.updateScene(sceneData)
-
 const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({
   setCanvasState,
   excRef,
@@ -43,13 +41,12 @@ const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({
   const Exc = useMemo(
     () => (
       <Excalidraw
-        onChange={(elements, state) => {
-          console.log("change");
+        onChange={(elements, state) =>
           setCanvasState({
             elements: elements,
             appState: state,
-          });
-        }}
+          })
+        }
         ref={excRef}
       />
     ),

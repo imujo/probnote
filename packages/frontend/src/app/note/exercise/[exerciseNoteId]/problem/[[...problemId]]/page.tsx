@@ -86,7 +86,7 @@ export const initialAppState: AppState = {
   startBoundElement: null,
   suggestedBindings: [],
   toast: null,
-  viewBackgroundColor: "#AFEEEE",
+  viewBackgroundColor: "#ffffff",
   zenModeEnabled: false,
   viewModeEnabled: false,
   pendingImageElementId: null,
@@ -94,8 +94,6 @@ export const initialAppState: AppState = {
   selectedLinearElement: null,
   offsetLeft: 58,
   offsetTop: -118.625,
-  // width: 335,
-  // height: 800,
 };
 export type CanvasState = {
   elements: readonly ExcalidrawElement[];

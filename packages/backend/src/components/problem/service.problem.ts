@@ -46,6 +46,9 @@ export const getProblems = async (exerciseNoteId: number, userId: string) => {
       createdAt: true,
       updatedAt: true,
     },
+    orderBy: {
+      id: "asc",
+    },
   });
 
   return problems;
