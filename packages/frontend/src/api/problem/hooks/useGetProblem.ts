@@ -43,7 +43,6 @@ export default function useGetProblem(
         appState: {
           ...canvas.appState,
           // @ts-expect-error
-
           collaborators: [],
         },
       });

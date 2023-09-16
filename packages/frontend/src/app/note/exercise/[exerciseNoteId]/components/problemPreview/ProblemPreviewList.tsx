@@ -1,22 +1,19 @@
 import ErrorPill from "@/components/ErrorPill";
-import useGetProblems from "api/problem/hooks/useGetProblems";
-import { FC, MutableRefObject } from "react";
+import { FC } from "react";
 import ProblemPreview from "./ProblemPreview";
 import { Skeleton } from "@/components/ui/skeleton";
-import useProblemId from "hooks/useProblemId";
-import { useRouter } from "next/navigation";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
-import useGetProblemPreview from "./useGetProblemPreview";
 import { UseQueryResult } from "react-query";
 import { ProblemsGet } from "@probnote/backend/src/components/problem/types.problem";
 import ResponseError from "utils/ResponseError";
+import useOptionalProblemId from "hooks/useOptionalProblemId";
 
 interface ProblemPreviewListProps {
   query: UseQueryResult<ProblemsGet, ResponseError>;
 }
 
 const ProblemPreviewList: FC<ProblemPreviewListProps> = ({ query }) => {
-  const problemId = useProblemId();
+  const problemId = useOptionalProblemId();
   const exerciseNoteId = useExerciseNoteId();
   const { isLoading, error, data, isError, isSuccess } = query;
 
@@ -34,7 +31,7 @@ const ProblemPreviewList: FC<ProblemPreviewListProps> = ({ query }) => {
   else if (isSuccess) {
     const problems = data.data.problems;
 
-    if (problems.length === 0) return <div>No problems found.</div>;
+    if (problems.length === 0) return;
 
     return problems.map((problem) => {
       let state: "default" | "edited" | "selected" = "default";

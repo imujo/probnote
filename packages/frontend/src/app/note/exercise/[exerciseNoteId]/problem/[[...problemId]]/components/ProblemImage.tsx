@@ -12,7 +12,7 @@ interface ProblemImageProps {
 
 const ProblemImage: FC<ProblemImageProps> = ({ query }) => {
   const { data, isLoading, isError, isSuccess, error } = query;
-  const [isImageLoaded, setIsImageLoaded] = useState(true);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   if (isLoading) return <Skeleton className="mx-auto aspect-video h-full " />;
   else if (isError)

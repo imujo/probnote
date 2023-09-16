@@ -1,14 +1,17 @@
 import useGetProblems from "api/problem/hooks/useGetProblems";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
-import useProblemId from "hooks/useProblemId";
+import useOptionalProblemId from "hooks/useOptionalProblemId";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 export default function useGetProblemPreview() {
-  const problemId = useProblemId();
+  const problemId = useOptionalProblemId();
   const exerciseNoteId = useExerciseNoteId();
+  const router = useRouter();
+
   const query = useGetProblems({
     onSuccess: (data) => {
+      console.log("success");
       if (!problemId && data && data?.data.problems.length !== 0) {
         router.push(
           `/note/exercise/${exerciseNoteId}/problem/${data.data.problems[0].id}`,
@@ -16,7 +19,6 @@ export default function useGetProblemPreview() {
       }
     },
   });
-  const router = useRouter();
   const problemListRef = useRef<null | HTMLDivElement>(null);
 
   const data = useMemo(() => query.data, [query]);
