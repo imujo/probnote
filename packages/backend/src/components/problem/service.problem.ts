@@ -20,6 +20,19 @@ export const getProblem = async (problemId: number, userId: string) => {
       id: true,
       problemFileKey: true,
       canvas: true,
+      ExerciseNote: {
+        select: {
+          Note: {
+            select: {
+              FolderItem: {
+                select: {
+                  parentFolderId: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

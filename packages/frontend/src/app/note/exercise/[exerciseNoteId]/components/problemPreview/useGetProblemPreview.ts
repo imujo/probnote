@@ -1,8 +1,8 @@
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import useGetProblems from "api/problem/hooks/useGetProblems";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
 import useOptionalProblemId from "hooks/useOptionalProblemId";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef } from "react";
 
 export default function useGetProblemPreview() {
   const problemId = useOptionalProblemId();
@@ -13,7 +13,7 @@ export default function useGetProblemPreview() {
     onSuccess: (data) => {
       console.log("success");
       if (!problemId && data && data?.data.problems.length !== 0) {
-        router.push(
+        router.replace(
           `/note/exercise/${exerciseNoteId}/problem/${data.data.problems[0].id}`,
         );
       }

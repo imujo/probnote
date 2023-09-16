@@ -15,6 +15,7 @@ import {
 } from "@excalidraw/excalidraw/types/types";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { initialAppState } from "utils/excalidraw.global";
+import { useRouter } from "next/navigation";
 
 export type CanvasState = {
   elements: readonly ExcalidrawElement[];
@@ -29,6 +30,7 @@ interface ProblemPageProps {}
 
 const ProblemPage: FC<ProblemPageProps> = ({}) => {
   const problemId = useProblemId();
+  const router = useRouter();
 
   const excalidrawRef = useRef<ExcalidrawImperativeAPI>(null);
   const query = useGetProblem(problemId, excalidrawRef);
@@ -40,7 +42,12 @@ const ProblemPage: FC<ProblemPageProps> = ({}) => {
   return (
     <div className="relative h-[100svh]">
       <div className="absolute left-8 top-4 z-50 flex gap-1">
-        <ButtonIcon Icon={ChevronLeftIcon} />
+        <ButtonIcon
+          onClick={() =>
+            router.push(`/folder/${query.data?.data.parentFolderId || "base"}`)
+          }
+          Icon={ChevronLeftIcon}
+        />
         <Button variant="outline" onClick={() => putProblem(canvasState)}>
           Save
         </Button>

@@ -49,6 +49,7 @@ const get = async (
         id: problem.id,
         canvas: problem.canvas,
         url,
+        parentFolderId: problem.ExerciseNote.Note.FolderItem.parentFolderId,
       },
     });
   } catch (error) {

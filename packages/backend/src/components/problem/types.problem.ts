@@ -25,6 +25,7 @@ export type ProblemGet = SuccessResponse<{
   id: number;
   url: string;
   canvas: Prisma.JsonValue;
+  parentFolderId: number | null;
 }>;
 export type ProblemGetResposne = Response<ProblemGet>;
 
