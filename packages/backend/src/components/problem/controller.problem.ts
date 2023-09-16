@@ -5,6 +5,8 @@ import {
   ProblemGetResposne,
   ProblemPostRequest,
   ProblemPostResposne,
+  ProblemPutRequest,
+  ProblemPutResposne,
   ProblemsDeleteByFileKeysRequest,
   ProblemsDeleteByFileKeysResposne,
   ProblemsGetRequest,
@@ -15,12 +17,14 @@ import {
   getProblem,
   getProblems,
   postProblems,
+  putProblem,
 } from "./service.problem";
 import CustomError from "../../utils/CustomError";
 import {
   deleteCloudflareObjects,
   generateSingedGetUrl,
 } from "../cloudflare/service.cloudflare";
+import { Prisma } from "@prisma/client";
 
 const get = async (
   req: ProblemGetRequest,
@@ -109,6 +113,33 @@ const postMultiple = async (
   }
 };
 
+const put = async (
+  req: ProblemPutRequest,
+  res: ProblemPutResposne,
+  next: NextFunction
+) => {
+  try {
+    const { canvas } = req.body;
+    const problemId = parseInt(req.params.problemId);
+    const { userId } = req.auth;
+
+    const problem = await putProblem(
+      problemId,
+      userId,
+      canvas as Prisma.InputJsonObject
+    );
+
+    res.status(200).json({
+      message: messages.putSuccess("Problem", problem.id),
+      data: {
+        id: problem.id,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteMultipleByFileKeys = async (
   req: ProblemsDeleteByFileKeysRequest,
   res: ProblemsDeleteByFileKeysResposne,
@@ -140,5 +171,6 @@ export default {
   get,
   getMultiple,
   postMultiple,
+  put,
   deleteMultipleByFileKeys,
 };

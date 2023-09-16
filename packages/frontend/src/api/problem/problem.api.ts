@@ -1,7 +1,9 @@
 import { ErrorResponse } from "@probnote/backend/src/globalTypes";
+import { ImportedDataState } from "@excalidraw/excalidraw/types/data/types";
 import {
   ProblemGet,
   ProblemPost,
+  ProblemPut,
   ProblemsDeleteByFileKeys,
   ProblemsGet,
 } from "@probnote/backend/src/components/problem/types.problem";
@@ -83,6 +85,38 @@ export const postProblems = async (
 
   const responseJson = await response.json();
   const data = responseJson as ProblemPost;
+
+  if (!response.ok) {
+    const error = responseJson as ErrorResponse;
+    throw new ResponseError(error.message, response.status);
+  }
+
+  return data;
+};
+
+export const putProblem = async (
+  problemId: number,
+  canvas: ImportedDataState,
+  getAuthToken: GetToken,
+) => {
+  const response = await fetch(
+    `${env.NEXT_PUBLIC_SERVER}/problem/${problemId}`,
+    {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await getAuthToken()}`,
+      },
+      body: JSON.stringify({
+        canvas,
+      }),
+      cache: "no-store",
+    },
+  );
+
+  const responseJson = await response.json();
+  const data = responseJson as ProblemPut;
 
   if (!response.ok) {
     const error = responseJson as ErrorResponse;

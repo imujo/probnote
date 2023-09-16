@@ -1,21 +1,21 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import useGetProblem from "api/problem/hooks/useGetProblem";
 import useProblemId from "hooks/useProblemId";
 import ProblemImage from "./components/ProblemImage";
-import {
-  Excalidraw,
-  exportToCanvas,
-  exportToSvg,
-  exportToBlob,
-} from "@excalidraw/excalidraw";
-import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import {
-  AppState,
-  ExcalidrawImperativeAPI,
-  ExcalidrawProps,
-} from "@excalidraw/excalidraw/types/types";
+import ExcalidrawCanvas from "./components/ExcalidrawCanvas";
+import { Button } from "@/components/ui/button";
+import { ImportedDataState } from "@excalidraw/excalidraw/types/data/types";
+import usePutProblem from "api/problem/hooks/usePutProblem";
+import ButtonIcon from "@/components/ButtonIcon";
+import { ChevronLeftIcon } from "lucide-react";
+
+const initialData: ImportedDataState = {
+  elements: [],
+  appState: { viewBackgroundColor: "#AFEEEE", currentItemFontFamily: 1 },
+  scrollToContent: true,
+};
 
 interface ProblemPageProps {}
 
@@ -24,19 +24,26 @@ const ProblemPage: FC<ProblemPageProps> = ({}) => {
 
   const query = useGetProblem(problemId);
 
+  const [canvasState, setCanvasState] =
+    useState<ImportedDataState>(initialData);
+
+  const { mutate: putProblem } = usePutProblem(problemId);
+
   return (
-    <div className="h-[100svh]">
+    <div className="relative h-[100svh]">
+      <div className="absolute left-8 top-4 flex gap-1">
+        <ButtonIcon Icon={ChevronLeftIcon} />
+        <Button variant="outline" onClick={() => putProblem(canvasState)}>
+          Save
+        </Button>
+      </div>
       <div className="box-border flex h-64 w-full justify-center border-b-[1px] border-zinc-300 p-2">
         <div className="relative h-full w-full max-w-[80%] ">
           <ProblemImage query={query} />
         </div>
       </div>
       <div className="h-full w-full">
-        <Excalidraw
-          onChange={(elements: readonly ExcalidrawElement[], state: AppState) =>
-            console.log("Elements :", elements, "State : ", state)
-          }
-        />
+        <ExcalidrawCanvas setCanvasState={setCanvasState} />
       </div>
     </div>
   );

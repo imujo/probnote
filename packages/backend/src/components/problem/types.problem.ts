@@ -11,9 +11,9 @@ export const problemGetSchema = {
   params: z.object({
     problemId: z
       .string({
-        required_error: messages.required("ExerciseNoteId"),
+        required_error: messages.required("ProblemId"),
       })
-      .regex(/^\d+$/, messages.invalidType("ExerciseNoteId", "number")),
+      .regex(/^\d+$/, messages.invalidType("ProblemId", "number")),
   }),
 };
 
@@ -52,6 +52,30 @@ export type ProblemsGet = SuccessResponse<{
   }[];
 }>;
 export type ProblemsGetResposne = Response<ProblemsGet>;
+
+// PUT PROBLEM
+
+export const problemPutSchema = {
+  body: z.object({
+    canvas: z.record(z.unknown()),
+  }),
+  params: z.object({
+    problemId: z
+      .string({
+        required_error: messages.required("ProblemId"),
+      })
+      .regex(/^\d+$/, messages.invalidType("ProblemId", "number")),
+  }),
+};
+
+const problemPutBuilder = new AuthRequestBuilder(problemPutSchema);
+export type ProblemPutRequest = ReturnType<
+  typeof problemPutBuilder.getRequestType
+>;
+export type ProblemPut = SuccessResponse<{
+  id: number;
+}>;
+export type ProblemPutResposne = Response<ProblemPut>;
 
 // POST PROBLEMS
 

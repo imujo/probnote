@@ -1,6 +1,5 @@
 "use client";
 
-import useProblemId from "hooks/useProblemId";
 import { ChevronLeft, ChevronRight, Divide, Menu } from "lucide-react";
 import { FC, ReactNode, useState } from "react";
 import { cn } from "utils/cn";

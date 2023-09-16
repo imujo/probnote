@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -63,6 +63,35 @@ export const postProblems = async (
   });
 
   return problems;
+};
+
+export const putProblem = async (
+  problemId: number,
+  userId: string,
+  canvas: Prisma.InputJsonObject
+) => {
+  const problem = await prisma.problem.update({
+    where: {
+      id: problemId,
+      AND: {
+        ExerciseNote: {
+          Note: {
+            FolderItem: {
+              userId,
+            },
+          },
+        },
+      },
+    },
+    data: {
+      canvas,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return problem;
 };
 
 export const deleteProblemsByFileKeys = async (

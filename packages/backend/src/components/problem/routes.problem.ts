@@ -3,6 +3,7 @@ import validate from "../../middleware/validate";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import {
   problemGetSchema,
+  problemPutSchema,
   problemsDeleteByFileKeysSchema,
   problemsGetSchema,
   problemsPostSchema,
@@ -14,6 +15,7 @@ const router = Router();
 router.use(ClerkExpressRequireAuth());
 
 router.get("/:problemId", validate(problemGetSchema), problemController.get);
+router.put("/:problemId", validate(problemPutSchema), problemController.put);
 
 router.get(
   "/multiple/:exerciseNoteId",
