@@ -120,7 +120,8 @@ const put = async (
   next: NextFunction
 ) => {
   try {
-    const { canvas } = req.body;
+    const { canvas, canvasUpdatedTimestamp } = req.body;
+    // const canvasUpdatedTimestamp = parseInt(req.body.canvasUpdatedTimestamp);
     const problemId = parseInt(req.params.problemId);
     const { userId } = req.auth;
 
@@ -134,6 +135,7 @@ const put = async (
       message: messages.putSuccess("Problem", problem.id),
       data: {
         id: problem.id,
+        canvasUpdatedTimestamp,
       },
     });
   } catch (error) {

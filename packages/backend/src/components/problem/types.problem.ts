@@ -58,6 +58,12 @@ export type ProblemsGetResposne = Response<ProblemsGet>;
 export const problemPutSchema = {
   body: z.object({
     canvas: z.record(z.unknown()),
+    // canvasUpdatedTimestamp: z
+    //   .string({
+    //     required_error: messages.required("canvasUpdatedTimestamp"),
+    //   })
+    //   .regex(/^\d+$/, messages.invalidType("canvasUpdatedTimestamp", "number")),
+    canvasUpdatedTimestamp: z.number(),
   }),
   params: z.object({
     problemId: z
@@ -74,6 +80,7 @@ export type ProblemPutRequest = ReturnType<
 >;
 export type ProblemPut = SuccessResponse<{
   id: number;
+  canvasUpdatedTimestamp: number;
 }>;
 export type ProblemPutResposne = Response<ProblemPut>;
 

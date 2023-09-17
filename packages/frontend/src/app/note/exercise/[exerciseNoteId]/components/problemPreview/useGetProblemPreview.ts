@@ -11,7 +11,6 @@ export default function useGetProblemPreview() {
 
   const query = useGetProblems({
     onSuccess: (data) => {
-      console.log("success");
       if (!problemId && data && data?.data.problems.length !== 0) {
         router.replace(
           `/note/exercise/${exerciseNoteId}/problem/${data.data.problems[0].id}`,

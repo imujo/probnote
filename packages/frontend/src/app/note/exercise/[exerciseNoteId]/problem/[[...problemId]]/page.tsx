@@ -48,7 +48,15 @@ const ProblemPage: FC<ProblemPageProps> = ({}) => {
           }
           Icon={ChevronLeftIcon}
         />
-        <Button variant="outline" onClick={() => putProblem(canvasState)}>
+        <Button
+          variant="outline"
+          onClick={() =>
+            putProblem({
+              canvas: canvasState,
+              canvasUpdatedTimestamp: new Date().getTime(),
+            })
+          }
+        >
           Save
         </Button>
       </div>
