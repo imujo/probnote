@@ -4,14 +4,17 @@ import { useAuth } from "@clerk/nextjs";
 import { useToast } from "@/components/ui/use-toast";
 import { ProblemPut } from "@probnote/backend/src/components/problem/types.problem";
 import ResponseError from "utils/ResponseError";
-import { CanvasState } from "@/app/note/exercise/[exerciseNoteId]/problem/[[...problemId]]/page";
+import { CanvasState } from "utils/excalidraw.global";
 
 type PutProblemProps = {
   canvas: CanvasState;
   canvasUpdatedTimestamp: number;
 };
 
-export default function usePutProblem(problemId: number) {
+export default function usePutProblem(
+  problemId: number,
+  onSuccess?: (data: ProblemPut) => void,
+) {
   const { getToken } = useAuth();
   const { toast } = useToast();
 
@@ -19,7 +22,7 @@ export default function usePutProblem(problemId: number) {
     mutationFn: ({ canvas, canvasUpdatedTimestamp }: PutProblemProps) =>
       putProblem(problemId, canvas, canvasUpdatedTimestamp, getToken),
     onSuccess: (data) => {
-      console.log(data);
+      if (onSuccess) onSuccess(data);
       toast({
         title: "Problem updated",
         description: data.message,

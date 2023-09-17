@@ -119,7 +119,6 @@ export const putProblem = async (
 
   const responseJson = await response.json();
   const data = responseJson as ProblemPut;
-  console.log(responseJson);
 
   if (!response.ok) {
     const error = responseJson as ErrorResponse;

@@ -1,6 +1,6 @@
 import useSearchFolderItem from "api/folderItem/hooks/useSearchFolderItem";
-import { useDebounce } from "@uidotdev/usehooks";
 import { useState } from "react";
+import { useDebounce } from "usehooks-ts";
 
 export default function useSearchBar() {
   const [searchQuery, setSearchQuery] = useState("");

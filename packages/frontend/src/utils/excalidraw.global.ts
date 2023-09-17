@@ -1,4 +1,10 @@
 import { AppState } from "@excalidraw/excalidraw/types/types";
+import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+
+export type CanvasState = {
+  elements: readonly ExcalidrawElement[];
+  appState: AppState;
+};
 
 export const initialAppState: AppState = {
   isSidebarDocked: false,
@@ -78,4 +84,9 @@ export const initialAppState: AppState = {
   selectedLinearElement: null,
   offsetLeft: 58,
   offsetTop: -118.625,
+};
+
+export const initialCanvas: CanvasState = {
+  elements: [],
+  appState: initialAppState,
 };

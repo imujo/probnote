@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ProblemGet } from "@probnote/backend/src/components/problem/types.problem";
 import ResponseError from "utils/ResponseError";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
-import { CanvasState } from "@/app/note/exercise/[exerciseNoteId]/problem/[[...problemId]]/page";
+import { CanvasState } from "utils/excalidraw.global";
 
 export default function useGetProblem(
   problemId: number,
@@ -20,7 +20,9 @@ export default function useGetProblem(
     queryKey: getProblemQueryKey,
     queryFn: () => getProblem(problemId, getToken),
     onSuccess: (data) => {
-      if (!data.data.canvas) return;
+      if (data.data.canvas === null || data.data.canvas === "null") {
+        return;
+      }
 
       const objectValue = JSON.parse(data.data.canvas);
       if (

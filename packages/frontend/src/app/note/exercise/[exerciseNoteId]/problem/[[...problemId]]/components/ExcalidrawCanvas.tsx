@@ -1,25 +1,16 @@
 import React, { Dispatch, FC, SetStateAction, useMemo } from "react";
 import { Excalidraw } from "@excalidraw/excalidraw";
-import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import {
-  AppState,
-  ExcalidrawImperativeAPI,
-} from "@excalidraw/excalidraw/types/types";
+import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
+import { useToast } from "@/components/ui/use-toast";
+import { CanvasOnChange } from "../hooks/useCanvas";
 
 interface ExcalidrawCanvasProps {
-  setCanvasState: Dispatch<
-    SetStateAction<{
-      elements: readonly ExcalidrawElement[];
-      appState: AppState;
-    }>
-  >;
+  onChange: CanvasOnChange;
   excRef: React.RefObject<ExcalidrawImperativeAPI>;
 }
 
-const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({
-  setCanvasState,
-  excRef,
-}) => {
+const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({ onChange, excRef }) => {
+  const { toast } = useToast();
   const Exc = useMemo(
     () => (
       <Excalidraw
@@ -28,12 +19,17 @@ const ExcalidrawCanvas: FC<ExcalidrawCanvasProps> = ({
             toggleTheme: false,
           },
         }}
-        onChange={(elements, state) =>
-          setCanvasState({
-            elements: elements,
-            appState: state,
-          })
-        }
+        onChange={(elements, state, files) => {
+          if (Object.keys(files).length !== 0) {
+            toast({
+              title: "Could not save image",
+              description:
+                "We currently don't support saving images/files in the canvas",
+              variant: "destructive",
+            });
+          }
+          onChange(elements, state, files);
+        }}
         ref={excRef}
       />
     ),
