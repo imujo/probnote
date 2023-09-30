@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FolderItem } from "utils/types.global";
+import FolderItemPopover from "./FolderItemPopover";
 
 const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
   {
@@ -70,51 +71,7 @@ const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
     header: "",
     size: 100,
     cell: ({ row }) => {
-      const original = row.original;
-      const { label, id: folderItemId, Folder, Note } = original;
-
-      const [dropdownOpen, setDropdownOpen] = useState(false);
-
-      let folderItemType: keyof typeof FolderItem;
-
-      if (Folder) {
-        folderItemType = "FOLDER";
-      } else if (Note && Note.ExerciseNote) {
-        folderItemType = "EXERCISE_NOTE";
-      } else {
-        folderItemType = "REGULAR_NOTE";
-      }
-
-      return (
-        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent onClick={(e) => e.stopPropagation()} align="end">
-            {row.original.Folder ? (
-              <PinFolderDropdownItem
-                folderId={row.original.Folder.id}
-                pinned={row.original.Folder.pinned}
-                label={label}
-              />
-            ) : null}
-            <RenameFolderItemDropdownItem
-              folderItemId={folderItemId}
-              currentLabel={label}
-              setDropdownOpen={setDropdownOpen}
-              folderItemType={folderItemType}
-            />
-            <DeleteFolderItemDropdownItem
-              folderItemId={folderItemId}
-              setDropdownOpen={setDropdownOpen}
-              folderItemType={folderItemType}
-            />
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <FolderItemPopover data={row.original} />;
     },
   },
 ];
