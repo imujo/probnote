@@ -74,17 +74,19 @@ export default function useAddProblems() {
   const closeDisabled = uploadState === "LOADING";
   const closeAndDelete = uploadState === "DONE" || uploadState === "ERROR";
 
-  const closeModal = useCallback(() => {
-    setModalOpen(false);
-    setTimeout(() => reset(), 300);
-  }, [setModalOpen]);
+  const closeModal = useCallback(
+    (e?: Event | React.MouseEvent) => {
+      if (closeDisabled) return e?.preventDefault();
+      setModalOpen(false);
+      setTimeout(() => reset(), 300);
+    },
+    [setModalOpen, closeDisabled],
+  );
 
   const closeModalAndDelete = useCallback(
     (e?: Event | React.MouseEvent) => {
-      if (closeDisabled && e) return e.preventDefault();
-      if (closeAndDelete) {
-        deleteProblems();
-      }
+      if (closeDisabled) return e?.preventDefault();
+      deleteProblems();
       closeModal();
     },
     [closeDisabled, deleteProblems, setModalOpen],

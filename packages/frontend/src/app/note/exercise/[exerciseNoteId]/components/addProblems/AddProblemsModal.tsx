@@ -41,9 +41,9 @@ const AddProblemsModal: FC<AddProblemsModalProps> = ({ triggerClassName }) => {
         </ButtonWithIcon>
       </DialogTrigger>
       <DialogContent
-        onEscapeKeyDown={closeModalAndDelete}
-        onPointerDownOutside={closeModalAndDelete}
-        onCloseButton={closeModalAndDelete}
+        onEscapeKeyDown={closeModal}
+        onPointerDownOutside={closeModal}
+        onCloseButton={closeModal}
       >
         <DialogHeader>
           <DialogTitle>Add Problems to Exercise Note</DialogTitle>

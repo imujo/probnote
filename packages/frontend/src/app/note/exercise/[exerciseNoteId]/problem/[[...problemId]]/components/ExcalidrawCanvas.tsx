@@ -5,6 +5,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { useToast } from "@/components/ui/use-toast";
 import { CanvasOnChange } from "../hooks/useCanvas";
+import { initialCanvas } from "utils/excalidraw.global";
 
 interface ExcalidrawCanvasProps {
   onChange: CanvasOnChange;

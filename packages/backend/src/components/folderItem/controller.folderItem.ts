@@ -121,7 +121,7 @@ const del = async (
       );
     }
 
-    deleteCloudflareObjects(problemFileKeys);
+    if (problemFileKeys.length !== 0) deleteCloudflareObjects(problemFileKeys);
 
     res.status(200).json({
       message: messages.deleteSuccess("Folder item", folderItemId),

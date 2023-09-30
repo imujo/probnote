@@ -53,7 +53,7 @@ export default function usePostExerciseNote(
       queryClient.invalidateQueries(getFolderItemsQueryKey);
 
       if (onSuccess) onSuccess();
-      router.push(`/note/exercise/${data.data.exerciseNoteId}`);
+      router.push(`/note/exercise/${data.data.exerciseNoteId}/problem`);
     },
     onError: (err, _, context) => {
       if (context?.previousFolderItems) {
