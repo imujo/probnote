@@ -18,6 +18,8 @@ import {
   FolderItemsSearchRequest,
   FolderItemsSearchResponse,
 } from "./types.folderItem";
+import { deleteProblemsByFileKeys } from "../problem/service.problem";
+import { deleteCloudflareObjects } from "../cloudflare/service.cloudflare";
 
 const get = async (
   req: FolderItemsGetRequest,
@@ -104,6 +106,22 @@ const del = async (
     const { userId } = req.auth;
 
     const folderItem = await deleteFolderItem(folderItemId, userId);
+
+    let problemFileKeys: string[] = [];
+    if (folderItem.Folder) {
+      folderItem.Folder.Children.forEach(
+        (child) =>
+          child.Note?.ExerciseNote?.Problem.forEach((problem) =>
+            problemFileKeys.push(problem.problemFileKey)
+          )
+      );
+    } else if (folderItem.Note?.ExerciseNote?.Problem) {
+      folderItem.Note.ExerciseNote.Problem.forEach((problem) =>
+        problemFileKeys.push(problem.problemFileKey)
+      );
+    }
+
+    deleteCloudflareObjects(problemFileKeys);
 
     res.status(200).json({
       message: messages.deleteSuccess("Folder item", folderItemId),

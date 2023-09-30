@@ -137,6 +137,43 @@ export const deleteFolderItem = async (
       id: folderItemId,
       userId,
     },
+    select: {
+      id: true,
+      Folder: {
+        select: {
+          Children: {
+            select: {
+              Note: {
+                select: {
+                  ExerciseNote: {
+                    select: {
+                      Problem: {
+                        select: {
+                          problemFileKey: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      Note: {
+        select: {
+          ExerciseNote: {
+            select: {
+              Problem: {
+                select: {
+                  problemFileKey: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
   return folderItem;
