@@ -97,7 +97,6 @@ export const postProblems = async (
 export const putProblem = async (
   problemId: number,
   canvas: ImportedDataState,
-  canvasUpdatedTimestamp: number,
   getAuthToken: GetToken,
 ) => {
   const response = await fetch(
@@ -111,7 +110,6 @@ export const putProblem = async (
       },
       body: JSON.stringify({
         canvas,
-        canvasUpdatedTimestamp: canvasUpdatedTimestamp,
       }),
       cache: "no-store",
     },

@@ -8,7 +8,6 @@ import { CanvasState } from "utils/excalidraw.global";
 
 type PutProblemProps = {
   canvas: CanvasState;
-  canvasUpdatedTimestamp: number;
 };
 
 export default function usePutProblem(
@@ -19,14 +18,10 @@ export default function usePutProblem(
   const { toast } = useToast();
 
   return useMutation<ProblemPut, ResponseError, PutProblemProps>({
-    mutationFn: ({ canvas, canvasUpdatedTimestamp }: PutProblemProps) =>
-      putProblem(problemId, canvas, canvasUpdatedTimestamp, getToken),
+    mutationFn: ({ canvas }: PutProblemProps) =>
+      putProblem(problemId, canvas, getToken),
     onSuccess: (data) => {
       if (onSuccess) onSuccess(data);
-      toast({
-        title: "Problem updated",
-        description: data.message,
-      });
     },
     onError: (error) => {
       toast({

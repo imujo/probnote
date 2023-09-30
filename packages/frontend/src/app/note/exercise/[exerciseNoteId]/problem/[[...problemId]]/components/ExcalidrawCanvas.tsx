@@ -1,4 +1,6 @@
-import React, { Dispatch, FC, SetStateAction, useMemo } from "react";
+"use client";
+
+import React, { FC, useMemo } from "react";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { useToast } from "@/components/ui/use-toast";

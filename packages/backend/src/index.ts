@@ -20,7 +20,7 @@ const app = express();
 const port = env.PORT;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "5mb" }));
 
 app.use("/folder", folderRoutes);
 app.use("/folderItem", folderItemRoutes);
