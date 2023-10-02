@@ -43,6 +43,8 @@ function TableContent<TData>({
             router.push(routesConfig.folder(original.Folder.id));
           } else if (original.Note && original.Note.ExerciseNote) {
             router.push(routesConfig.problem(original.Note.ExerciseNote.id));
+          } else if (original.Note && original.Note.RegularNote) {
+            router.push(routesConfig.regularNote(original.Note.RegularNote.id));
           } else {
             alert("Folder item isnt a folder or an exercise note");
           }

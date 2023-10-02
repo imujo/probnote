@@ -11,6 +11,7 @@ import {
 import { FolderId } from "../../../../../../utils/types.global";
 import NewFolderButton from "./NewFolderButton";
 import NewExerciseNoteButton from "./NewExerciseNoteButton";
+import NewRegularNoteButton from "./NewRegularNoteButton";
 
 interface NewButtonProps {
   folderId: FolderId;
@@ -25,6 +26,7 @@ const NewButton: FC<NewButtonProps> = ({ folderId }) => {
       <DropdownMenuContent align="end">
         <NewFolderButton />
         <NewExerciseNoteButton />
+        <NewRegularNoteButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );

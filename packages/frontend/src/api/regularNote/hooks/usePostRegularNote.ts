@@ -9,7 +9,10 @@ import routesConfig from "@/config/routes.config";
 import { RegularNotePost } from "@probnote/backend/src/components/regularNote/types.regularNote";
 import ResponseError from "utils/ResponseError";
 
-export default function usePostRegularNote(parentFolderId: FolderId) {
+export default function usePostRegularNote(
+  parentFolderId: FolderId,
+  onSuccess?: (data: RegularNotePost) => void,
+) {
   const { getToken } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -19,6 +22,7 @@ export default function usePostRegularNote(parentFolderId: FolderId) {
     mutationFn: (label: string) =>
       postRegularNote(label, parentFolderId, getToken),
     onSuccess: async (data) => {
+      if (onSuccess) onSuccess(data);
       queryClient.invalidateQueries(queryKeys.getFolderItems(parentFolderId));
 
       // router.push(routesConfig.folder(data.data.folderId));

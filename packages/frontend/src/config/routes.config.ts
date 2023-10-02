@@ -13,5 +13,6 @@ export default {
    */
   problem: (exerciseNoteId: number, problemId?: number) =>
     `/note/exercise/${exerciseNoteId}/problem/${problemId || ""}`,
+  regularNote: (regularNoteId: number) => `/note/regular/${regularNoteId}`,
   home: () => "/",
 };
