@@ -3,6 +3,7 @@ import useGetProblems from "api/problem/hooks/useGetProblems";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
 import useOptionalProblemId from "hooks/useOptionalProblemId";
 import { useRouter } from "next/navigation";
+import routesConfig from "@/config/routes.config";
 
 export default function useGetProblemPreview() {
   const problemId = useOptionalProblemId();
@@ -73,9 +74,10 @@ export default function useGetProblemPreview() {
     if (nextDisabled) return;
 
     router.push(
-      `/note/exercise/${exerciseNoteId}/problem/${
-        problems[currentProblemIndex + 1].id
-      }`,
+      routesConfig.problem(
+        exerciseNoteId,
+        problems[currentProblemIndex + 1].id,
+      ),
     );
 
     scrollIntoView(50);
@@ -88,9 +90,10 @@ export default function useGetProblemPreview() {
     if (prevDisabled) return;
 
     router.push(
-      `/note/exercise/${exerciseNoteId}/problem/${
-        problems[currentProblemIndex - 1].id
-      }`,
+      routesConfig.problem(
+        exerciseNoteId,
+        problems[currentProblemIndex - 1].id,
+      ),
     );
 
     scrollIntoView(-200);

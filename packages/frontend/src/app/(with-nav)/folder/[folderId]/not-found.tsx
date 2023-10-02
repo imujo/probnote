@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import routesConfig from "@/config/routes.config";
 import Link from "next/link";
 import { FC } from "react";
 
@@ -11,7 +12,7 @@ const NotFound: FC<NotFoundProps> = () => {
       <p className=" mb-4 text-lg font-light text-zinc-500">
         The folder you were looking for does not exist
       </p>
-      <Link href="/folder/base">
+      <Link href={routesConfig.folder()}>
         <Button>Go Home</Button>
       </Link>
     </div>

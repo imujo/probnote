@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/command";
 import Link from "next/link";
 import { Folder } from "lucide-react";
+import routesConfig from "@/config/routes.config";
 
 interface SearchBarProps {}
 
@@ -43,9 +44,11 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
         <CommandList>
           <CommandEmptyManual isEmpty={isEmpty}>No results</CommandEmptyManual>
           {data?.data.map((folderItem) => {
-            const href = folderItem.Folder
-              ? `/folder/${folderItem.Folder.id}`
-              : "note";
+            let href = "/";
+            if (folderItem.Folder) {
+              href = routesConfig.folder(folderItem.Folder.id);
+            } else if (folderItem.Note?.ExerciseNote)
+              href = routesConfig.problem(folderItem.Note.ExerciseNote.id);
 
             return (
               <CommandItem key={"search-folderitem-" + folderItem.id}>

@@ -71,6 +71,11 @@ export type FolderItemsSearch = SuccessResponse<
       id: number;
       pinned: boolean;
     } | null;
+    Note: {
+      ExerciseNote: {
+        id: number;
+      } | null;
+    } | null;
   }[]
 >;
 export type FolderItemsSearchResponse = Response<FolderItemsSearch>;

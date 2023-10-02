@@ -4,6 +4,7 @@ import { VariantProps, cva } from "class-variance-authority";
 import { cn } from "utils/cn";
 import useExerciseNoteId from "hooks/useExerciseNoteId";
 import Link from "next/link";
+import routesConfig from "@/config/routes.config";
 
 const problemPreviewVariants = cva(
   " h-[100px] w-full rounded-lg  object-cover ",
@@ -37,7 +38,7 @@ const ProblemPreview: FC<ProblemPreviewProps> = ({
   exerciseNoteId,
 }) => {
   return (
-    <Link href={`/note/exercise/${exerciseNoteId}/problem/${id}`}>
+    <Link href={routesConfig.problem(exerciseNoteId, id)}>
       <Image
         alt="problem_preview"
         src={url}

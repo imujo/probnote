@@ -11,7 +11,7 @@ import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { useRouter } from "next/navigation";
 import useCanvas from "./hooks/useCanvas";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorPill from "@/components/ErrorPill";
+import routesConfig from "@/config/routes.config";
 
 interface ProblemPageProps {}
 
@@ -28,7 +28,9 @@ const ProblemPage: FC<ProblemPageProps> = ({}) => {
       <div className="absolute left-8 top-4 z-50 flex items-center gap-3 rounded bg-white  px-2 py-1">
         <ButtonIcon
           onClick={() =>
-            router.push(`/folder/${query.data?.data.parentFolderId || "base"}`)
+            router.push(
+              routesConfig.folder(query.data?.data.parentFolderId || undefined),
+            )
           }
           Icon={ChevronLeftIcon}
         />

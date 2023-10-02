@@ -6,6 +6,7 @@ import { ColumnDef, Table, flexRender } from "@tanstack/react-table";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import { TableCell, TableRow, TableRowCenter } from "@/components/ui/table";
 import ResponseError from "utils/ResponseError";
+import routesConfig from "@/config/routes.config";
 
 interface TableContentProps<TData> {
   error: ResponseError | null;
@@ -39,11 +40,9 @@ function TableContent<TData>({
           const original = row.original as FolderItemsGet["data"][0];
 
           if (original.Folder) {
-            router.push(`/folder/${original.Folder.id}`);
+            router.push(routesConfig.folder(original.Folder.id));
           } else if (original.Note && original.Note.ExerciseNote) {
-            router.push(
-              `/note/exercise/${original.Note.ExerciseNote.id}/problem`,
-            );
+            router.push(routesConfig.problem(original.Note.ExerciseNote.id));
           } else {
             alert("Folder item isnt a folder or an exercise note");
           }

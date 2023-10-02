@@ -7,6 +7,7 @@ import Link from "next/link";
 import useFolderId from "hooks/useFolderId";
 import { FolderId } from "../../../../utils/types.global";
 import ButtonIcon from "@/components/ButtonIcon";
+import routesConfig from "@/config/routes.config";
 
 const sideNavItemVariants = cva(
   "cursor-pointer overflow-hidden px-6 flex-1 flex items-center hover:bg-zinc-50 text-ellipsis whitespace-nowrap py-2 text-sm hover:text-zinc-900 ",
@@ -44,7 +45,7 @@ const SideNavItem: FC<SideNavItemProps> = ({
   return (
     <li className="group relative flex">
       <Link
-        href={`/folder/${folderId}`}
+        href={routesConfig.folder(folderId)}
         className={cn(
           sideNavItemVariants({ selected: selected ? "selected" : "default" }),
           " inline-block",

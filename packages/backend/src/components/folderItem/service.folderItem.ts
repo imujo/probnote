@@ -199,6 +199,15 @@ export const searchFolderItem = async (query: string, userId: string) => {
           pinned: true,
         },
       },
+      Note: {
+        select: {
+          ExerciseNote: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
     },
     take: 5,
   });

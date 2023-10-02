@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
 import queryKeys from "utils/queryKeys";
 import { useRouter } from "next/navigation";
+import routesConfig from "@/config/routes.config";
 
 export default function usePostExerciseNote(
   parentFolderId: FolderId,
@@ -53,7 +54,7 @@ export default function usePostExerciseNote(
       queryClient.invalidateQueries(getFolderItemsQueryKey);
 
       if (onSuccess) onSuccess();
-      router.push(`/note/exercise/${data.data.exerciseNoteId}/problem`);
+      router.push(routesConfig.problem(data.data.exerciseNoteId));
     },
     onError: (err, _, context) => {
       if (context?.previousFolderItems) {

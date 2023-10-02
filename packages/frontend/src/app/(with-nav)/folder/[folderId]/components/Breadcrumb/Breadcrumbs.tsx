@@ -7,6 +7,7 @@ import useBreadcrumbs from "../../../../../../api/breadcrumbs/hooks/useGetBreadc
 import BreadcrumbSkeleton from "./BreadcrumbSkeleton";
 import { FolderId } from "../../../../../../utils/types.global";
 import ErrorPill from "@/components/ErrorPill";
+import routesConfig from "@/config/routes.config";
 
 interface BreadcrumbsProps {
   className?: string;
@@ -30,7 +31,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
     <ul className={cn("flex text-xs font-light", className)}>
       <BreadcrumbItem
         key="base"
-        href="/folder/base"
+        href={routesConfig.folder()}
         last={breadcrumbs.length === 0}
       >
         Home
@@ -43,7 +44,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ className, folderId }) => {
       {breadcrumbs.map((item, i) => {
         return (
           <BreadcrumbItem
-            href={`/folder/${item.folderId}`}
+            href={routesConfig.folder(item.folderId)}
             key={item.folderId}
             last={i === breadcrumbs.length - 1}
           >

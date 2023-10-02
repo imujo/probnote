@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { FolderId } from "../../../utils/types.global";
 import { useAuth } from "@clerk/nextjs";
 import ResponseError from "utils/ResponseError";
+import routesConfig from "@/config/routes.config";
 
 export default function usePostFolder(
   parentFolderId: FolderId,
@@ -51,7 +52,7 @@ export default function usePostFolder(
     onSuccess: async (data) => {
       queryClient.invalidateQueries(getFolderItemsQueryKey);
 
-      router.push(`/folder/${data.data.folderId}`);
+      router.push(routesConfig.folder(data.data.folderId));
       toast({
         title: "Successfully created folder",
         description: data.message,
