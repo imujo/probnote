@@ -1,20 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { ReactNode } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
-import { File, Folder, MoreVertical } from "lucide-react";
-import DeleteFolderItemDropdownItem from "./DeleteFolderItemDropdownItem";
-import RenameFolderItemDropdownItem from "./RenameFolderItemDropdownItem";
-import PinFolderDropdownItem from "./PinFolderDropdownItem";
+import { Ban, File, Folder, LucideIcon, PenLine } from "lucide-react";
 import { FolderItemsGet } from "@probnote/backend/src/components/folderItem/types.folderItem";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { FolderItem } from "utils/types.global";
 import FolderItemPopover from "./FolderItemPopover";
 
 const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
@@ -24,15 +14,19 @@ const columns: ColumnDef<FolderItemsGet["data"][0]>[] = [
     size: 10000,
     cell: ({ row }) => {
       const label = row.original.label;
-      const isFolder = row.original.Folder;
+      const isFolder = !!row.original.Folder;
+      const isExerciseNote = !!row.original.Note?.ExerciseNote;
+      const isRegularNote = !!row.original.Note?.RegularNote;
+
+      let Icon: LucideIcon = Ban;
+
+      if (isFolder) Icon = Folder;
+      else if (isExerciseNote) Icon = File;
+      else if (isRegularNote) Icon = PenLine;
 
       return (
         <div className="flex items-center gap-2 text-zinc-900">
-          {isFolder ? (
-            <Folder className="h-4 w-4" />
-          ) : (
-            <File className="h-4 w-4" />
-          )}
+          <Icon className="h-4 w-4" />
           <span>{label}</span>
         </div>
       );

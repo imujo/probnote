@@ -1,5 +1,5 @@
 import React from "react";
-import { File, Folder } from "lucide-react";
+import { File, Folder, PenLine } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -24,7 +24,7 @@ export default function NewRegularNoteButton() {
   return (
     <NewButtonItem
       menuItemLabel="Regular Note"
-      MenuItemIcon={File}
+      MenuItemIcon={PenLine}
       dialogTitle="Create an Regular Note"
       dialogDescription="Add a label and create a new regular note"
       onSubmit={onSubmit}
