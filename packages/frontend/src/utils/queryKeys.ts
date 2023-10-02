@@ -18,6 +18,11 @@ export const getProblems = (exerciseNoteId: number) => [
 ];
 export const getProblem = (problemId: number) => ["problem", "get", problemId];
 export const getPinnedFolders = () => ["folder", "get", "pinned"];
+export const getRegularNote = (regularNoteId: number) => [
+  "regularNote",
+  "get",
+  regularNoteId,
+];
 
 export default {
   getFolderItems,
@@ -26,4 +31,5 @@ export default {
   searchFolderItems,
   getProblems,
   getProblem,
+  getRegularNote,
 };
