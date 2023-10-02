@@ -8,35 +8,33 @@ datasource db {
 }
 
 model FolderItem {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  label     String   @db.VarChar(30)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Folder    Folder?  @relation("item")
-  Note      Note?
-
+  id             Int      @id @default(autoincrement())
+  userId         String
+  label          String   @db.VarChar(30)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   parentFolderId Int?
-  ParentFolder   Folder? @relation(name: "parent", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  Folder         Folder?  @relation("item")
+  ParentFolder   Folder?  @relation("parent", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  Note           Note?
 
   @@index([label, userId])
 }
 
 model Folder {
-  id           Int        @id @default(autoincrement())
-  pinned       Boolean    @default(false)
-  datePinned   DateTime   @default(now())
-  folderItemId Int        @unique
-  FolderItem   FolderItem @relation(name: "item", fields: [folderItemId], references: [id], onDelete: Cascade)
-
-  Children FolderItem[] @relation("parent")
+  id           Int          @id @default(autoincrement())
+  pinned       Boolean      @default(false)
+  datePinned   DateTime     @default(now())
+  folderItemId Int          @unique
+  FolderItem   FolderItem   @relation("item", fields: [folderItemId], references: [id], onDelete: Cascade)
+  Children     FolderItem[] @relation("parent")
 }
 
 model Note {
   id           Int           @id @default(autoincrement())
   folderItemId Int           @unique
-  FolderItem   FolderItem    @relation(fields: [folderItemId], references: [id], onDelete: Cascade)
   ExerciseNote ExerciseNote?
+  FolderItem   FolderItem    @relation(fields: [folderItemId], references: [id], onDelete: Cascade)
   RegularNote  RegularNote?
 }
 
@@ -50,23 +48,17 @@ model ExerciseNote {
 model RegularNote {
   id     Int   @id @default(autoincrement())
   noteId Int   @unique
-  Note   Note  @relation(fields: [noteId], references: [id], onDelete: Cascade)
   canvas Json?
+  Note   Note  @relation(fields: [noteId], references: [id], onDelete: Cascade)
 }
 
 model Problem {
-  id              Int      @id @default(autoincrement())
+  id              Int          @id @default(autoincrement())
   exerciseNoteId  Int
-  problemFileKey  String   @unique
-  solutionFileKey String?
   canvas          Json?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  ExerciseNote ExerciseNote @relation(fields: [exerciseNoteId], references: [id], onDelete: Cascade)
-}
-
-model Test {
-  id   Int     @id @default(autoincrement())
-  test Boolean
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  problemFileKey  String       @unique
+  solutionFileKey String?
+  ExerciseNote    ExerciseNote @relation(fields: [exerciseNoteId], references: [id], onDelete: Cascade)
 }
