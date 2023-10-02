@@ -35,6 +35,7 @@ const get = async (
       data: {
         id: regularNote.id,
         canvas: JSON.stringify(regularNote.canvas),
+        parentFolderId: regularNote.Note.FolderItem.parentFolderId,
       },
     });
   } catch (error) {

@@ -9,20 +9,26 @@ import ButtonIcon from "@/components/ButtonIcon";
 import { ChevronLeftIcon } from "lucide-react";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 import { useRouter } from "next/navigation";
-import useCanvas from "./hooks/useCanvas";
+import useCanvas from "../../../../../../hooks/useCanvas";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import routesConfig from "@/config/routes.config";
 import CanvasActions from "@/components/CanvasActions";
+import usePutProblem from "api/problem/hooks/usePutProblem";
 
 interface ProblemPageProps {}
 
 const ProblemPage: FC<ProblemPageProps> = ({}) => {
   const problemId = useProblemId();
-  const router = useRouter();
 
   const excalidrawRef = useRef<ExcalidrawImperativeAPI>(null);
   const query = useGetProblem(problemId, excalidrawRef);
-  const { onChange, isError, isLoading, isSuccess } = useCanvas(problemId);
+  const {
+    mutate: putProblem,
+    isLoading,
+    isError,
+    isSuccess,
+  } = usePutProblem(problemId);
+  const { onChange } = useCanvas(putProblem);
 
   return (
     <div className="relative h-[100svh]">

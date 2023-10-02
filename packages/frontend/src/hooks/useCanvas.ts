@@ -4,6 +4,7 @@ import { AppState, BinaryFiles } from "@excalidraw/excalidraw/types/types";
 import { useDebounce } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import { initialCanvas } from "utils/excalidraw.global";
+import { CanvasState } from "utils/excalidraw.global";
 
 const DEBOUNCE_TIME = 500;
 
@@ -13,17 +14,10 @@ export type CanvasOnChange = (
   files: BinaryFiles,
 ) => void;
 
-export default function useCanvas(problemId: number) {
+export default function useCanvas(putCanvas: (canvas: CanvasState) => void) {
   const [canvas, setCanvas] = useState(initialCanvas);
 
   const debouncedCanvas = useDebounce(canvas, DEBOUNCE_TIME);
-
-  const {
-    mutate: putProblem,
-    isLoading,
-    isError,
-    isSuccess,
-  } = usePutProblem(problemId);
 
   const onChange: CanvasOnChange = (elements, appState, files) => {
     setCanvas({
@@ -33,10 +27,8 @@ export default function useCanvas(problemId: number) {
   };
 
   useEffect(() => {
-    putProblem({
-      canvas: debouncedCanvas,
-    });
+    putCanvas(debouncedCanvas);
   }, [debouncedCanvas]);
 
-  return { isLoading, isError, isSuccess, onChange };
+  return { onChange };
 }

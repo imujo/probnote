@@ -6,10 +6,6 @@ import { ProblemPut } from "@probnote/backend/src/components/problem/types.probl
 import ResponseError from "utils/ResponseError";
 import { CanvasState } from "utils/excalidraw.global";
 
-type PutProblemProps = {
-  canvas: CanvasState;
-};
-
 export default function usePutProblem(
   problemId: number,
   onSuccess?: (data: ProblemPut) => void,
@@ -17,8 +13,8 @@ export default function usePutProblem(
   const { getToken } = useAuth();
   const { toast } = useToast();
 
-  return useMutation<ProblemPut, ResponseError, PutProblemProps>({
-    mutationFn: ({ canvas }: PutProblemProps) =>
+  return useMutation<ProblemPut, ResponseError, CanvasState>({
+    mutationFn: (canvas: CanvasState) =>
       putProblem(problemId, canvas, getToken),
     onSuccess: (data) => {
       if (onSuccess) onSuccess(data);

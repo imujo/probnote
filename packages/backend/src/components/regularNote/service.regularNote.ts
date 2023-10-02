@@ -17,6 +17,15 @@ export const getRegularNote = async (regularNoteId: number, userId: string) => {
     select: {
       id: true,
       canvas: true,
+      Note: {
+        select: {
+          FolderItem: {
+            select: {
+              parentFolderId: true,
+            },
+          },
+        },
+      },
     },
   });
 

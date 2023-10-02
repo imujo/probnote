@@ -23,6 +23,7 @@ export type RegularNoteGetRequest = ReturnType<
 export type RegularNoteGet = SuccessResponse<{
   id: number;
   canvas: string;
+  parentFolderId: number | null;
 }>;
 export type RegularNoteGetResposne = Response<RegularNoteGet>;
 
