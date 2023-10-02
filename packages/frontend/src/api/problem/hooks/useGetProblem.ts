@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ProblemGet } from "@probnote/backend/src/components/problem/types.problem";
 import ResponseError from "utils/ResponseError";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
-import { CanvasState } from "utils/excalidraw.global";
+import validateCanvas from "utils/validateCanvas";
 
 export default function useGetProblem(
   problemId: number,
@@ -20,15 +20,8 @@ export default function useGetProblem(
     queryKey: getProblemQueryKey,
     queryFn: () => getProblem(problemId, getToken),
     onSuccess: (data) => {
-      if (data.data.canvas === null || data.data.canvas === "null") {
-        return;
-      }
-
-      const objectValue = JSON.parse(data.data.canvas);
-      if (
-        typeof objectValue.elements !== "object" ||
-        typeof objectValue.appState !== "object"
-      ) {
+      const canvas = validateCanvas(data.data.canvas);
+      if (canvas === null) {
         toast({
           title: "Canvas data corrupted",
           description: "Problem canvas data has been corrupted",
@@ -36,8 +29,6 @@ export default function useGetProblem(
         });
         return;
       }
-
-      const canvas = objectValue as CanvasState;
 
       excRef.current?.updateScene({
         elements: canvas.elements,

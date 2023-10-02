@@ -1,7 +1,5 @@
-import useExerciseNoteId from "hooks/useExerciseNoteId";
 import { useQuery } from "react-query";
 import queryKeys from "utils/queryKeys";
-import { CanvasState } from "utils/excalidraw.global";
 import { useAuth } from "@clerk/nextjs";
 import { useToast } from "@/components/ui/use-toast";
 import ResponseError from "utils/ResponseError";
@@ -9,15 +7,11 @@ import useRegularNoteId from "hooks/useRegularNoteId";
 import { RegularNoteGet } from "@probnote/backend/src/components/regularNote/types.regularNote";
 import { getRegularNote } from "../regularNote.api";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
+import validateCanvas from "utils/validateCanvas";
 
 export default function useGetRegularNote(
   excRef: React.RefObject<ExcalidrawImperativeAPI>,
 ) {
-  // {
-  //   onSuccess,
-  // }: {
-  //   onSuccess?: (data: RegularNoteGet) => void;
-  // },
   const regularNoteId = useRegularNoteId();
   const getRegularNoteQueryKey = queryKeys.getRegularNote(regularNoteId);
 
@@ -28,15 +22,8 @@ export default function useGetRegularNote(
     queryKey: getRegularNoteQueryKey,
     queryFn: () => getRegularNote(regularNoteId, getToken),
     onSuccess: (data) => {
-      if (data.data.canvas === null || data.data.canvas === "null") {
-        return;
-      }
-
-      const objectValue = JSON.parse(data.data.canvas);
-      if (
-        typeof objectValue.elements !== "object" ||
-        typeof objectValue.appState !== "object"
-      ) {
+      const canvas = validateCanvas(data.data.canvas);
+      if (canvas === null) {
         toast({
           title: "Canvas data corrupted",
           description: "Regular note canvas data has been corrupted",
@@ -44,8 +31,6 @@ export default function useGetRegularNote(
         });
         return;
       }
-
-      const canvas = objectValue as CanvasState;
 
       excRef.current?.updateScene({
         elements: canvas.elements,
