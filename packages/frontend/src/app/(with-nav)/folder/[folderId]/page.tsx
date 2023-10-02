@@ -22,7 +22,7 @@ function FolderPage() {
     <div className="flex h-full flex-col">
       <div className="mb-12 flex w-full items-start justify-between">
         <Breadcrumbs className="pt-1" folderId={folderId} />
-        <NewButton folderId={folderId} />
+        <NewButton />
       </div>
       <DataTable
         data={data?.data}
