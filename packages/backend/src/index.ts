@@ -6,6 +6,7 @@ import folderRoutes from "./components/folder/routes.folder";
 import folderItemRoutes from "./components/folderItem/routes.folderItem";
 import exerciseNoteRoutes from "./components/exerciseNote/routes.exerciseNote";
 import problemRoutes from "./components/problem/routes.problem";
+import regularNoteRoutes from "./components/regularNote/routes.regularNote";
 import cloudflareRoutes from "./components/cloudflare/routes.cloudflare";
 import errorMiddleware from "./middleware/error.middleware";
 import { StrictAuthProp } from "@clerk/clerk-sdk-node";
@@ -25,6 +26,7 @@ app.use(bodyParser.json({ limit: "5mb" }));
 app.use("/folder", folderRoutes);
 app.use("/folderItem", folderItemRoutes);
 app.use("/exerciseNote", exerciseNoteRoutes);
+app.use("/regularNote", regularNoteRoutes);
 app.use("/problem", problemRoutes);
 app.use("/cloudflare", cloudflareRoutes);
 
