@@ -25,7 +25,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     <>
       <Input
         readOnly
-        value={""}
+        value=""
         type="text"
         onClick={() => setCommandDialogOpen(true)}
         placeholder="Search folders and notes"
