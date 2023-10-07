@@ -11,6 +11,7 @@ import validateCanvas from "utils/validateCanvas";
 export default function useGetProblem(
   problemId: number,
   excRef: React.RefObject<ExcalidrawImperativeAPI>,
+  onSuccess?: (data: ProblemGet) => void,
 ) {
   const getProblemQueryKey = queryKeys.getProblem(problemId);
   const { getToken } = useAuth();
@@ -38,6 +39,8 @@ export default function useGetProblem(
           collaborators: [],
         },
       });
+
+      if (onSuccess) onSuccess(data);
     },
     onError: (err) => {
       toast({

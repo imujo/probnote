@@ -17,7 +17,11 @@ const ProblemPage: FC<ProblemPageProps> = ({}) => {
   const problemId = useProblemId();
 
   const excalidrawRef = useRef<ExcalidrawImperativeAPI>(null);
-  const query = useGetProblem(problemId, excalidrawRef);
+  const query = useGetProblem(
+    problemId,
+    excalidrawRef,
+    () => excalidrawRef.current?.refresh(), // refreshes cursor position
+  );
   const {
     mutate: putProblem,
     isLoading,

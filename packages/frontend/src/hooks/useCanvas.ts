@@ -1,9 +1,7 @@
-import usePutProblem from "api/problem/hooks/usePutProblem";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { AppState, BinaryFiles } from "@excalidraw/excalidraw/types/types";
 import { useDebounce } from "usehooks-ts";
 import { useEffect, useState } from "react";
-import { initialCanvas } from "utils/excalidraw.global";
 import { CanvasState } from "utils/excalidraw.global";
 
 const DEBOUNCE_TIME = 500;
@@ -15,7 +13,7 @@ export type CanvasOnChange = (
 ) => void;
 
 export default function useCanvas(putCanvas: (canvas: CanvasState) => void) {
-  const [canvas, setCanvas] = useState(initialCanvas);
+  const [canvas, setCanvas] = useState<CanvasState | null>(null);
 
   const debouncedCanvas = useDebounce(canvas, DEBOUNCE_TIME);
 
@@ -27,6 +25,8 @@ export default function useCanvas(putCanvas: (canvas: CanvasState) => void) {
   };
 
   useEffect(() => {
+    if (!debouncedCanvas) return;
+
     putCanvas(debouncedCanvas);
   }, [debouncedCanvas]);
 
